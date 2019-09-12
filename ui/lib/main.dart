@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:acrylic_2d/colors.dart';
+import 'package:file_chooser/file_chooser.dart';
 
 void main() {
   // See https://github.com/flutter/flutter/wiki/Desktop-shells#target-platform-override
@@ -29,59 +32,65 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: AcrylicColors.accent,
+        brightness: Brightness.dark,
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          foregroundColor: Colors.white,
+          backgroundColor: AcrylicColors.accent
+        ),
         // See https://github.com/flutter/flutter/wiki/Desktop-shells#fonts
         fontFamily: 'Roboto',
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Main(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+class Main extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MainState createState() => _MainState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class _MainState extends State<Main> {
+  List<Widget> images = List();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Acrylic2D"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: ListView(
+        children: <Widget>[
+          for(Widget image in images)
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: image,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        onPressed: (){
+          showOpenPanel((FileChooserResult result, List<String> paths){
+            print(result);
+            if(result ==FileChooserResult.ok){
+              setState((){
+                paths.forEach((String path){
+                  print(path);
+                  images.add(Image.memory(File(path).readAsBytesSync()));
+                });
+              });
+            }
+
+          },
+          allowsMultipleSelection: true,
+          allowedFileTypes: ['png','jpg',"jpeg"]
+          );
+        },
+        child: Icon(Icons.insert_drive_file),
       ),
     );
   }
