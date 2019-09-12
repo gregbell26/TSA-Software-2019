@@ -35,6 +35,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        accentColor: AcrylicColors.accent,
+        buttonColor: AcrylicColors.accent,
         primaryColor: AcrylicColors.accent,
         brightness: Brightness.dark,
         floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -56,6 +58,9 @@ class Main extends StatefulWidget {
 
 class _MainState extends State<Main> {
   List<Widget> images = List();
+
+  TextEditingController writeToFileText = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,18 +69,52 @@ class _MainState extends State<Main> {
       ),
       body: ListView(
         children: <Widget>[
-          for(Widget image in images)
-            SizedBox(
-              width: 100,
-              height: 100,
-              child: image,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                    controller: writeToFileText,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      hintText: "Hello World"
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    child: Text("Write to file"),
+                    onPressed: (){
+                      showSavePanel((FileChooserResult result, List<String> paths){
+                        if(result ==FileChooserResult.ok){
+                          paths.forEach((String path){
+                            print(path);
+                            File(path).writeAsStringSync(writeToFileText.text);
+                          });
+                        }
+                      },
+                      allowedFileTypes: ['txt'],
+                      suggestedFileName: "Acrylic2D-export",
+                      confirmButtonText: "Export"
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
+          ),
+          for(Widget image in images)
+            image
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           showOpenPanel((FileChooserResult result, List<String> paths){
-            print(result);
             if(result ==FileChooserResult.ok){
               setState((){
                 paths.forEach((String path){
@@ -84,7 +123,6 @@ class _MainState extends State<Main> {
                 });
               });
             }
-
           },
           allowsMultipleSelection: true,
           allowedFileTypes: ['png','jpg',"jpeg"]
