@@ -2,6 +2,34 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(ACRYLICEXE main.cpp main.h)
+set(ACRYLICEXE main.cpp)
+
+
+#Platfrom Defination
+set(MACOS FALSE)
+set(WINDOWS FALSE)
+set(LINUX FALSE)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(MACOS TRUE)
+    include_directories(/usr/local/include)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(WINDOWS TRUE)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(LINUX TRUE)
+    message(AUTHOR_WARNING "Building on Linux has not been tested. Please use macOS or Windows to build")
+    include_directories(/usr/local/include)
+
+else()
+    message(FATAL_ERROR "Unable to detect operating system. Build halted")
+endif()
+
+#Lib Includes
+find_package(vulkan REQUIRED)
+find_package(glfw3 3.4 REQUIRED)
+
 
 add_executable(Acrylic2D ${ACRYLICEXE})
+
+target_link_libraries(Acrylic2D Vulkan::Vulkan)
+target_link_libraries(Acrylic2D glfw)
