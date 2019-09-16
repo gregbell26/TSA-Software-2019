@@ -1,0 +1,2 @@
+/Users/gregorybell/Documents/STAGED/TriHard Studios/TSA-Software-2019/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/gregorybell/Documents/STAGED/TriHard Studios/TSA-Software-2019/cmake-build-debug/CMakeFiles/edit_cache.dir

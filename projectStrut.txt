@@ -5,7 +5,7 @@ Key
 <fileName>.<ext>.? - Unsure Source File
 <fileName>_asset - Engine Asset File
 ??.? - Unsure Directory Contents
-
+<fileName>.<ext>.* - Compilable into Exe
 
 (ProjectRoot)
 |__(Acrylic_Backend)
@@ -22,10 +22,10 @@ Key
 |   |   |   |__acrylic_MemMan.hpp.?
 |   |   |   |__acrylic_CPUMan.cpp
 |   |   |   |__acrylic_MemMan.cpp.?
-|   |   |__(FileSytem)
+|   |   |__(FileSystem)
 |   |       |__acrylic_fileSystem.hpp
 |   |       |__acrylic_fileSystem.cpp
-|   |__(AbstrationLayer).?
+|   |__(AbstractionLayer).?
 |   |   |__acrylic_GFX.hpp
 |   |   |__acrylic_GFX.cpp
 |   |   |__taskScheduler.hpp
@@ -34,14 +34,16 @@ Key
 |   |   |   |__??.?
 |   |   |__acrylic_saveEngine.cpp
 |   |   |__acrylic_saveEngine.hpp
-|   |__arcylic_physicsEngine.hpp
-|   |__arcylic_physicsEngine.cpp
-|   |__arcylic_interactionEngine.hpp
-|   |__arcylic_interactionEngine.cpp
-|   |__arcylic_AIEngine.hpp.?
-|   |__arcylic_AIEngine.cpp.?
+|   |__acrylic_physicsEngine.hpp
+|   |__acrylic_physicsEngine.cpp
+|   |__acrylic_interactionEngine.hpp
+|   |__acrylic_interactionEngine.cpp
+|   |__acrylic_AIEngine.hpp.?
+|   |__acrylic_AIEngine.cpp.?
 |   |__acrylic_renderEngine.hpp
 |   |__acrylic_renderEngine.cpp
-|   |__arcylic_engine.hpp
-|   |__arcylic_engine.cpp
+|   |__acrylic_engine.hpp
+|   |__acrylic_engine.cpp
+|__(Debug)
+|   |__??.?
 
