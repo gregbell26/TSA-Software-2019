@@ -5,7 +5,7 @@ Key
 <fileName>.<ext>.? - Unsure Source File
 <fileName>_asset - Engine Asset File
 ??.? - Unsure Directory Contents
-<fileName>.<ext>.* - Compilable into Exe
+<fileName>.<ext>* - Compilable into Exe
 
 (ProjectRoot)
 |__(Acrylic_Backend)
@@ -46,4 +46,6 @@ Key
 |   |__acrylic_engine.cpp
 |__(Debug)
 |   |__??.?
+|   |__debugConsole.hpp
+|   |__debugConsole.cpp*
 
