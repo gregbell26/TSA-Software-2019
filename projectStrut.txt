@@ -1,0 +1,47 @@
+Key
+(<FolderName>) - Directory
+(<FolderName>).? - Unsure Directory
+<fileName> - Source File
+<fileName>.<ext>.? - Unsure Source File
+<fileName>_asset - Engine Asset File
+??.? - Unsure Directory Contents
+
+
+(ProjectRoot)
+|__(Acrylic_Backend)
+|   |__(BackendAPI).?
+|   |   |__(Graphics)
+|   |   |   |__(GraphicsBackend)
+|   |   |   |   |__vulkan.hpp
+|   |   |   |   |__vulkan.cpp
+|   |   |   |   |__glfw.hpp
+|   |   |   |__acrylic_graphicsBackend.hpp
+|   |   |   |__acrylic_graphicsBackend.cpp
+|   |   |__(CPU)
+|   |   |   |__acrylic_CPUMan.hpp
+|   |   |   |__acrylic_MemMan.hpp.?
+|   |   |   |__acrylic_CPUMan.cpp
+|   |   |   |__acrylic_MemMan.cpp.?
+|   |   |__(FileSytem)
+|   |       |__acrylic_fileSystem.hpp
+|   |       |__acrylic_fileSystem.cpp
+|   |__(AbstrationLayer).?
+|   |   |__acrylic_GFX.hpp
+|   |   |__acrylic_GFX.cpp
+|   |   |__taskScheduler.hpp
+|   |   |__taskScheduler.cpp
+|   |   |__(Loaders).?
+|   |   |   |__??.?
+|   |   |__acrylic_saveEngine.cpp
+|   |   |__acrylic_saveEngine.hpp
+|   |__arcylic_physicsEngine.hpp
+|   |__arcylic_physicsEngine.cpp
+|   |__arcylic_interactionEngine.hpp
+|   |__arcylic_interactionEngine.cpp
+|   |__arcylic_AIEngine.hpp.?
+|   |__arcylic_AIEngine.cpp.?
+|   |__acrylic_renderEngine.hpp
+|   |__acrylic_renderEngine.cpp
+|   |__arcylic_engine.hpp
+|   |__arcylic_engine.cpp
+
