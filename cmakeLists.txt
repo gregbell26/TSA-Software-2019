@@ -40,7 +40,9 @@ find_package(vulkan REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
 add_executable(Acrylic2D ${ACRYLICEXE})
+
 target_link_libraries(Acrylic2D Vulkan::Vulkan)
+
 if(${WINDOWS})
     target_link_libraries(Acrylic2D ${GLFW3_LIBRARY})#For somereason this only works on AMD64 for windows. Not AMD64 for mac
 else()
