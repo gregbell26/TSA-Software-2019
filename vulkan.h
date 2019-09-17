@@ -37,6 +37,10 @@ private:
 
     std::vector<const char*> getRequiredExtensions();
 
+    void supportedExtensions();
+
+    void setUpDebugBus();
+
     void initVulkan();
 
     void mainLoop();
@@ -46,6 +50,7 @@ private:
 private:
     GLFWwindow* glfwWindow;
     VkInstance vkInstance;
+    VkDebugUtilsMessengerEXT debugBus;
 };
 
 
