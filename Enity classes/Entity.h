@@ -17,7 +17,37 @@ class Entity {
         double xPosition;
         double yPosition;
     public:
-        
+        int getActiveSprite(){
+            return activeSprite;
+        }
+
+        sheetLocation* getSheetLocation(){
+            return sheetPositions;
+        }
+
+        double getXPosition(){
+            return xPosition;
+        }
+
+        double getYPosition(){
+            return yPosition;
+        }
+
+        void setActiveSprite(int sprite){
+            activeSprite = sprite;
+        }
+
+        void setXPosition(int xCoord){
+            xPosition = xCoord;
+        }
+
+        void setYPosition(int yCoord){
+            yPosition = yCoord;
+        }
+
+        Entity(){
+
+        }
 };
 
 
