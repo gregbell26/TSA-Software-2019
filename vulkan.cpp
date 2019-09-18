@@ -201,8 +201,8 @@ bool Vulkan::isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice) {
         supportedGPUType = true;
     }
 
-    return supportedGPUType && physicalDeviceFeatures.geometryShader;
-
+//    return supportedGPUType && physicalDeviceFeatures.geometryShader;
+    return supportedGPUType;
 }
 
 void Vulkan::initVulkan() {
