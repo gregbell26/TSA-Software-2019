@@ -14,6 +14,8 @@ class Entity {
         //going to be array if multiple sprites are needed
         sheetLocation* sheetPositions;
         int activeSprite;
+        int entityType;
+        int entityId;
         double xPosition;
         double yPosition;
     public:
