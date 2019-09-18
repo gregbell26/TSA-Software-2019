@@ -161,9 +161,54 @@ void Vulkan::setUpDebugBus() {
 
 }
 
+void Vulkan::pickPhysicalDevice() {
+    uint32_t physicalDeviceCount = 0;
+    vkEnumeratePhysicalDevices(vkInstance, &physicalDeviceCount, nullptr);
+
+    if(physicalDeviceCount == 0){
+        throw std::runtime_error("Failed to locate device with Vulkan support.");
+    }
+
+    std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
+    vkEnumeratePhysicalDevices(vkInstance, &physicalDeviceCount, physicalDevices.data());
+
+    for(const auto device : physicalDevices){
+        if(isPhysicalDeviceSuitable(device)){
+            vkPhysicalDevice = device;
+            break;
+        }
+    }
+
+    if(vkPhysicalDevice == VK_NULL_HANDLE){
+        throw std::runtime_error("Failed to locate suitable GPU for Vulkan");
+    }
+
+}
+
+bool Vulkan::isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice) {
+    bool supportedGPUType = false;
+    VkPhysicalDeviceProperties physicalDeviceProperties;
+    VkPhysicalDeviceFeatures physicalDeviceFeatures;
+    vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+    vkGetPhysicalDeviceFeatures(physicalDevice, &physicalDeviceFeatures);
+
+    if(physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU){
+        std::cout << "Integrated GPU found. \n\tNOTE: Performance might be poor if this is the only GPU available on your system" << std::endl;
+        supportedGPUType = true;
+    }
+    else if(physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU){
+        std::cout << "Dedicated GPU found" << std::endl;
+        supportedGPUType = true;
+    }
+
+    return supportedGPUType && physicalDeviceFeatures.geometryShader;
+
+}
+
 void Vulkan::initVulkan() {
     createInstance();
     setUpDebugBus();
+    pickPhysicalDevice();
 
 }
 

@@ -43,13 +43,20 @@ private:
 
     void initVulkan();
 
+    void pickPhysicalDevice();
+
+    bool isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice);
+
     void mainLoop();
 
     void cleanUp();
 
 private:
     GLFWwindow* glfwWindow;
+
     VkInstance vkInstance;
+    VkPhysicalDevice vkPhysicalDevice = VK_NULL_HANDLE;
+
     VkDebugUtilsMessengerEXT debugBus;
 };
 
