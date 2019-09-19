@@ -12,15 +12,20 @@ class Logger{
 private :
     std::ifstream fin;
     std::ofstream fout;
+
     bool usingFile;
     bool usingConsole;
+
     enum ERROR_LEVEL{
-        INFORMATION = 0, WARNING, ERROR, FATAL;
+        INFORMATION = 0, WARNING, ERROR, FATAL
     };
+
     int activeErrorLevel = INFORMATION;
 public :
     Logger ();
+
     Logger(ERROR_LEVEL errorLevel, bool usingFile, bool usingConsole);
+
     void Log();
 
 };
