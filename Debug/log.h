@@ -21,6 +21,11 @@
 #define COLOR_RESET "\033[0m"
 
 #elif defined(WINDOWS)
+#define COLOR_INFO 1325ED
+#define COLOR_WARNING EDE613
+#define COLOR_ERROR FF0000
+#define COLOR_RESET FFFFFF
+
 #endif
 
 
