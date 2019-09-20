@@ -13,6 +13,13 @@
 #define COLOR_INFO
 #define COLOR_WARNING
 
+
+#if defined(MACOS) || defined(LINUX)
+
+#elif defined(WINDOWS)
+#endif
+
+
 class Logger {
 public:
 
