@@ -8,26 +8,40 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-class Logger{
-private :
-    std::ifstream fin;
-    std::ofstream fout;
-
-    bool usingFile;
-    bool usingConsole;
+class Logger {
+public:
 
     enum ERROR_LEVEL{
         INFORMATION = 0, WARNING, ERROR, FATAL
     };
 
-    int activeErrorLevel = INFORMATION;
+private :
+    //std::ifstream fin;
+    std::ofstream fout;
+
+    bool usingFile;
+    bool usingConsole;
+
+    bool isFileOpen = false;
+
+    int activeErrorLevel;
 public :
     Logger ();
 
     Logger(ERROR_LEVEL errorLevel, bool usingFile, bool usingConsole);
 
+    int initLogger();
+
     void Log();
 
+private:
+    void information(std::string caller, std::string message);
+
+    void warn(std::string caller, std::string message);
+
+    void error(std::string caller, std::string message);
+
+    void fatal(std::string caller, std::string message);
 };
 
 
