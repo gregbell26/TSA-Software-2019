@@ -12,9 +12,13 @@
 #define COLOR_ERROR
 #define COLOR_INFO
 #define COLOR_WARNING
-
+#define COLOR_RESET
 
 #if defined(MACOS) || defined(LINUX)
+#define COLOR_INFO "\033[34m"
+#define COLOR_WARNING "\033[33m"
+#define COLOR_ERROR "\033[31;1m"
+#define COLOR_RESET "\033[0m"
 
 #elif defined(WINDOWS)
 #endif
