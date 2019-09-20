@@ -15,7 +15,7 @@
 #define COLOR_RESET
 
 #if defined(MACOS) || defined(LINUX)
-#define COLOR_INFO "\033[34m"
+#define COLOR_INFO "\033[34m" //
 #define COLOR_WARNING "\033[33m"
 #define COLOR_ERROR "\033[31;1m"
 #define COLOR_RESET "\033[0m"
@@ -49,16 +49,16 @@ public :
 
     int initLogger();
 
-    void Log();
+    void Log(ERROR_LEVEL errorLevel, std::string caller, std::string message);
 
 private:
-    void information(std::string caller, std::string message);
+    void information(std::string *caller, std::string *message);
 
-    void warn(std::string caller, std::string message);
+    void warn(std::string *caller, std::string *message);
 
-    void error(std::string caller, std::string message);
+    void error(std::string *caller, std::string *message);
 
-    void fatal(std::string caller, std::string message);
+    void fatal(std::string *caller, std::string *message);
 };
 
 
