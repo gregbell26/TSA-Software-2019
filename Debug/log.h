@@ -8,6 +8,11 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
+#define COLOR_ERROR
+#define COLOR_INFO
+#define COLOR_WARNING
+
 class Logger {
 public:
 
@@ -25,6 +30,7 @@ private :
     bool isFileOpen = false;
 
     int activeErrorLevel;
+
 public :
     Logger ();
 

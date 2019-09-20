@@ -51,6 +51,7 @@ void Logger::fatal(std::string caller, std::string message) {
 
 //TST function
 int main() {
+    std::cout << "\033[4;31mbold red text\033[0m\n";
 
     return 0;
 }
