@@ -112,7 +112,7 @@ int main() {
     logger->log(logger->INFORMATION, "Main", "YEE!");
 
     delete logger;
-    
+
 
     return 0;
 }
