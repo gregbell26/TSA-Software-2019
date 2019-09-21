@@ -9,10 +9,10 @@
 #include <fstream>
 #include <string>
 
-#define COLOR_ERROR
-#define COLOR_INFO
-#define COLOR_WARNING
-#define COLOR_RESET
+//#define COLOR_ERROR
+//#define COLOR_INFO
+//#define COLOR_WARNING
+//#define COLOR_RESET
 
 #if defined(MACOS) || defined(LINUX)
 #define COLOR_INFO "\033[34m" //
@@ -54,7 +54,9 @@ public :
 
     int initLogger();
 
-    void Log(ERROR_LEVEL errorLevel, std::string caller, std::string message);
+    void log(ERROR_LEVEL errorLevel, std::string caller, std::string message);
+
+    ~Logger();
 
 private:
     void information(std::string *caller, std::string *message);
@@ -63,7 +65,7 @@ private:
 
     void error(std::string *caller, std::string *message);
 
-    void fatal(std::string *caller, std::string *message);
+    static void fatal(std::string *caller, std::string *message);
 };
 
 
