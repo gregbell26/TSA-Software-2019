@@ -114,5 +114,8 @@ int main() {
     delete logger;
 
 
+    logger = nullptr;
+
+
     return 0;
 }
