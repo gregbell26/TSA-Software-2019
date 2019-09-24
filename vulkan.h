@@ -58,6 +58,7 @@ private:
     VkPhysicalDevice vkPhysicalDevice = VK_NULL_HANDLE;
 
     VkDebugUtilsMessengerEXT debugBus;
+
 };
 
 
