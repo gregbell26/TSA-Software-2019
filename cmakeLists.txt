@@ -6,6 +6,11 @@ set(ACRYLICEXE main.cpp vulkan.cpp vulkan.h)
 set(DEBUG Debug/log.cpp DEBUG/log.h)
 
 
+
+#Add all sub projects
+add_subdirectory(Entity_Layer)
+add_subdirectory(En)
+
 #Platfrom Defination
 set(MACOS FALSE)
 set(WINDOWS FALSE)
