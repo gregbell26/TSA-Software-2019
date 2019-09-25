@@ -86,8 +86,7 @@ void Logger::error(std::string *caller, std::string *message) {
 
 void Logger::fatal(std::string *caller, std::string *message) {
     const std::string RUNTIME_ERROR = "[" + *caller + "] " + *message;
-//    if(usingConsole)
-        std::cout << "[" << *caller << "] " << COLOR_ERROR << *message << COLOR_RESET<< std::endl;
+    std::cout << "[" << *caller << "] " << COLOR_ERROR << *message << COLOR_RESET<< std::endl;
 
     throw std::runtime_error(RUNTIME_ERROR);
 }
@@ -106,16 +105,17 @@ Logger::~Logger() {
 int main() {
     auto *logger = new Logger(Logger::INFORMATION, true, true);
     logger->initLogger();
-    logger->log(logger->WARNING, "Main", "YEE!");
-    logger->log(logger->INFORMATION, "Main", "YEE!");
-    logger->log(logger->ERROR, "Main", "YEE!");
-    logger->log(logger->INFORMATION, "Main", "YEE!");
+    logger->log(logger->WARNING, "Main", "Warning");
+    logger->log(logger->INFORMATION, "Main", "Information");
+    logger->log(logger->ERROR, "Main", "Error");
+    logger->log(logger->INFORMATION, "Main", "Information");
+    logger->log(logger->FATAL, "Main", "Fatal");
 
     delete logger;
 
 
     logger = nullptr;
 
-
+    std::cin.get();
     return 0;
 }

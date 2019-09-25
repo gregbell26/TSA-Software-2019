@@ -1,29 +1,21 @@
+#Main project
 cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 17)
 
 set(ACRYLICEXE main.cpp vulkan.cpp vulkan.h queueFamilies.hpp)
-set(DEBUG Debug/log.cpp DEBUG/log.h)
-
 
 
 #Add all sub projects
 add_subdirectory(Entity_Layer)
-add_subdirectory(En)
-
-#Platfrom Defination
-set(MACOS FALSE)
-set(WINDOWS FALSE)
-set(LINUX FALSE)
+add_subdirectory(Debug)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(MACOS TRUE)
     include_directories(/usr/local/include)
 
     add_compile_definitions(MACOS)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set(WINDOWS TRUE)
     #We have to do this because windows doesn't havea central include directory
     #Vulkan
     include_directories(C:/SDKS/VulkanSDK/1.1.114.0/Include)
@@ -37,7 +29,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_compile_definitions(WINDOWS)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(LINUX TRUE)
     message(AUTHOR_WARNING "Building on Linux has not been tested. Please use macOS or Windows to build")
     include_directories(/usr/local/include)
 
@@ -55,9 +46,11 @@ add_executable(Acrylic2D ${ACRYLICEXE})
 
 target_link_libraries(Acrylic2D Vulkan::Vulkan)
 
-if(${WINDOWS})
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     target_link_libraries(Acrylic2D ${GLFW3_LIBRARY})#For somereason this only works on AMD64 for windows. Not AMD64 for mac
 else()
     target_link_libraries(Acrylic2D glfw)
 endif()
-add_executable(DEBUG ${DEBUG})
+
+

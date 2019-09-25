@@ -21,14 +21,18 @@
 #define COLOR_RESET "\033[0m"
 
 #elif defined(WINDOWS)
-// green
-#define COLOR_INFO 10 // 1325ED
+
+#include <Windows.h>
+
+#undef ERROR
+// blue
+#define COLOR_INFO SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 1) // 1325ED
 // yellow
-#define COLOR_WARNING 14 // EDE613
+#define COLOR_WARNING SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6) // EDE613
 // red
-#define COLOR_ERROR 4 // FF0000
+#define COLOR_ERROR SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12) // FF0000
 // reset
-#define COLOR_RESET 15 // FFFFFF
+#define COLOR_RESET SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15) // FFFFFF
 
 #endif
 

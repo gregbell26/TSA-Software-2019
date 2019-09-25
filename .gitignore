@@ -1,7 +1,11 @@
 .DS_Store
 .idea/
+/.idea/
 .vs/
+/.vs/
 Makefile
 cmake-build-debug/
 cmake-build-release/
 out/
+/out/
+
