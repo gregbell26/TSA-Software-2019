@@ -10,6 +10,9 @@ set(ACRYLICEXE main.cpp vulkan.cpp vulkan.h queueFamilies.hpp)
 add_subdirectory(Entity_Layer)
 add_subdirectory(Debug)
 
+#Sub Project Includes
+set(ACRYLIC_LIBS FALSE)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     include_directories(/usr/local/include)
 
@@ -25,6 +28,9 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
     #Load Modules
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+    #Disable MSVC Bullshit
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
 
     add_compile_definitions(WINDOWS)
 
@@ -46,6 +52,9 @@ add_executable(Acrylic2D ${ACRYLICEXE})
 
 target_link_libraries(Acrylic2D Vulkan::Vulkan)
 
+if(${ACRYLIC_LIBS})
+    target_link_libraries(Acrylic2D ${ACRYLIC_LIBS})
+endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     target_link_libraries(Acrylic2D ${GLFW3_LIBRARY})#For somereason this only works on AMD64 for windows. Not AMD64 for mac

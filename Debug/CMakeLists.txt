@@ -17,3 +17,4 @@ endif()
 
 
 add_executable(Arcylic2D_Debug ${DEBUG})
+#add_library(Acrylic2D_Debug STATIC ${DEBUG})

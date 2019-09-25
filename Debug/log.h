@@ -9,11 +9,6 @@
 #include <fstream>
 #include <string>
 
-//#define COLOR_ERROR
-//#define COLOR_INFO
-//#define COLOR_WARNING
-//#define COLOR_RESET
-
 #if defined(MACOS) || defined(LINUX)
 #define COLOR_INFO "\033[34m" //
 #define COLOR_WARNING "\033[33m"

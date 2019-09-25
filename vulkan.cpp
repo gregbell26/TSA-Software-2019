@@ -188,7 +188,8 @@ void Vulkan::pickPhysicalDevice() {
 }
 
 bool Vulkan::isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice) {
-    bool supportedGPUType = false;
+    bool supportedGPU = false;
+    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
     VkPhysicalDeviceProperties physicalDeviceProperties;
     VkPhysicalDeviceFeatures physicalDeviceFeatures;
     vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
@@ -196,15 +197,19 @@ bool Vulkan::isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice) {
 
     if(physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU){
         std::cout << "Integrated GPU found. \n\tNOTE: Performance might be poor if this is the only GPU available on your system" << std::endl;
-        supportedGPUType = true;
+        supportedGPU = true;
     }
     else if(physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU){
         std::cout << "Dedicated GPU found" << std::endl;
-        supportedGPUType = true;
+        supportedGPU = true;
+    }
+    if(!indices.isComplete()){
+        std::cout << "GPU does NOT support Vulkan commands" << std::endl;
     }
 
-//    return supportedGPUType && physicalDeviceFeatures.geometryShader;
-    return supportedGPUType;
+
+//    return supportedGPU && physicalDeviceFeatures.geometryShader;
+    return supportedGPU && indices.isComplete();
 }
 
 void Vulkan::initVulkan() {

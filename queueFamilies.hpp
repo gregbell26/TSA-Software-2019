@@ -10,14 +10,32 @@
 
 //Queue Family stuff
 struct QueueFamilyIndices {
-    uint32_t graphicsFamily;
+    std::optional<uint32_t> graphicsFamily;
 
+    bool isComplete(){
+        return graphicsFamily.has_value();
+    }
 };
 
 QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice){
     QueueFamilyIndices indices;
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
+    int i = 0;
+    for(auto const &queueFamily : queueFamilies){
+        if(queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT){
+            indices.graphicsFamily = i;
+        }
+
+        //early break condition
+        if(indices.isComplete())
+            break;
+        i++;
+    }
+    std::cout << queueFamilies[i].queueCount << std::endl;
+
 
 
 
