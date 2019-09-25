@@ -14,6 +14,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         std::cerr << "Validation Layer: " << pCallbackData->pMessage << std::endl;
     }
 
+
     return VK_FALSE;
 }
 
@@ -61,6 +62,7 @@ void Vulkan::initWindow() {
 void Vulkan::initVulkan() {
     createInstance();
     setUpDebugBus();
+    createSurface();
     pickPhysicalDevice();
     createLogicalDevice();
 
@@ -96,7 +98,7 @@ void Vulkan::createInstance() {
     if(vkCreateInstance(&createInfo, nullptr, &vkInstance) != VK_SUCCESS)
         throw std::runtime_error("Failed to create Vulkan instance");
 
-    supportedExtensions();
+    getSupportedExtensions();
 }
 
 bool Vulkan::checkValidationLayerSupport() {
@@ -124,7 +126,7 @@ bool Vulkan::checkValidationLayerSupport() {
     return true;
 }
 
-void Vulkan::supportedExtensions() {
+void Vulkan::getSupportedExtensions() {
     uint32_t extensionCount = 0;
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
@@ -171,6 +173,12 @@ void Vulkan::setUpDebugBus() {
 
 }
 
+void Vulkan::createSurface() {
+    if(glfwCreateWindowSurface(vkInstance, glfwWindow, nullptr, &vkSurface) != VK_SUCCESS){
+        throw std::runtime_error("FAILED TO CREATE WINDOW SURFACE");
+    }
+}
+
 void Vulkan::pickPhysicalDevice() {
     uint32_t physicalDeviceCount = 0;
     vkEnumeratePhysicalDevices(vkInstance, &physicalDeviceCount, nullptr);
@@ -197,7 +205,7 @@ void Vulkan::pickPhysicalDevice() {
 
 bool Vulkan::isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice) {
     bool supportedGPU = false;
-    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+    QueueFamilyIndices indices = findQueueFamilies(physicalDevice, vkSurface);
     VkPhysicalDeviceProperties physicalDeviceProperties;
     VkPhysicalDeviceFeatures physicalDeviceFeatures;
     vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
@@ -221,21 +229,26 @@ bool Vulkan::isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice) {
 }
 
 void Vulkan::createLogicalDevice() {
-    QueueFamilyIndices indices = findQueueFamilies(vkPhysicalDevice);
+    QueueFamilyIndices indices = findQueueFamilies(vkPhysicalDevice, vkSurface);
 
-    VkDeviceQueueCreateInfo queueCreateInfo = {};
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-    queueCreateInfo.queueCount = 1;//We break as soon as we find a valid queue
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
     float queuePriority = 1.0f;
-    queueCreateInfo.pQueuePriorities = &queuePriority;//Floats take up a lot of space so we want to pass by reference
 
+    for(uint32_t queueFamily : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo = {};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;//We break as soon as we find a valid queue
+        queueCreateInfo.pQueuePriorities = &queuePriority;//Floats take up a lot of space so we want to pass by reference
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
     VkPhysicalDeviceFeatures physicalDeviceFeatures = {};
 
     VkDeviceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
-    createInfo.queueCreateInfoCount = 1;
+    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+    createInfo.pQueueCreateInfos = queueCreateInfos.data();
     createInfo.pEnabledFeatures = &physicalDeviceFeatures;
     createInfo.enabledExtensionCount = 0;
 
@@ -252,7 +265,7 @@ void Vulkan::createLogicalDevice() {
     }
 
     vkGetDeviceQueue(vkDevice, indices.graphicsFamily.value(), 0, &vkQueue);
-
+    vkGetDeviceQueue(vkDevice, indices.presentFamily.value(), 0, &vkPresentQueue);
 
 
 }
@@ -268,7 +281,10 @@ void Vulkan::cleanUp() {
     if(enableValidationLayers){
         DestroyDebugUtilsMessengerEXT(vkInstance, debugBus, nullptr);
     }
+
     vkDestroyDevice(vkDevice, nullptr);
+
+    vkDestroySurfaceKHR(vkInstance,vkSurface, nullptr);
 
     vkDestroyInstance(vkInstance, nullptr);
 

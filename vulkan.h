@@ -9,6 +9,7 @@
 #include <functional>
 #include <cstdlib>
 #include <vector>
+#include <set>
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
@@ -37,9 +38,11 @@ private:
 
     std::vector<const char*> getRequiredExtensions();
 
-    void supportedExtensions();
+    void getSupportedExtensions();
 
     void setUpDebugBus();
+
+    void createSurface();
 
     void initVulkan();
 
@@ -61,8 +64,11 @@ private:
     VkDevice vkDevice;//Logical Device - issues commands to the physical device
 
     VkQueue vkQueue;
+    VkQueue vkPresentQueue;
 
     VkDebugUtilsMessengerEXT debugBus;
+
+    VkSurfaceKHR vkSurface;
 
 };
 
