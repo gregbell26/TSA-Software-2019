@@ -58,6 +58,14 @@ void Vulkan::initWindow() {
 
 }
 
+void Vulkan::initVulkan() {
+    createInstance();
+    setUpDebugBus();
+    pickPhysicalDevice();
+    createLogicalDevice();
+
+}
+
 void Vulkan::createInstance() {
     if(enableValidationLayers && !checkValidationLayerSupport())
         throw std::runtime_error("Validation layer requested but unsupported");
@@ -212,10 +220,40 @@ bool Vulkan::isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice) {
     return supportedGPU && indices.isComplete();
 }
 
-void Vulkan::initVulkan() {
-    createInstance();
-    setUpDebugBus();
-    pickPhysicalDevice();
+void Vulkan::createLogicalDevice() {
+    QueueFamilyIndices indices = findQueueFamilies(vkPhysicalDevice);
+
+    VkDeviceQueueCreateInfo queueCreateInfo = {};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;//We break as soon as we find a valid queue
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;//Floats take up a lot of space so we want to pass by reference
+
+    VkPhysicalDeviceFeatures physicalDeviceFeatures = {};
+
+    VkDeviceCreateInfo createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+    createInfo.pEnabledFeatures = &physicalDeviceFeatures;
+    createInfo.enabledExtensionCount = 0;
+
+    if(enableValidationLayers){
+        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+        createInfo.ppEnabledLayerNames = validationLayers.data();
+    }
+    else {
+        createInfo.enabledLayerCount = 0;
+    }
+
+    if(vkCreateDevice(vkPhysicalDevice, &createInfo, nullptr, &vkDevice) != VK_SUCCESS){
+        throw std::runtime_error("Failed to create Vulkan device");
+    }
+
+    vkGetDeviceQueue(vkDevice, indices.graphicsFamily.value(), 0, &vkQueue);
+
+
 
 }
 
@@ -231,6 +269,8 @@ void Vulkan::cleanUp() {
         DestroyDebugUtilsMessengerEXT(vkInstance, debugBus, nullptr);
     }
     vkDestroyInstance(vkInstance, nullptr);
+
+    vkDestroyDevice(vkDevice, nullptr);
 
     glfwDestroyWindow(glfwWindow);
 

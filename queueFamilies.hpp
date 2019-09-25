@@ -34,10 +34,6 @@ QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice){
             break;
         i++;
     }
-    std::cout << queueFamilies[i].queueCount << std::endl;
-
-
-
 
     return  indices;
 }

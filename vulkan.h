@@ -47,6 +47,8 @@ private:
 
     bool isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice);
 
+    void createLogicalDevice();
+
     void mainLoop();
 
     void cleanUp();
@@ -55,7 +57,10 @@ private:
     GLFWwindow* glfwWindow;
 
     VkInstance vkInstance;
-    VkPhysicalDevice vkPhysicalDevice = VK_NULL_HANDLE;
+    VkPhysicalDevice vkPhysicalDevice = VK_NULL_HANDLE;//Physical Device
+    VkDevice vkDevice;//Logical Device - issues commands to the physical device
+
+    VkQueue vkQueue;
 
     VkDebugUtilsMessengerEXT debugBus;
 
