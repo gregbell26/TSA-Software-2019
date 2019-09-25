@@ -268,9 +268,10 @@ void Vulkan::cleanUp() {
     if(enableValidationLayers){
         DestroyDebugUtilsMessengerEXT(vkInstance, debugBus, nullptr);
     }
+    vkDestroyDevice(vkDevice, nullptr);
+
     vkDestroyInstance(vkInstance, nullptr);
 
-    vkDestroyDevice(vkDevice, nullptr);
 
     glfwDestroyWindow(glfwWindow);
 
