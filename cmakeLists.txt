@@ -9,6 +9,7 @@ set(ACRYLICEXE main.cpp vulkan.cpp vulkan.h queueFamilies.hpp)
 #Add all sub projects
 add_subdirectory(Entity_Layer)
 add_subdirectory(Debug)
+add_subdirectory(Acrylic_Backend)
 
 #Sub Project Includes
 set(ACRYLIC_LIBS FALSE)
