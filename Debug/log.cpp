@@ -101,6 +101,7 @@ Logger::~Logger() {
 }
 
 
+
 //TST function
 int main() {
     auto *logger = new Logger(Logger::INFORMATION, true, true);
@@ -109,7 +110,6 @@ int main() {
     logger->log(logger->INFORMATION, "Main", "Information");
     logger->log(logger->ERROR, "Main", "Error");
     logger->log(logger->INFORMATION, "Main", "Information");
-    logger->log(logger->FATAL, "Main", "Fatal");
 
     delete logger;
 
