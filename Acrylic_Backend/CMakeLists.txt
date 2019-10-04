@@ -4,13 +4,13 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(ArcylicBackend)
 
-set(ABSTRATION_LAYER_SRC AbstractionLayer/acrylic_GFX.cpp AbstractionLayer/acrylic_saveEngine.cpp AbstractionLayer/taskScheduler.cpp)
+set(ABSTRATION_LAYER_SRC AbstractionLayer/acrylic_GFX.cpp AbstractionLayer/acrylic_saveEngine.cpp AbstractionLayer/TaskScheduler.cpp)
 
 set(BACKEND_SRC BackendAPI/CPU/acrylic_CPUMan.cpp BackendAPI/FileSystem/acrylic_fileSystem.cpp BackendAPI/Graphics/GraphicsBackend/vulkan.cpp BackendAPI/Graphics/acrylic_graphicsBackend.cpp)
 
 set(ACRLYIC_BACKEND_SRC acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp acrylic_renderEngine.cpp)
 
-set(ABSTRATION_LAYER_HEADER AbstractionLayer/acrylic_GFX.hpp AbstractionLayer/acrylic_saveEngine.hpp AbstractionLayer/taskScheduler.hpp)
+set(ABSTRATION_LAYER_HEADER AbstractionLayer/acrylic_GFX.hpp AbstractionLayer/acrylic_saveEngine.hpp AbstractionLayer/TaskScheduler.hpp)
 
 set(BACKEND_HEADER BackendAPI/CPU/acrylic_CPUMan.hpp BackendAPI/FileSystem/acrylic_fileSystem.hpp BackendAPI/Graphics/GraphicsBackend/vulkan.hpp BackendAPI/Graphics/acrylic_graphicsBackend.hpp BackendAPI/Graphics/GraphicsBackend/glfw.hpp)
 

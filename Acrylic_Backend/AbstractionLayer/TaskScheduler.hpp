@@ -5,7 +5,7 @@
 // Actually run the functions with the function pointers
 // Deploy threads
 
-class taskScheduler {
+class TaskScheduler {
 public:
     // Gets the function pointer, elapse time and start time if applicable
     void addTask();
