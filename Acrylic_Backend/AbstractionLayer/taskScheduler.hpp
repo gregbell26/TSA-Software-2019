@@ -7,15 +7,15 @@
 
 class taskScheduler {
 public:
-    // Gets the function pointer, elapse time and       start time if applicable
-    void passTask();
+    // Gets the function pointer, elapse time and start time if applicable
+    void addTask();
 private:
     // Makes a structure from the passed information
-    int creatTask();
+    int createTask();
     // Runs the thread
     void threadRun();
 
-    int assesQueue();
+    int assessQueue();
 
     void terminateThread();
     
