@@ -5,10 +5,10 @@
 // Actually run the functions with the function pointers
 // Deploy threads
 
-class taskScheduler {
+class TaskScheduler {
 public:
-    // Gets the function pointer, elapse time and       start time if applicable
-    void passTask();
+    // Gets the function pointer, elapse time and start time if applicable
+    void addTask();
 private:
     // Makes a structure from the passed information
     int creatTask();
@@ -17,6 +17,7 @@ private:
     // Checks queue to see if there is space for any threads
     int assesQueue();
     // Stops a thread
+
     void terminateThread();
 
 };
