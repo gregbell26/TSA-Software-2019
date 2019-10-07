@@ -12,11 +12,11 @@ public:
 private:
     // Makes a structure from the passed information
     int creatTask();
-    // Runs the thread
+    // Runs the threads with an infinite loop checking the queue and executing threads
     void threadRun();
-
+    // Checks queue to see if there is space for any threads
     int assesQueue();
-
+    // Stops a thread
     void terminateThread();
-    
+
 };
