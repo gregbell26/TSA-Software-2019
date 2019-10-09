@@ -30,7 +30,7 @@ void passTask(int cycles, int start, void *function)
 }
 
 // Makes a structure from the passed information
-int creatTask()
+int createTask()
 {
 
 }

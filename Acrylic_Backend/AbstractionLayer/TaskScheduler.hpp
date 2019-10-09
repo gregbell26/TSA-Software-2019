@@ -13,7 +13,7 @@ public:
     void addTask(int, int, void);
 private:
     // Makes a structure from the passed information
-    int creatTask();
+    int createTask();
     // Runs the threads with an infinite loop checking the queue and executing threads
     void threadRun();
     // Checks queue to see if there is space for any threads
