@@ -5,6 +5,7 @@
 
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <fstream>
 #include <stdexcept>
 #include <functional>
 #include <cstdlib>
@@ -16,6 +17,11 @@ const int WINDOW_HEIGHT = 600;
 
 const std::vector<const char*> validationLayers = {
         "VK_LAYER_KHRONOS_validation"
+};
+
+const std::vector<const char *> deviceExtensions= {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+
 };
 
 #ifdef NDEBUG
@@ -54,6 +60,12 @@ private:
 
     void createLogicalDevice();
 
+    void createSwapChain();
+
+    void createImageViews();
+
+    void createGraphicsPipeline();
+
     void mainLoop();
 
     void cleanUp();
@@ -72,10 +84,13 @@ private:
 
     VkSurfaceKHR vkSurface;
 
-    const std::vector<const char *> deviceExtensions= {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    VkSwapchainKHR vkSwapChain;
+    std::vector<VkImage> swapChainImages;
+    VkFormat swapChainImageFormat;
+    VkExtent2D swapChainExtent;
 
-    };
+    std::vector<VkImageView> swapChainImageViews;
+
 
 };
 
