@@ -102,20 +102,20 @@ Logger::~Logger() {
 
 
 //TST function
-int main() {
-    auto *logger = new Logger(Logger::INFORMATION, true, true);
-    logger->initLogger();
-    logger->log(logger->WARNING, "Main", "Warning");
-    logger->log(logger->INFORMATION, "Main", "Information");
-    logger->log(logger->ERROR, "Main", "Error");
-    logger->log(logger->INFORMATION, "Main", "Information");
-    logger->log(logger->FATAL, "Main", "Fatal");
-
-    delete logger;
-
-
-    logger = nullptr;
-
-    std::cin.get();
-    return 0;
-}
+//int main() {
+//    auto *logger = new Logger(Logger::INFORMATION, true, true);
+//    logger->initLogger();
+//    logger->log(logger->WARNING, "Main", "Warning");
+//    logger->log(logger->INFORMATION, "Main", "Information");
+//    logger->log(logger->ERROR, "Main", "Error");
+//    logger->log(logger->INFORMATION, "Main", "Information");
+//    logger->log(logger->FATAL, "Main", "Fatal");
+//
+//    delete logger;
+//
+//
+//    logger = nullptr;
+//
+//    std::cin.get();
+//    return 0;
+//}

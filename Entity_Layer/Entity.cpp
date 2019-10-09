@@ -5,3 +5,4 @@
 #include "Entity.h"
 #include "nonInteractableEntity.h"
 #include "InteractableEntity.h"
+int i = 0;
