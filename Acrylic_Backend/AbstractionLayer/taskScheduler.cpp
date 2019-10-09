@@ -21,6 +21,7 @@ void passTask(int cycles, int start, void *function)
     // Checks for void function type
     if (typeid(*function) == typeid(void()));
     {
+        // Creates name of the task to put into a structure
         stringstream ss;
         ss << 'task' << taskNumber;
         string name=ss.str();
