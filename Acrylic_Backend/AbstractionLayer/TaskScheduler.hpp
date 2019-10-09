@@ -6,6 +6,8 @@
 // Deploy threads
 
 class TaskScheduler {
+private:
+    int taskNumber = 0;
 public:
     // Gets the function pointer, elapse time and start time if applicable
     void addTask(int, int, void);

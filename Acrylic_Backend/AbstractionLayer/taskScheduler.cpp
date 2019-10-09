@@ -22,8 +22,10 @@ void passTask(int cycles, int start, void *function)
     if (typeid(*function) == typeid(void()));
     {
         stringstream ss;
-        ss << 'task' << someNumber;
+        ss << 'task' << taskNumber;
         string name=ss.str();
+
+        taskNumber++;
     }
 }
 
