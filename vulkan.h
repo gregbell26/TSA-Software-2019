@@ -40,6 +40,8 @@ private:
 
     void getSupportedExtensions();
 
+    bool checkDeviceExtensionSupport(VkPhysicalDevice);
+
     void setUpDebugBus();
 
     void createSurface();
@@ -48,7 +50,7 @@ private:
 
     void pickPhysicalDevice();
 
-    bool isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice);
+    bool isPhysicalDeviceSuitable(VkPhysicalDevice);
 
     void createLogicalDevice();
 
@@ -69,6 +71,11 @@ private:
     VkDebugUtilsMessengerEXT debugBus;
 
     VkSurfaceKHR vkSurface;
+
+    const std::vector<const char *> deviceExtensions= {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+
+    };
 
 };
 
