@@ -8,7 +8,7 @@
 class TaskScheduler {
 public:
     // Gets the function pointer, elapse time and start time if applicable
-    void addTask();
+    void addTask(int, int, void);
 private:
     // Makes a structure from the passed information
     int creatTask();
