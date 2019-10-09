@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.13)
+project(Acrylic2D_Debug)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(DEBUG_SRC log.cpp)
+set(DEBUG_SRC log.cpp Debugger.cpp)
 set(DEBUG_HEADER log.h)
 
-set(DEBUG ${DEBUG_SRC} ${DEBUG_HEADER})
+set(DEBUG ${DEBUG_SRC} ${DEBUG_HEADER} Debugger.cpp)
+
+include_directories(../Acrylic_Backend ../Entity_Layer)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_compile_definitions(MACOS)
