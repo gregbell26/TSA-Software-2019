@@ -1,7 +1,8 @@
 //Test file for vulkan
 //This code is not for production
 #include "vulkan.h"
-#include "queueFamilies.hpp"
+#include "QueueFamilies.hpp"
+#include "SwapChain.hpp"
 //Validation Layer Debug Bus
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -204,28 +205,58 @@ void Vulkan::pickPhysicalDevice() {
 }
 
 bool Vulkan::isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice) {
-    bool supportedGPU = false;
+    bool extensionsSupported;
+    bool swapChainAdequate;
+
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice, vkSurface);
+
     VkPhysicalDeviceProperties physicalDeviceProperties;
     VkPhysicalDeviceFeatures physicalDeviceFeatures;
+
     vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
     vkGetPhysicalDeviceFeatures(physicalDevice, &physicalDeviceFeatures);
+    extensionsSupported = checkDeviceExtensionSupport(physicalDevice);
+    if(extensionsSupported){
+        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, vkSurface);
+        swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+    }
 
+    //DEBUG MESSAGES
     if(physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU){
         std::cout << "Integrated GPU found. \n\tNOTE: Performance might be poor if this is the only GPU available on your system" << std::endl;
-        supportedGPU = true;
     }
+
     else if(physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU){
         std::cout << "Dedicated GPU found" << std::endl;
-        supportedGPU = true;
+    }
+
+    if(!extensionsSupported){
+        std::cout << "GPU does NOT support required Vulkan Extensions" << std::endl;
     }
     if(!indices.isComplete()){
         std::cout << "GPU does NOT support Vulkan commands" << std::endl;
     }
 
 
-//    return supportedGPU && physicalDeviceFeatures.geometryShader;
-    return supportedGPU && indices.isComplete();
+    return indices.isComplete() && extensionsSupported && swapChainAdequate;
+}
+
+bool Vulkan::checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice) {
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableExtensions.data());
+
+    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+    //tick off the extensions
+    for (const auto &extension : availableExtensions){
+        requiredExtensions.erase(extension.extensionName);
+    }
+
+
+
+    return requiredExtensions.empty();
 }
 
 void Vulkan::createLogicalDevice() {
@@ -250,7 +281,8 @@ void Vulkan::createLogicalDevice() {
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
     createInfo.pEnabledFeatures = &physicalDeviceFeatures;
-    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledExtensionCount = deviceExtensions.size();
+    createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
     if(enableValidationLayers){
         createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
@@ -269,6 +301,7 @@ void Vulkan::createLogicalDevice() {
 
 
 }
+
 
 void Vulkan::mainLoop() {
     while(!glfwWindowShouldClose(glfwWindow)){

@@ -101,6 +101,7 @@ Logger::~Logger() {
 }
 
 
+
 //TST function
 //int main() {
 //    auto *logger = new Logger(Logger::INFORMATION, true, true);
@@ -108,9 +109,7 @@ Logger::~Logger() {
 //    logger->log(logger->WARNING, "Main", "Warning");
 //    logger->log(logger->INFORMATION, "Main", "Information");
 //    logger->log(logger->ERROR, "Main", "Error");
-//    logger->log(logger->INFORMATION, "Main", "Information");
-//    logger->log(logger->FATAL, "Main", "Fatal");
-//
+//    logger->log(logger->INFORMATION, "Main", "Information");//
 //    delete logger;
 //
 //
@@ -119,3 +118,4 @@ Logger::~Logger() {
 //    std::cin.get();
 //    return 0;
 //}
+
