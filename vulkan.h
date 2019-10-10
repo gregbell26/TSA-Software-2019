@@ -64,9 +64,21 @@ private:
 
     void createImageViews();
 
+    void createRenderPass();
+
     void createGraphicsPipeline();
 
+    void createFrameBuffers();
+
+    void createCommandPool();
+
+    void createCommandBuffers();
+
+    void createSemaphores();
+
     void mainLoop();
+
+    void drawFrame();
 
     void cleanUp();
 
@@ -77,7 +89,7 @@ private:
     VkPhysicalDevice vkPhysicalDevice = VK_NULL_HANDLE;//Physical Device
     VkDevice vkDevice;//Logical Device - issues commands to the physical device
 
-    VkQueue vkQueue;
+    VkQueue vkGraphicsQueue;
     VkQueue vkPresentQueue;
 
     VkDebugUtilsMessengerEXT debugBus;
@@ -89,11 +101,19 @@ private:
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
 
+    VkRenderPass vkRenderPass;
     VkPipelineLayout vkPipelineLayout;
+    VkPipeline vkGraphicsPipeline;
 
-
-
+    std::vector<VkFramebuffer> swapChainFrameBuffer;
     std::vector<VkImageView> swapChainImageViews;
+
+    VkCommandPool vkCommandPool;
+    std::vector<VkCommandBuffer> commandBuffers;
+
+    VkSemaphore imageAvailableSemaphore;
+    VkSemaphore renderFinishedSemaphore;
+
 
 
 };
