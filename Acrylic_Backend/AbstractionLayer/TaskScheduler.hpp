@@ -8,6 +8,7 @@
 class TaskScheduler {
 private:
     int taskNumber = 0;
+    bool Run = true;
 public:
     // Gets the function pointer, elapse time and start time if applicable
     void addTask(int, int, void);
@@ -17,9 +18,8 @@ private:
     // Runs the threads with an infinite loop checking the queue and executing threads
     void threadRun();
     // Checks queue to see if there is space for any threads
-    int assesQueue();
+    int assesQueue(Task);
     // Stops a thread
-
     void terminateThread();
 
 };

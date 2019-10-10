@@ -27,6 +27,8 @@ void passTask(int cycles, int start, void *function)
         string name=ss.str();
 
         taskNumber++;
+
+        Task 'name';
     }
 }
 
@@ -38,10 +40,14 @@ int createTask()
 // Runs the threads with an infinite loop checking the queue and executing threads
 void threadRun()
 {
+    Task[][];
+    while (Run)
+    {
 
+    }
 }
 // Checks queue to see if there is space for any threads
-int assesQueue()
+int assesQueue(Task)
 {
 
 }
