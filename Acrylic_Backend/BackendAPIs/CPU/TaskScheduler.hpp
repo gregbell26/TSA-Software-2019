@@ -5,13 +5,23 @@
 // Actually run the functions with the function pointers
 // Deploy threads
 
+struct Task {
+    // Teh pointer to the function
+    void *function;
+    // Stores the cycles of the processor that the function will run for
+    int cycles;
+    // Optional, for set start times of the function
+    int Start;
+};
+
+
 class TaskScheduler {
 private:
     int taskNumber = 0;
     bool Run = true;
 public:
     // Gets the function pointer, elapse time and start time if applicable
-    void addTask(int, int, void);
+    void addTask(int, int, void*);
 private:
     // Makes a structure from the passed information
     int createTask();

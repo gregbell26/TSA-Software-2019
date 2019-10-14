@@ -1,37 +1,23 @@
-#Main project
+#Acrylic2D Main_Debug
 cmake_minimum_required(VERSION 3.13)
+
 project(Acrylic2D)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(ACRYLICEXE main.cpp vulkan.cpp vulkan.h QueueFamilies.hpp SwapChain.hpp shader.hpp)
-
-project(AcrylicMain)
-
+set(SOURCE_FILES log.cpp debugger.cpp)
+set(HEADER_FILES log.hpp)
 
 #Add all sub projects
 add_subdirectory(Entity_Layer)
-add_subdirectory(Debug)
 add_subdirectory(Acrylic_Backend)
 
 #Sub Project Includes
-set(ACRYLIC_LIBS FALSE)
-
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    include_directories(/usr/local/include)
-
     add_compile_definitions(MACOS)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     #We have to do this because windows doesn't havea central include directory
-    #Vulkan
-    include_directories(C:/SDKS/VulkanSDK/1.1.114.0/Include)
-    #GLM
-    include_directories(C:/SDKS/GLM0.9)
-    #GLFW
-    include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
-    #Load Modules
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
     #Disable MSVC Bullshit
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
@@ -40,7 +26,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     message(AUTHOR_WARNING "Building on Linux has not been tested. Please use macOS or Windows to build")
-    include_directories(/usr/local/include)
 
     add_compile_definitions(LINUX)
 
@@ -49,21 +34,6 @@ else()
 endif()
 
 #Lib Includes
-find_package(vulkan REQUIRED)
-find_package(glfw3 3.3 REQUIRED)
 
-add_executable(Acrylic2D ${ACRYLICEXE})
-
-target_link_libraries(Acrylic2D Vulkan::Vulkan)
-
-if(${ACRYLIC_LIBS})
-    target_link_libraries(Acrylic2D ${ACRYLIC_LIBS})
-endif()
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries(Acrylic2D ${GLFW3_LIBRARY})#For somereason this only works on AMD64 for windows. Not AMD64 for mac
-else()
-    target_link_libraries(Acrylic2D glfw)
-endif()
-
-
+add_executable(Acrylic2D ${SOURCE_FILES} ${HEADER_FILES})
+target_link_libraries(Acrylic2D AcrylicEngine)

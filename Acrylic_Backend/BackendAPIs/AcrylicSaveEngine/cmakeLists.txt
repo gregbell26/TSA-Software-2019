@@ -1,0 +1,38 @@
+#Acrylic Save Engine
+cmake_minimum_required(VERSION 3.13)
+
+project(AcrylicSaveEngine)
+
+set(CMAKE_CXX_STANDARD 17)
+
+
+set(SOURCE_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp)
+set(HEADER_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    include_directories(/usr/local/include)
+
+    add_compile_definitions(MACOS)
+
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    #We have to do this because windows doesn't havea central include directory
+    #Nlohmann JSON
+    include_directories(C:/SDKS/NlohmannJSON/include)
+
+    #Disable MSVC Bullshit
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
+
+    add_compile_definitions(WINDOWS)
+
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    message(AUTHOR_WARNING "Building on Linux has not been tested. Please use macOS or Windows to build")
+    include_directories(/usr/local/include)
+
+    add_compile_definitions(LINUX)
+
+else()
+    message(FATAL_ERROR "Unable to detect operating system. Build halted")
+endif()
+
+
+add_library(AcrylicSaveEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})

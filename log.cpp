@@ -2,7 +2,7 @@
 // Created by Gregory Bell on 9/18/19.
 //
 
-#include "log.h"
+#include "log.hpp"
 //Constructors
 Logger::Logger() {
 

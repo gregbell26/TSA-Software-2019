@@ -1,58 +1,50 @@
 // Created by Gabriel Bergeson oct. 2019
 
-#include "taskScheduler.hpp"
+#include "TaskScheduler.hpp"
 
-#include <pthread.h>
+//#include <pthread.h>
 
 #include <map>
 #include <string>
 
-struct Task{
-    // Teh pointer to the function
-    void *function;
-    // Stores the cycles of the processor that the function will run for
-    int cycles;
-    // Optional, for set start times of the function
-    int Start;
-};
 // Gets the function pointer, elapse time and       start time if applicable
-void passTask(int cycles, int start, void *function)
+void TaskScheduler::addTask(int cycles, int start, void *function)
 {
     // Checks for void function type
-    if (typeid(*function) == typeid(void()));
-    {
-        // Creates name of the task to put into a structure
-        stringstream ss;
-        ss << 'task' << taskNumber;
-        string name=ss.str();
-
-        taskNumber++;
-
-        Task 'name';
-    }
+//    if (typeid(&function) == typeid(void));
+//    {
+//        // Creates name of the task to put into a structure
+//        std::stringstream ss;
+//        ss << 'task' << taskNumber;
+//        std::string name=ss.str();
+//
+//        taskNumber++;
+//
+//        Task 'name';
+//    }
 }
 
 // Makes a structure from the passed information
-int createTask()
+int TaskScheduler::createTask()
 {
-
+    return 0;
 }
 // Runs the threads with an infinite loop checking the queue and executing threads
-void threadRun()
+void TaskScheduler::threadRun()
 {
-    Task[][];
+    Task tasks = {{}};
     while (Run)
     {
 
     }
 }
 // Checks queue to see if there is space for any threads
-int assesQueue(Task)
+int TaskScheduler::assesQueue(Task task)
 {
-
+    return 0;
 }
 // Stops a thread
-void terminateThread()
+void TaskScheduler::terminateThread()
 {
 
 }

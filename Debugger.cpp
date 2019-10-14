@@ -5,29 +5,8 @@
 #include <iostream>
 #include <map>
 #include <functional>
+#include <string>
 
-
-#if defined(MACOS) || defined(LINUX)
-#define COLOR_INFO "\033[34m" //
-#define COLOR_WARNING "\033[33m"
-#define COLOR_ERROR "\033[31;1m"
-#define COLOR_RESET "\033[0m"
-
-#elif defined(WINDOWS)
-
-#include <Windows.h>
-
-#undef ERROR
-// blue
-#define COLOR_INFO SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 1) // 1325ED
-// yellow
-#define COLOR_WARNING SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6) // EDE613
-// red
-#define COLOR_ERROR SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12) // FF0000
-// reset
-#define COLOR_RESET SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15) // FFFFFF
-
-#endif
 
 void run(){
     //start game
@@ -68,7 +47,7 @@ void process(std::string *in) {
     } else if (command == "readVar"){
         findVar(in -> substr(in->find(' ') + 1, in->size() - 1));
     } else if (command == "close") {
-
+        exit(0);//Sorry corbin
     } else {
         std::cout << "Command does not exist" << std::endl;
     }
