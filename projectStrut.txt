@@ -1,51 +1,84 @@
-Key
-(<FolderName>) - Directory
-(<FolderName>).? - Unsure Directory
-<fileName> - Source File
-<fileName>.<ext>.? - Unsure Source File
-<fileName>_asset - Engine Asset File
-??.? - Unsure Directory Contents
-<fileName>.<ext>* - Compilable into Exe
+                            Key
+        (<FolderName>)          - Directory
+        (<FolderName>).?        - Unsure Directory
+        (<FolderName>)---       - Part of future planned feature
+        (<FolderName>).NFP      - Not for Project Folder
+        <fileName>              - Source File
+        <fileName>.<ext>.?      - Unsure Source File
+        <fileName>_asset        - Engine Asset File
+        ??.?                    - Unsure Directory Contents
+        <fileName>.<ext>---     - Part of future planned feature
+        <fileName>.<ext>*       - Compiles into Exe
+        <fileName>.<ext>'       - Compiles into Static Lib
+        <fileName>.<ext>^       - Compiles into Dynamic Lib
+
 
 (ProjectRoot)
 |__(Acrylic_Backend)
-|   |__(BackendAPI).?
-|   |   |__(Graphics)
-|   |   |   |__(GraphicsBackend)
-|   |   |   |   |__vulkan.hpp
-|   |   |   |   |__vulkan.cpp
-|   |   |   |   |__glfw.hpp
-|   |   |   |__acrylic_graphicsBackend.hpp
-|   |   |   |__acrylic_graphicsBackend.cpp
+|   |__(BackendAPIs)
+|   |   |__(Plexi2DRenderer)
+|   |   |   |__(PlexiBackend)
+|   |   |   |   |__(OpenGL)---
+|   |   |   |   |__(DirectX)---
+|   |   |   |   |__(Metal)---
+|   |   |   |   |
+|   |   |   |   |__(Vulkan)
+|   |   |   |   |   |__(VulkanHelpers)
+|   |   |   |   |   |   |__validationLayers.hpp
+|   |   |   |   |   |   |__shaders.hpp
+|   |   |   |   |   |   |__swapChains.hpp
+|   |   |   |   |   |   |__queueFamilies.hpp
+|   |   |   |   |   |
+|   |   |   |   |   |__vulkanMain.hpp
+|   |   |   |   |   |__vulkanMain.cpp
+|   |   |   |   |
+|   |   |   |   |__acrylic_plexiBackend.hpp
+|   |   |   |
+|   |   |   |__acrylic_plexiRenderer.hpp
+|   |   |   |__acrylic_plexiRenderer.cpp'
+|   |   |   |__cmakeLists.txt
+|   |   |
 |   |   |__(CPU)
-|   |   |   |__acrylic_CPUMan.hpp
-|   |   |   |__acrylic_MemMan.hpp.?
-|   |   |   |__acrylic_CPUMan.cpp
-|   |   |   |__acrylic_MemMan.cpp.?
-|   |   |__(FileSystem)
-|   |       |__acrylic_fileSystem.hpp
-|   |       |__acrylic_fileSystem.cpp
-|   |__(AbstractionLayer).?
-|   |   |__acrylic_GFX.hpp
-|   |   |__acrylic_GFX.cpp
-|   |   |__taskScheduler.hpp
-|   |   |__taskScheduler.cpp
-|   |   |__(Loaders).?
 |   |   |   |__??.?
-|   |   |__acrylic_saveEngine.cpp
-|   |   |__acrylic_saveEngine.hpp
+|   |   |   |__taskScheduler.hpp
+|   |   |   |__taskScheduler.cpp
+|   |   |
+|   |   |__(AcrylicSaveEngine)
+|   |       |__(fileSystemBackend)
+|   |       |   |__acrylic_fileSystem.hpp
+|   |       |   |__acrylic_fileSystem.cpp
+|   |       |
+|   |       |__acrylic_saveEngine.cpp'
+|   |       |__acrylic_saveEngine.hpp
+|   |       |__cmakeLists.txt
+|   |
 |   |__acrylic_physicsEngine.hpp
 |   |__acrylic_physicsEngine.cpp
-|   |__acrylic_interactionEngine.hpp
-|   |__acrylic_interactionEngine.cpp
+|   |__acrylic_interactionEngine.hpp---
+|   |__acrylic_interactionEngine.cpp---
 |   |__acrylic_AIEngine.hpp.?
 |   |__acrylic_AIEngine.cpp.?
-|   |__acrylic_renderEngine.hpp
-|   |__acrylic_renderEngine.cpp
 |   |__acrylic_engine.hpp
-|   |__acrylic_engine.cpp
-|__(Debug)
-|   |__??.?
-|   |__debugConsole.hpp
-|   |__debugConsole.cpp*
+|   |__acrylic_engine.cpp^
+|   |__cmakeLists.txt
+|
+|__(VulkanTST).NFP
+|   |__(shaders).NFP
+|   |   |__shader.vert
+|   |   |__shader.frag
+|   |   |__compile.sh
+|   |   |__compile.bat
+|   |
+|   |__vulkan.hpp
+|   |__vulkan.cpp
+|   |__shaders.hpp
+|   |__QueueFamilies.hpp
+|   |__SwapChain.hpp
+|   |__main.cpp*
+|   |__cmakeLists.txt
+|
+|__log.cpp
+|__log.hpp
+|__Debugger.cpp*
+|__cmakeLists.txt
 
