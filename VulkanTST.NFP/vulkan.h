@@ -14,6 +14,7 @@
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
+const int MAX_FRAMES_IN_FLIGHT = 2;
 
 const std::vector<const char*> validationLayers = {
         "VK_LAYER_KHRONOS_validation"
@@ -74,7 +75,11 @@ private:
 
     void createCommandBuffers();
 
-    void createSemaphores();
+    void createSyncObjects();
+
+    void cleanUpSwapChain();
+
+    void recreateSwapChain();
 
     void mainLoop();
 
@@ -83,6 +88,8 @@ private:
     void cleanUp();
 
 private:
+    size_t currentFrame = 0;
+
     GLFWwindow* glfwWindow;
 
     VkInstance vkInstance;
@@ -111,8 +118,11 @@ private:
     VkCommandPool vkCommandPool;
     std::vector<VkCommandBuffer> commandBuffers;
 
-    VkSemaphore imageAvailableSemaphore;
-    VkSemaphore renderFinishedSemaphore;
+    std::vector<VkSemaphore> imageAvailableSemaphore;
+    std::vector<VkSemaphore> renderFinishedSemaphore;
+    std::vector<VkFence> inFlightFence;
+public:
+    bool frameBufferResized = false;
 
 
 
