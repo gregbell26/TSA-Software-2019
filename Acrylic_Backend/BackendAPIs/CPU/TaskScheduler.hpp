@@ -17,6 +17,8 @@ struct Task {
 
 class TaskScheduler {
 private:
+    int Cycles, int Start, void *Function;
+
     int taskNumber = 0;
     bool Run = true;
 public:
