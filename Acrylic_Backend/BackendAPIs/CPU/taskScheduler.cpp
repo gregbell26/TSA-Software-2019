@@ -6,6 +6,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 // Gets the function pointer, elapse time and       start time if applicable
 void TaskScheduler::addTask(int cycles, int start, void *function)
