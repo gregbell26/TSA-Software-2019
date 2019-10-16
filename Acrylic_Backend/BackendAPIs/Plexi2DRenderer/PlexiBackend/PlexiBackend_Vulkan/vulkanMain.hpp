@@ -6,13 +6,14 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
+#include "../plexiHelper.hpp"
 
 
-class Vulkan {
+
+class Vulkan: public PlexiGFXBackend{
 public:
     Vulkan();
 
-    void setRequiredExtensions(std::vector<const char*> requiredExtensions);
 
     //Create instance - If that fails vulkan is not supported
     //Enum physical devices - If that's 0 vulkan is not supported
@@ -20,6 +21,8 @@ public:
     bool isSupported();
 
     bool initBackend();
+    
+
 
 private:
     //PRIVATE FUNCTIONS
