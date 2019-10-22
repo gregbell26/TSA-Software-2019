@@ -60,7 +60,9 @@ void TaskScheduler::threadRun()
 // Checks queue to see if there is space for any threads
 int TaskScheduler::assesQueue(Task task)
 {
-    return 0;
+    int number = 0;
+
+    return;
 }
 // Stops a thread
 void TaskScheduler::terminateThread()
