@@ -9,13 +9,15 @@ namespace fs = std::filesystem;
 std::string gameDataPath;
 
 
-std::vector<nlohmann::json*> readJSONs(){
+nlohmann::json* readJSONs(){
     std::fstream jsonStream;
-    std::vector<nlohmann::json*> levels;//just pointers
+    nlohmann::json levels[5];
+    int i = 0;
     for(const auto& file : fs::directory_iterator(gameDataPath)){
         jsonStream.open(gameDataPath + file.path().string());
-        levels.push_back(&(jsonStream >> new nlohmann::json));//note: operator is overloaded, IDE just doesn't realize it
+        levels[i] << (jsonStream >> *(new nlohmann::json));//note: >> operator is overloaded
         jsonStream.close();
+        i++;
     }
     return levels;
 }
