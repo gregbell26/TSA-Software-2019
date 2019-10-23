@@ -9,8 +9,8 @@ void Plexi::initPlexi() {
     if(plexiConfig.userPreferedGFXBackend == PLEXI_VULKAN) {
         plexiConfig.vulkan_deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
-        if(!GFXBackendMap<PlexiGFXBackend*>[plexiConfig.userPreferedGFXBackend]->isSupported()){
-            std::cerr<<"Plexi Default renderer is unsupported. Please specify a plexi config or change the default renderer" << std::endl;
+        if(!GFXBackendMap[plexiConfig.userPreferedGFXBackend]->isSupported()){
+            std::cerr << "Plexi Default renderer is unsupported. Please specify a plexi config or change the default renderer" << std::endl;
             return;
         }
 

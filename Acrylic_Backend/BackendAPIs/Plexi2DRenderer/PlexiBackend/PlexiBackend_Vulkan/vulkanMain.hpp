@@ -21,17 +21,21 @@ public:
     bool isSupported();
 
     bool initBackend();
-    
+
 
 
 private:
     //PRIVATE FUNCTIONS
+
 
 public:
     //PUBLIC VARIABLES
 
 private:
     //PRIVATE VARIABLES
+    VkInstance vulkanInstance;
+
+
     std::vector<const char*> requiredExtensions;
 };
 
