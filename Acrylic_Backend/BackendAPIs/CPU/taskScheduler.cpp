@@ -20,6 +20,12 @@ void TaskScheduler::addTask(int cycles, int start, void *function)
     }
 }
 
+// Gets the value of the CPU in GHz to calculate the size and number of threads
+void TaskScheduler::configCPUClock(double GHz)
+{
+    CPU_GHz = GHz;
+}
+
 // Makes a structure from the passed information
 int TaskScheduler::createTask()
 {

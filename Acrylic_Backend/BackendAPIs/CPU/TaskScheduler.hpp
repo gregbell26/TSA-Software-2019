@@ -18,12 +18,13 @@ struct Task {
 class TaskScheduler {
 private:
     int Cycles, int Start, void *Function;
-
+    double CPU_GHz = 0;
     int taskNumber = 0;
     bool Run = true;
 public:
     // Gets the function pointer, elapse time and start time if applicable
     void addTask(int, int, void*);
+    void configCPUClock(double);
 private:
     // Makes a structure from the passed information
     int createTask();
