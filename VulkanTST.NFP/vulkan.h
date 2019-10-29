@@ -73,6 +73,10 @@ private:
 
     void createCommandPool();
 
+    void createVertexBuffer();
+
+    uint32_t findMemoryTypes(uint32_t, VkMemoryPropertyFlags);
+
     void createCommandBuffers();
 
     void createSyncObjects();
@@ -121,6 +125,9 @@ private:
     std::vector<VkSemaphore> imageAvailableSemaphore;
     std::vector<VkSemaphore> renderFinishedSemaphore;
     std::vector<VkFence> inFlightFence;
+
+    VkBuffer vkVertexBuffer;
+    VkDeviceMemory vkVertexBufferMemory;
 public:
     bool frameBufferResized = false;
 

@@ -3,7 +3,8 @@
 #include "vulkan.h"
 #include "QueueFamilies.hpp"
 #include "SwapChain.hpp"
-#include "shader.hpp"
+#include "Shader.hpp"
+#include "VertexHelper.hpp"
 //Validation Layer Debug Bus
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -79,9 +80,9 @@ void Vulkan::initVulkan() {
     createGraphicsPipeline();
     createFrameBuffers();
     createCommandPool();
+    createVertexBuffer();
     createCommandBuffers();
     createSyncObjects();
-
 }
 
 void Vulkan::createInstance() {
@@ -296,7 +297,7 @@ void Vulkan::createLogicalDevice() {
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
     createInfo.pEnabledFeatures = &physicalDeviceFeatures;
-    createInfo.enabledExtensionCount = deviceExtensions.size();
+    createInfo.enabledExtensionCount = static_cast<uint32_t >(deviceExtensions.size());
     createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
     if(enableValidationLayers){
@@ -448,6 +449,9 @@ void Vulkan::createGraphicsPipeline() {
     auto vertShaderCode = readFile("shaders/vert.spv");
     auto fragShaderCode = readFile("shaders/frag.spv");
 
+    auto bindingDes = Vertex::getBindingDescription();
+    auto attribDes = Vertex::getAttributeDescriptions();
+
     VkShaderModule vertShaderModule = createShaderModule(vertShaderCode, vkDevice);
     VkShaderModule fragShaderModule = createShaderModule(fragShaderCode, vkDevice);
 
@@ -455,7 +459,7 @@ void Vulkan::createGraphicsPipeline() {
     vertShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     vertShaderStageCreateInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
     vertShaderStageCreateInfo.module = vertShaderModule;
-    vertShaderStageCreateInfo.pName = "main";
+    vertShaderStageCreateInfo.pName = "main";//the func name in the shader
 
     VkPipelineShaderStageCreateInfo fragShaderStageCreateInfo = {};
     fragShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -467,10 +471,10 @@ void Vulkan::createGraphicsPipeline() {
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputInfo.vertexBindingDescriptionCount = 0;
-    vertexInputInfo.pVertexBindingDescriptions = nullptr;
-    vertexInputInfo.vertexAttributeDescriptionCount = 0;
-    vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attribDes.size());
+    vertexInputInfo.pVertexBindingDescriptions = &bindingDes;
+    vertexInputInfo.pVertexAttributeDescriptions = attribDes.data();
 
     VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -620,9 +624,59 @@ void Vulkan::createCommandPool() {
     }
 }
 
+void Vulkan::createVertexBuffer() {
+    VkMemoryRequirements memoryRequirements;
+    VkBufferCreateInfo bufferCreateInfo = {};
+    bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferCreateInfo.size = sizeof(verties[0]) * verties.size();
+    bufferCreateInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if(vkCreateBuffer(vkDevice, &bufferCreateInfo, nullptr, &vkVertexBuffer) != VK_SUCCESS){
+        throw std::runtime_error("Failed to create Vulkan vertex Command Buffer");
+    }
+
+    vkGetBufferMemoryRequirements(vkDevice, vkVertexBuffer, &memoryRequirements);
+
+    VkMemoryAllocateInfo memoryAllocateInfo = {};
+    memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    memoryAllocateInfo.allocationSize = memoryRequirements.size;
+    memoryAllocateInfo.memoryTypeIndex = findMemoryTypes(memoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+    if(vkAllocateMemory(vkDevice, &memoryAllocateInfo, nullptr, &vkVertexBufferMemory) != VK_SUCCESS){
+        throw std::runtime_error("Failed to allocate physical device memory");
+    }
+
+    vkBindBufferMemory(vkDevice, vkVertexBuffer, vkVertexBufferMemory, 0);
+
+    void* data;
+    vkMapMemory(vkDevice, vkVertexBufferMemory, 0, bufferCreateInfo.size, 0, &data);
+
+    memcpy(data, verties.data(), (size_t) bufferCreateInfo.size);
+
+    vkUnmapMemory(vkDevice, vkVertexBufferMemory);
+
+}
+
+uint32_t Vulkan::findMemoryTypes(uint32_t typeFilter, VkMemoryPropertyFlags memoryPropertiesFlags){
+    VkPhysicalDeviceMemoryProperties memoryProperties;
+    vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, &memoryProperties);
+
+    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++){
+        if((typeFilter & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & memoryPropertiesFlags) == memoryPropertiesFlags)
+            return i;
+    }
+
+    throw std::runtime_error("Failed to find supported gpu memory type");
+
+}
+
 void Vulkan::createCommandBuffers() {
     commandBuffers.resize(swapChainFrameBuffer.size());
     VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+    VkBuffer vertexBuffers[] = {vkVertexBuffer};
+    VkDeviceSize offsets[] = {0};
+
 
     VkCommandBufferAllocateInfo allocationInfo = {};
     allocationInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -658,7 +712,9 @@ void Vulkan::createCommandBuffers() {
 
         vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, vkGraphicsPipeline);
 
-        vkCmdDraw(commandBuffers[i], 3,1,0,0);
+        vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
+
+        vkCmdDraw(commandBuffers[i], static_cast<uint32_t >(verties.size()),1,0,0);
 
         vkCmdEndRenderPass(commandBuffers[i]);
 
@@ -667,10 +723,6 @@ void Vulkan::createCommandBuffers() {
         }
 
     }
-
-
-
-
 }
 
 void Vulkan::createSyncObjects() {
@@ -753,12 +805,16 @@ void Vulkan::drawFrame() {
 
     VkResult presentQueueResult = vkQueuePresentKHR(vkPresentQueue, &presentInfo);
 
-    if(presentQueueResult == VK_ERROR_OUT_OF_DATE_KHR || presentQueueResult != VK_SUBOPTIMAL_KHR || frameBufferResized){
+    if (presentQueueResult == VK_ERROR_OUT_OF_DATE_KHR) {
         frameBufferResized = false;
         recreateSwapChain();
-    }
-    else {
-        throw std::runtime_error("Failed to acquire swap chain image");
+    } else {
+        if (presentQueueResult != VK_SUBOPTIMAL_KHR || frameBufferResized) {
+            frameBufferResized = false;
+            recreateSwapChain();
+        } else {
+            throw std::runtime_error("Failed to acquire swap chain image");
+        }
     }
 
 
@@ -819,6 +875,9 @@ void Vulkan::cleanUp() {
     }
 
     cleanUpSwapChain();
+
+    vkDestroyBuffer(vkDevice, vkVertexBuffer, nullptr);
+    vkFreeMemory(vkDevice, vkVertexBufferMemory, nullptr);
 
     vkDestroyCommandPool(vkDevice, vkCommandPool, nullptr);
 

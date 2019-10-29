@@ -4,7 +4,7 @@ project(VulkanTest)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(VULKAN_SOURCE_FILES main.cpp vulkan.cpp vulkan.h QueueFamilies.hpp SwapChain.hpp shader.hpp)
+set(VULKAN_SOURCE_FILES main.cpp vulkan.cpp vulkan.h QueueFamilies.hpp SwapChain.hpp Shader.hpp VertexHelper.hpp)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     include_directories(/usr/local/include)
