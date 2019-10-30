@@ -73,7 +73,11 @@ private:
 
     void createCommandPool();
 
+    void createBuffer(VkDeviceSize, VkBufferUsageFlags, VkMemoryPropertyFlags, VkBuffer&, VkDeviceMemory&);
+
     void createVertexBuffer();
+
+    void createIndexBuffer();
 
     uint32_t findMemoryTypes(uint32_t, VkMemoryPropertyFlags);
 
@@ -84,6 +88,8 @@ private:
     void cleanUpSwapChain();
 
     void recreateSwapChain();
+
+    void copyBuffer(VkBuffer, VkBuffer, VkDeviceSize);
 
     void mainLoop();
 
@@ -128,6 +134,10 @@ private:
 
     VkBuffer vkVertexBuffer;
     VkDeviceMemory vkVertexBufferMemory;
+
+    VkBuffer vkIndexBuffer;
+    VkDeviceMemory vkIndexBufferMemory;
+
 public:
     bool frameBufferResized = false;
 

@@ -34,8 +34,13 @@ struct Vertex{
 
 const std::vector<Vertex> verties = {
         {{-1.0f, -1.0f}, {1.0f, 0.0f, 0.0f}},
-        {{1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
-        {{-1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}}
+        {{1.0f, -1.0f}, {0.0f, 1.0f, 0.0f}},
+        {{1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+        {{-1.0f, 1.0f}, {1.0f, 0.0f, 1.0f}}
+};
+
+const std::vector<uint16_t> indies = {//OML THIS IS THE FIRST TIME WE ARE UINT16!!
+        0, 1, 2, 2, 3, 0
 };
 
 #endif //VERTEXHELPER_HPP
