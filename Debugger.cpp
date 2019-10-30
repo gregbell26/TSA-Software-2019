@@ -3,9 +3,11 @@
 //
 
 #include <iostream>
-#include <map>
-#include <functional>
+#include <any>
 #include <string>
+#include <vector>
+#include <typeinfo>
+#include <map>
 
 
 void run(){
@@ -28,9 +30,29 @@ void findVar(std::string str){
 
 }
 
-template <typename T>
-T readVar(){
+struct data_pair{
+    std::string name;
+    std::string var_type;
+    std::any variable;
+};
 
+template <typename T>
+std::map<T*, std::string> variables;
+
+
+template <typename T>
+void flagVar(T* var, std::string name){
+    variables<T*>.insert(std::pair<T*, std::string>(&var, name));
+}
+
+template <typename T>
+void showVar(std::string search_name){
+    typename std::map<T*, std::string>::iterator itr;
+    for (itr = variables<T*>.begin(); itr != variables<T*>.end(); ++itr) {
+        if (itr->second == search_name) {
+            std::cout << search_name << ": " << *itr->first << std::endl;
+        }
+    }
 }
 
 void process(std::string *in) {
