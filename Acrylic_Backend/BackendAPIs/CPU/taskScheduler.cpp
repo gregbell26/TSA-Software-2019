@@ -12,9 +12,9 @@
 void TaskScheduler::addTask(int cycles, int start, void *function)
 {
     // Checks for void function type
-    if (typeid(function) == typeid(void));
+    if (typeid(function) == typeid(void))
     {
-        Cycle = cycle;
+        Cycles = cycles;
         Start = start;
         Function = function;
     }
@@ -34,12 +34,12 @@ int TaskScheduler::createTask()
 // Runs the threads with an infinite loop checking the queue and executing threads
 void TaskScheduler::threadRun()
 {
-    vector<Task> tasks;
+    std::vector<Task> tasks;
     while (Run)
     {
         // Checks to ensure the function cycled
         if (tasks[taskNumber--].function == Function
-        && tasks[taskNumber--].cycle == Cycles
+        && tasks[taskNumber--].cycles == Cycles
         && tasks[taskNumber--].start == Start)
         {
 
@@ -52,8 +52,7 @@ void TaskScheduler::threadRun()
             std::string name = ss.str();
 
             // Creates and defines the task
-            Task
-            'name';
+            Task 'name';
             'name'.function = Function;
             'name'.cycle = Cycles;
             'name'.start = Start;
@@ -68,10 +67,14 @@ int TaskScheduler::assesQueue(Task task)
 {
     int number = 0;
 
-    return;
+    return taskNumber;
 }
 // Stops a thread
 void TaskScheduler::terminateThread()
 {
     Run = false;
+}
+
+Task::Task(int i) {
+
 }
