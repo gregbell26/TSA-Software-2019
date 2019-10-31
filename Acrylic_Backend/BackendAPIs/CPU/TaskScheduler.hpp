@@ -6,18 +6,22 @@
 // Deploy threads
 
 struct Task {
-    // Teh pointer to the function
+    Task(int i);
+
+// Teh pointer to the function
     void *function;
     // Stores the cycles of the processor that the function will run for
     int cycles;
     // Optional, for set start times of the function
-    int Start;
+    int start;
 };
 
 
 class TaskScheduler {
 private:
-    int Cycles, int Start, void *Function;
+    int Cycles;
+    int Start;
+    void *Function;
     double CPU_GHz = 0;
     int taskNumber = 0;
     bool Run = true;
