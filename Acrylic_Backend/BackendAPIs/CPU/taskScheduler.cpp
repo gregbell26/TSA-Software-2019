@@ -12,7 +12,9 @@
 // Gets the function pointer, elapse time and       start time if applicable
 void TaskScheduler::addTask(int cycles, int start, void* function)
 {
+    // Initialize typeid non boolean values
     const type_info;
+
     // Checks for void function type
     if (typeid(function).name() == typeid(void).name())
     {
@@ -71,7 +73,7 @@ int TaskScheduler::assesQueue(Task task)
 
     return taskNumber;
 }
-// Stops a thread
+// Stops all threads
 void TaskScheduler::terminateThread()
 {
     Run = false;
