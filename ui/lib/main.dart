@@ -57,10 +57,6 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  List<Widget> images = List();
-
-  TextEditingController writeToFileText = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,67 +65,120 @@ class _MainState extends State<Main> {
       ),
       body: ListView(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: writeToFileText,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    decoration: InputDecoration(
-                      hintText: "Hello World"
+          Row(
+//            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              SizedBox(
+                width: 450,
+                child: Column(
+                  children: <Widget>[
+                    Text("Drag the things"),
+                    Draggable<String>(
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      feedback: Container(
+                          width: 30,
+                          height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      childWhenDragging: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      data: "testData"
+                    )
+                  ],
+                )
+              ),
+              Column(
+                children: <Widget>[
+                  Text("Scene"),
+                  SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: GridView.count(
+                      crossAxisCount: 10,
+                      // Generate 100 widgets that display their index in the List.
+                      children: List.generate(100, (index) {
+                        return UISquare(false);
+                      }),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
-                    child: Text("Write to file"),
-                    onPressed: (){
-                      showSavePanel((FileChooserResult result, List<String> paths){
-                        if(result ==FileChooserResult.ok){
-                          paths.forEach((String path){
-                            print(path);
-                            File(path).writeAsStringSync(writeToFileText.text);
-                          });
-                        }
-                      },
-                      allowedFileTypes: ['txt'],
-                      suggestedFileName: "Acrylic2D-export",
-                      confirmButtonText: "Export"
-                      );
-                    },
-                  ),
-                ),
-              ],
+                  )
+                ],
+              )
+            ],
+          )
+        ],
+      )
+    );
+  }
+}
+
+class UISquare extends StatefulWidget {
+  final bool isActivated;
+  UISquare(this.isActivated);
+  @override
+  _UISquareState createState() => _UISquareState();
+}
+
+class _UISquareState extends State<UISquare> {
+
+  Color squareColor;
+  Color savedColor;
+
+  @override
+  void initState() {
+    super.initState();
+    squareColor = widget.isActivated ? Colors.yellow : Colors.white;
+  }
+
+  void setActivated(Color newColor){
+    setState((){
+       squareColor = newColor;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DragTarget<String>(
+      onAccept: (String value){setActivated(Colors.yellow);},
+      onWillAccept: (String value){savedColor = squareColor; setActivated(Colors.purple); return true;},
+      onLeave: (String value){setActivated(Colors.white); squareColor = savedColor;},
+      builder: (context,candidates,rejects){
+        return Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: squareColor,
+            border: Border.all(
+              color: Colors.black,
+              width: 1.0,
             ),
           ),
-          for(Widget image in images)
-            image
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          showOpenPanel((FileChooserResult result, List<String> paths){
-            if(result ==FileChooserResult.ok){
-              setState((){
-                paths.forEach((String path){
-                  print(path);
-                  images.add(Image.memory(File(path).readAsBytesSync()));
-                });
-              });
-            }
-          },
-          allowsMultipleSelection: true,
-          allowedFileTypes: ['png','jpg',"jpeg"]
-          );
-        },
-        child: Icon(Icons.insert_drive_file),
-      ),
+        );
+      }
     );
   }
 }
