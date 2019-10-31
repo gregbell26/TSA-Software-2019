@@ -7,12 +7,14 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <vcruntime_typeinfo.h>
 
 // Gets the function pointer, elapse time and       start time if applicable
-void TaskScheduler::addTask(int cycles, int start, void *function)
+void TaskScheduler::addTask(int cycles, int start, void* function)
 {
+    const type_info;
     // Checks for void function type
-    if (typeid(function) == typeid(void))
+    if (typeid(function).name() == typeid(void).name())
     {
         Cycles = cycles;
         Start = start;
