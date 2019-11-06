@@ -116,7 +116,7 @@ void Vulkan::createInstance() {
     if(vkCreateInstance(&createInfo, nullptr, &vkInstance) != VK_SUCCESS)
         throw std::runtime_error("Failed to create Vulkan instance");
 
-    getSupportedExtensions();
+//    getSupportedExtensions();
 }
 
 bool Vulkan::checkValidationLayerSupport() {
@@ -150,6 +150,7 @@ void Vulkan::getSupportedExtensions() {
 
     std::vector<VkExtensionProperties> extensions(extensionCount);
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+
     std::cout <<extensionCount << " Available Extensions" << std::endl;
     for(const auto& extension : extensions) {
         std::cout << "\t" << extension.extensionName << std::endl;

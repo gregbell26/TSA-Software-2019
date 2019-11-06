@@ -5,14 +5,13 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
-
-#include "../plexiHelper.hpp"
-
+#include <iostream>
 
 
-class Vulkan: public PlexiGFXBackend{
+
+class Vulkan {
 public:
-    Vulkan();
+    Vulkan() = default;
 
 
     //Create instance - If that fails vulkan is not supported
@@ -20,23 +19,54 @@ public:
     //Extension check - Make sure all required extensions are supported
     bool isSupported();
 
+    bool setRequiredInformation(const char **EXTENSIONS, size_t EXT_SIZE, const char* name);
+
+    void setOptionInformation(const char **VALIDATION_LAYERS, size_t VALID_LAYER_SIZE, const char** EXTENSIONS, size_t EXT_SIZE);
+
     bool initBackend();
+
+    void runBackend();
+
+    void cleanup();
 
 
 
 private:
     //PRIVATE FUNCTIONS
+    void initWindow();
+
+    //Creators
+    std::vector<const char*> getRequiredExtensions();
+
+    bool createInstance();
+
+
+
+    //Destroy-ers
+    //Stuff to safely clean up - Prevent memory leaks and what not
+    void destroyWindow();
+
 
 
 public:
     //PUBLIC VARIABLES
+    GLFWwindow* glfwWindow;
 
 private:
     //PRIVATE VARIABLES
+    bool requiredExtensionsSet = false;
+
+    bool validationLayersEnabled = false;
+
+    const char* applicationName;
+
     VkInstance vulkanInstance;
 
 
     std::vector<const char*> requiredExtensions;
+    std::vector<const char*> optionalValidationLayers;
+
+    std::vector<const char*> optionalExtensions;
 };
 
 #endif//VULKAN_MAIN_HPP

@@ -4,6 +4,7 @@
 class PlexiGFXBackend {
 
 public:
+    PlexiGFXBackend() {};
     virtual bool isSupported();
 
     virtual bool initBackend();

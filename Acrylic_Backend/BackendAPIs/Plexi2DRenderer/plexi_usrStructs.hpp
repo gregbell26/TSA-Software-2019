@@ -1,8 +1,10 @@
 namespace Plexi {
     struct PlexiConfig {
-        PLEXI_GFX_BACKENDS userPreferedGFXBackend = PLEXI_NULL_BACKEND;
+        PLEXI_GFX_BACKENDS userPreferredGFXBackend = PLEXI_NULL_BACKEND;
 
-        PLEXI_GFX_BACKENDS activeBackend = PLEXI_NULL_BACKEND;
+        PLEXI_GFX_BACKENDS activeBackendName = PLEXI_NULL_BACKEND;
+
+        const char* applicationName;
 
         //The ability to hot swap APIs
         bool hotSwapEnabled = false;
@@ -11,11 +13,12 @@ namespace Plexi {
 
         //Only for vulkan - Do check to see if these need to be populated in the initPlexi function - If they aren't runtime error as this is information that Vulkan needs to know
         std::vector<const char*> vulkan_deviceExtensions = {};//Init to blank bc we are going to assume that if the user wants to render that they will say I NEED SWAPCHAIN SUPPORT
-
+        std::vector<const char*> vulkan_opt_deviceExtensions = {};
+        std::vector<const char*> vulkan_opt_validationLayers = {};
 
         //So that the user can't directly access these vars.
         void setPlexiInit(bool isPlexiInit){
-            plexiInit = true;
+            plexiInit = isPlexiInit;
         }
 
         bool getPlexiInit(){
@@ -27,7 +30,10 @@ namespace Plexi {
     };
 
     struct RenderTask {
-        char* taskType;
-        char* batch;
+        const char* taskType;
+        const char* batch;
+
+        //TODO: Add shader stuff for location
+        //TODO: Different Render Tasks
     };
 }

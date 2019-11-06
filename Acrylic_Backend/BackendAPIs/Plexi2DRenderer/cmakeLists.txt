@@ -46,8 +46,8 @@ endif()
 find_package(vulkan REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
-add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
-
+#add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(Plexi2DRenderer ${SOURCE_FILES} ${HEADER_FILES})
 target_link_libraries(Plexi2DRenderer Vulkan::Vulkan)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
