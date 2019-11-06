@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 set(SOURCE_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp)
-set(HEADER_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp)
+set(HEADER_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp FileSystemBackend/acrylic_bitmap.cpp FileSystemBackend/acrylic_bitmap.h)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     include_directories(/usr/local/include)
