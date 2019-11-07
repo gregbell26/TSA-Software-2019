@@ -9,16 +9,17 @@ namespace fs = std::filesystem;
 std::string gameDataPath;
 
 
-nlohmann::json readJSON(char id){
-    std::fstream jsonStream;
-    nlohmann::json level;
-    std::string stringJson;
+nlohmann::json readJSON(char id/*the final character, will probably change later*/){
+    std::fstream jsonStream;// 1 stream for all different files
+    nlohmann::json level;// class, will be returned
+    std::string stringJson;// temporary variable for transfer
     for(const auto& file : fs::directory_iterator(gameDataPath)) {
-        if (file.path().string()[file.path().string().length()] == id) {
+        if (file.path().string()[file.path().string().length()-1] == id) {//looking for id
             jsonStream.open(gameDataPath + file.path().string());
-            jsonStream >> stringJson;//note: >> operator is overloaded
+            jsonStream >> stringJson;// hopefully this works
             level = nlohmann::json::parse(stringJson);
             jsonStream.close();
+            break;// Note will only get the first of dupes
         }
     }
     return level;
