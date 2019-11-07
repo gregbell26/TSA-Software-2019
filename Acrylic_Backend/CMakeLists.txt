@@ -17,6 +17,6 @@ set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp 
 add_library(AcrylicEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
 target_link_libraries(AcrylicEngine AcrylicSaveEngine)
-target_link_libraries(AcrylicEngine Plexi2DRenderer)
+#target_link_libraries(AcrylicEngine Plexi2DRenderer)
 
 

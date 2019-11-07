@@ -61,7 +61,12 @@ void Vulkan::initWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-    glfwWindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Vulkan", nullptr, nullptr);
+    GLFWmonitor *primaryMonitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode *videoMode = glfwGetVideoMode(primaryMonitor);
+    std::cout << "MONITOR FOUND\n\tResolution: " << videoMode->width << "x" << videoMode->height << " @ " << videoMode->refreshRate << " hertz\n\tName: "
+        <<glfwGetMonitorName(primaryMonitor) << std::endl;
+
+    glfwWindow = glfwCreateWindow(videoMode->width, videoMode->height, "Vulkan", primaryMonitor, nullptr);
 
     glfwSetWindowUserPointer(glfwWindow, this);
     glfwSetFramebufferSizeCallback(glfwWindow, frameBufferResizeCallBack);
