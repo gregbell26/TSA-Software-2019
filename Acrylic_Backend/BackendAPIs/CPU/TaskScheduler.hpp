@@ -29,6 +29,9 @@ public:
     // Gets the function pointer, elapse time and start time if applicable
     void addTask(int, int, void*);
     void configCPUClock(double);
+
+    // Stops a thread
+    void terminateThread();
 private:
     // Makes a structure from the passed information
     int createTask();
@@ -36,7 +39,4 @@ private:
     void threadRun();
     // Checks queue to see if there is space for any threads
     int assesQueue(Task);
-    // Stops a thread
-    void terminateThread();
-
 };
