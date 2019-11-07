@@ -6,7 +6,7 @@
 // Deploy threads
 
 struct Task {
-    Task(int i);
+    Task();
 
 // Teh pointer to the function
     void *function;

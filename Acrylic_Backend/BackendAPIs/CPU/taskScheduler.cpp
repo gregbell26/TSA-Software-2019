@@ -51,17 +51,17 @@ void TaskScheduler::threadRun()
         // Makes and queues new function
         else {
             // Creates name of the task to put into a structure
-            std::stringstream ss;
-            ss << 'task' << taskNumber;
-            std::string name = ss.str();
+            // std::stringstream ss;
+            // ss << "task" << taskNumber;
+            // std::string name = ss.str();
 
             // Creates and defines the task
-            Task 'name';
-            'name'.function = Function;
-            'name'.cycle = Cycles;
-            'name'.start = Start;
+            Task task;
+            task.function = Function;
+            task.cycles = Cycles;
+            task.start = Start;
             // Moves the task to the array
-            tasks.push_back('name');
+            tasks.push_back(task);
             taskNumber++;
         }
     }
@@ -79,6 +79,6 @@ void TaskScheduler::terminateThread()
     Run = false;
 }
 
-Task::Task(int i) {
+Task::Task() {
 
 }
