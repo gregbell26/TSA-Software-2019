@@ -30,12 +30,6 @@ void findVar(std::string str){
 
 }
 
-struct data_pair{
-    std::string name;
-    std::string var_type;
-    std::any variable;
-};
-
 template <typename T>
 std::map<T*, std::string> variables;
 
@@ -63,9 +57,9 @@ void process(std::string *in) {
         call(in -> substr(in->find(' ') + 1, in->size() - 1));
     } else if (command == "increment") {
         incrementVar(std::stoi(in -> substr(in->find(' ') + 1, in->size() - 1)));
-    } else if (command == "setVar"){
+    } else if (command == "flag"){
         std::string str = in -> substr(in->find(' ') + 1, in->size() - 1);
-        replaceVar(str.substr(0, str.find(' ')), std::stoi(str.substr(str.find(' ') + 1, str.size() - 1)));
+        flagVar( , str);
     } else if (command == "readVar"){
         findVar(in -> substr(in->find(' ') + 1, in->size() - 1));
     } else if (command == "close") {
