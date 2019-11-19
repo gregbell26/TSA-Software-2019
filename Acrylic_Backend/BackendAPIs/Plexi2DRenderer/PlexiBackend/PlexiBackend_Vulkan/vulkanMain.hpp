@@ -29,6 +29,8 @@ public:
 
     void cleanup();
 
+    GLFWwindow* getWindow();
+
 
 
 private:
@@ -50,7 +52,6 @@ private:
 
 public:
     //PUBLIC VARIABLES
-    GLFWwindow* glfwWindow;
 
 private:
     //PRIVATE VARIABLES
@@ -59,6 +60,8 @@ private:
     bool validationLayersEnabled = false;
 
     const char* applicationName;
+
+    GLFWwindow* glfwWindow;
 
     VkInstance vulkanInstance;
 

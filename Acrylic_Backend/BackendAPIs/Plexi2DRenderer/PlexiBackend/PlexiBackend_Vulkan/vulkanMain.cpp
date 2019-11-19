@@ -142,6 +142,10 @@ bool Vulkan::isSupported() {
     return createInstance();
 }
 
+GLFWwindow *Vulkan::getWindow() {
+    return GLFWwindow*;
+}
+
 bool Vulkan::initBackend() {
 
 
@@ -166,7 +170,3 @@ void Vulkan::cleanup() {
 
     destroyWindow();
 }
-
-
-
-

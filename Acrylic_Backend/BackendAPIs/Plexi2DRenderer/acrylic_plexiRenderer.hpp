@@ -1,9 +1,12 @@
 #ifndef PLEXI_RENDERER_HPP
 #define PLEXI_RENDERER_HPP
 
+// #define GLFW_INCLUDE_VULKAN
+
 #include <vector>
 #include <iostream>
 #include <thread>
+#include "plexi_usrStructs.hpp"
 
 
 namespace Plexi {
@@ -22,6 +25,10 @@ namespace Plexi {
     bool addRenderTask(const RenderTask*);
 
     void cleanupPlexi();
+
+    template <typename T>
+
+    T* getWindowPtr();
 
 
 }

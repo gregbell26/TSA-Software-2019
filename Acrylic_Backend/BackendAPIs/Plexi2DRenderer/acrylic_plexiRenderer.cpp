@@ -68,8 +68,13 @@ void Plexi::cleanupPlexi() {
 
 }
 
+template<typename T>
+T *Plexi::getWindowPtr() {
+    return GFXBackendMap[activeConfig->activeBackendName]->getWindow();
+}
+
 
 int main(){
     Plexi::initPlexi();
-    Plexi::cleanupPlexi();
+//    Plexi::cleanupPlexi();
 }
