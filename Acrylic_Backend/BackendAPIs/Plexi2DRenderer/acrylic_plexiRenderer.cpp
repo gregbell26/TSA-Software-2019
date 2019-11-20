@@ -63,18 +63,18 @@ void Plexi::initPlexi(const Plexi::PlexiConfig &config) {
 
 void Plexi::cleanupPlexi() {
     //stop thead
-    std::cout << GFXBackendMap[activeConfig->activeBackendName] << std::endl;`
+    std::cout << GFXBackendMap[activeConfig->activeBackendName] << std::endl;
     GFXBackendMap[activeConfig->activeBackendName]->cleanup();
 
 }
 
-template<typename T>
-T *Plexi::getWindowPtr() {
+GLFWwindow* Plexi::getWindowPtr() {
     return GFXBackendMap[activeConfig->activeBackendName]->getWindow();
 }
 
 
 int main(){
     Plexi::initPlexi();
+    GLFWwindow* window = Plexi::getWindowPtr();
 //    Plexi::cleanupPlexi();
 }

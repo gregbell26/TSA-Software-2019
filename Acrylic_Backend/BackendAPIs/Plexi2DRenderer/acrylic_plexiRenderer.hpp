@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <thread>
-#include "plexi_usrStructs.hpp"
+#include <GLFW/glfw3.h>
 
 
 namespace Plexi {
@@ -26,9 +26,7 @@ namespace Plexi {
 
     void cleanupPlexi();
 
-    template <typename T>
-
-    T* getWindowPtr();
+    GLFWwindow* getWindowPtr();
 
 
 }

@@ -142,8 +142,8 @@ bool Vulkan::isSupported() {
     return createInstance();
 }
 
-GLFWwindow *Vulkan::getWindow() {
-    return GLFWwindow*;
+GLFWwindow* Vulkan::getWindow() {
+    return glfwWindow;
 }
 
 bool Vulkan::initBackend() {
