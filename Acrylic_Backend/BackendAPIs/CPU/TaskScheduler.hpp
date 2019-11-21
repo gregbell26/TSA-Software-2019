@@ -28,7 +28,6 @@ private:
 public:
     // Gets the function pointer, elapse time and start time if applicable
     void addTask(int, int, void*);
-    void configCPUClock(double);
 
     // Stops a thread
     void terminateThread();

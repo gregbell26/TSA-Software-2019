@@ -24,7 +24,6 @@ void TaskScheduler::addTask(int cycles, int start, void* function)
     }
 }
 
-// Gets the value of the CPU in GHz to calculate the size and number of threads
 void TaskScheduler::configCPUClock(double GHz)
 {
     CPU_GHz = GHz;
@@ -35,34 +34,53 @@ int TaskScheduler::createTask()
 {
     return 0;
 }
+
 // Runs the threads with an infinite loop checking the queue and executing threads
 void TaskScheduler::threadRun()
 {
-    std::vector<Task> tasks;
+    // Checking when a thread is finisheded
+    int threadCount = 0;
+    bool threadCheck = false;
+
+    std::thread threadPool[100];
+    Task task;
+    std::vector<Task> taskPool;
     while (Run)
     {
         // Checks to ensure the function cycled
-        if (tasks[taskNumber--].function == Function
-        && tasks[taskNumber--].cycles == Cycles
-        && tasks[taskNumber--].start == Start)
-        {
-
-        }
         // Makes and queues new function
-        else {
+        if (taskPool[taskNumber--].function != Function
+        && taskPool[taskNumber--].cycles != Cycles
+        && taskPool[taskNumber--].start != Start)
+        {
             // Creates name of the task to put into a structure
-            // std::stringstream ss;
-            // ss << "task" << taskNumber;
-            // std::string name = ss.str();
 
             // Creates and defines the task
-            Task task;
             task.function = Function;
             task.cycles = Cycles;
             task.start = Start;
             // Moves the task to the array
-            tasks.push_back(task);
+            taskPool.push_back(task);
             taskNumber++;
+
+            while (!threadCheck)
+            {
+                if (/*TODO: check to make sure the thread is doene*/)
+                {
+                    threadPool[threadCount](taskPool[taskNumber-1].function);
+                    threadCheck = true;
+                }
+                else
+                {
+                    threadCount++;
+                }
+
+                if (threadCount >= 99)
+                {
+                    threadCheck = true;
+                }
+            }
+            threadCheck = false;
         }
     }
 }
