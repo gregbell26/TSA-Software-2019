@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <vcruntime_typeinfo.h>
+#include <thread>
 
 // Gets the function pointer, elapse time and       start time if applicable
 void TaskScheduler::addTask(int cycles, int start, void* function)
@@ -22,11 +23,6 @@ void TaskScheduler::addTask(int cycles, int start, void* function)
         Start = start;
         Function = function;
     }
-}
-
-void TaskScheduler::configCPUClock(double GHz)
-{
-    CPU_GHz = GHz;
 }
 
 // Makes a structure from the passed information
