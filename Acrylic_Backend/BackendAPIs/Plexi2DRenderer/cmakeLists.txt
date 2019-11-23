@@ -7,10 +7,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(VULKAN_SOURCE PlexiBackend/PlexiBackend_Vulkan/vulkanMain.cpp)
 set(VULKAN_HEADER PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/queueFamilies.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/shaders.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/swapChains.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/validationLayers.hpp)
-set(SOURCE_FILES ${VULKAN_SOURCE} acrylic_plexiRenderer.cpp main.nfp.cpp)
-#set(SOURCE_FILES ${VULKAN_SOURCE} main.nfp.cpp)
 
-set(HEADER_FILES ${VULKAN_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp )
+set(SOURCE_FILES ${VULKAN_SOURCE} acrylic_plexiRenderer.cpp)
+set(HEADER_FILES ${VULKAN_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp)
+
+set(TST_FILES ${VULKAN_SOURCE} main.nfp.cpp)
+
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -48,8 +50,8 @@ endif()
 find_package(vulkan REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
-#add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
-add_executable(Plexi2DRenderer ${SOURCE_FILES} ${HEADER_FILES})
+add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(PlexiTester1000 ${TST_FILES})
 target_link_libraries(Plexi2DRenderer Vulkan::Vulkan)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
@@ -57,3 +59,5 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 else()
     target_link_libraries(Plexi2DRenderer glfw)
 endif()
+
+target_link_libraries(PlexiTester1000 Plexi2DRenderer)

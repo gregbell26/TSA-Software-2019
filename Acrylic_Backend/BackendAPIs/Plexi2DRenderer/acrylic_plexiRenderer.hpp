@@ -6,14 +6,14 @@
 #include <thread>
 
 namespace Plexi {
-#ifndef PLEXI_USE_LIB
+#ifndef PLEXI_LIBARAY_ACTIVE
 
     const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_VULKAN;
     //Where the config will be stored
     PlexiConfig* activeConfig;
     std::thread plexiLoopThread;
 
-#endif //PLEXI_USE_LIB
+#endif //PLEXI_LIBARAY_ACTIVE
     //will init Plexi to default settings
     void initPlexi();
 
