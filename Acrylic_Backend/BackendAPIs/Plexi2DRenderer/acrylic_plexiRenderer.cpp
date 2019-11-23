@@ -1,22 +1,33 @@
+#include "./PlexiBackend/plexiHelper.hpp"
 #include "PlexiBackend/acrylic_plexiBackend.hpp"
 #include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here
+
 #include "acrylic_plexiRenderer.hpp"
+
 
 void Plexi::initPlexi() {
     //TODO: CONNECT LOGGER - For now we'll be using std::out
 
     PlexiConfig plexiConfig = {};
     plexiConfig.userPreferredGFXBackend = PLEXI_DEFAULT_GFX_BACKEND;
-    plexiConfig.hotSwapEnabled = false;
-    plexiConfig.applicationName = "powered by Acrylic2D";
 
-    if(plexiConfig.userPreferredGFXBackend == PLEXI_VULKAN) {
-        plexiConfig.vulkan_deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-        plexiConfig.vulkan_opt_validationLayers.push_back("VK_LAYER_KHRONOS_validation");//Default API validation Layers
+	if (plexiConfig.userPreferredGFXBackend == PLEXI_NULL_BACKEND) {
+		std::cerr << "No default plexi renderer specified. Please specify a plexi config or change the default renderer" << std::endl;
+	} else if(plexiConfig.userPreferredGFXBackend == PLEXI_VULKAN) {
+        //Only for vulkan - Do check to see if these need to be populated in the initPlexi function - If they aren't runtime error as this is information that Vulkan needs to know
+        std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};//Init to blank bc we are going to assume that if the user wants to render that they will say I NEED SWAPCHAIN SUPPORT
+        std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
 
-        GFXBackendMap[plexiConfig.userPreferredGFXBackend]->setRequiredInformation(plexiConfig.vulkan_deviceExtensions.data(), plexiConfig.vulkan_deviceExtensions.size(), plexiConfig.applicationName);
-        GFXBackendMap[plexiConfig.userPreferredGFXBackend]->setOptionInformation(plexiConfig.vulkan_opt_validationLayers.data(), plexiConfig.vulkan_opt_validationLayers.size(),
-                                                                                 plexiConfig.vulkan_opt_deviceExtensions.data(), plexiConfig.vulkan_opt_deviceExtensions.size());
+        plexiConfig.plexiGFXRequiredInformation.vulkan_DEVICE_EXTENSIONS = deviceExtensions.data();
+        plexiConfig.plexiGFXRequiredInformation.vulkan_EXT_SIZE = deviceExtensions.size();
+
+        //we are leaving the other items inited to the default values
+
+        plexiConfig.plexiGFXOptionalInformation.vulkan_VALIDATION_LAYERS = validationLayers.data();
+        plexiConfig.plexiGFXOptionalInformation.vulkan_VALID_LAYER_SIZE = validationLayers.size();
+
+        GFXBackendMap[plexiConfig.userPreferredGFXBackend]->setRequiredInformation(plexiConfig.plexiGFXRequiredInformation);
+        GFXBackendMap[plexiConfig.userPreferredGFXBackend]->setOptionInformation(plexiConfig.plexiGFXOptionalInformation);
 
 
         if(!GFXBackendMap[plexiConfig.userPreferredGFXBackend]->isSupported()){
@@ -26,9 +37,7 @@ void Plexi::initPlexi() {
 
         plexiConfig.activeBackendName = plexiConfig.userPreferredGFXBackend;
     }
-    if(plexiConfig.userPreferredGFXBackend == PLEXI_NULL_BACKEND){
-        std::cerr<< "No default plexi renderer specified. Please specify a plexi config or change the default renderer" << std::endl;
-    }
+
 
     activeConfig = &plexiConfig;
 
@@ -41,7 +50,7 @@ void Plexi::initPlexi() {
             delete GFXBackend;
             GFXBackend = nullptr;
 
-            GFXBackendMap.erase(GFXBackendName);
+            //GFXBackendMap.erase(GFXBackendName);
         }
     }
 
@@ -53,6 +62,9 @@ void Plexi::initPlexi() {
         GFXBackendMap[activeConfig->activeBackendName]->runBackend();
         //display message w/ thread PID
     }
+    else {
+//        GFXBackendMap[activeConfig->activeBackendName]->cleanup();
+    }
 
 }
 
@@ -62,19 +74,20 @@ void Plexi::initPlexi(const Plexi::PlexiConfig &config) {
 }
 
 void Plexi::cleanupPlexi() {
-    //stop thead
-    std::cout << GFXBackendMap[activeConfig->activeBackendName] << std::endl;
-    GFXBackendMap[activeConfig->activeBackendName]->cleanup();
+//    GFXBackendMap[activeConfig->activeBackendName]->cleanup();
 
+//    delete GFXBackendMap[activeConfig->activeBackendName];
+
+//    activeConfig->activeBackendName = PLEXI_NULL_BACKEND;
+
+//    activeConfig->setPlexiInit(false);
+
+    //maybe deref active config?
 }
 
-GLFWwindow* Plexi::getWindowPtr() {
-    return GFXBackendMap[activeConfig->activeBackendName]->getWindow();
-}
-
-
-int main(){
-    Plexi::initPlexi();
-    GLFWwindow* window = Plexi::getWindowPtr();
+//int main(void){
+//    Plexi::initPlexi();
+//    //GLFWwindow* window = Plexi::GFXBackendMap[Plexi::activeConfig->activeBackendName]->getWindowRef();
 //    Plexi::cleanupPlexi();
-}
+//    return 0;
+//}

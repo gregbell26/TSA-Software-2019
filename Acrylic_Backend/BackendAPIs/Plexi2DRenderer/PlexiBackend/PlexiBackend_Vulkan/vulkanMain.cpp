@@ -1,51 +1,50 @@
+#include "../plexiHelper.hpp"
 #include "vulkanMain.hpp"
-//#include "../plexiHelper.hpp"
 #include "./VulkanHelpers/validationLayers.hpp"
 
 //Vulkan::Vulkan(){//Commented out rn be using trivial default instead
 //
 //}
 
-bool Vulkan::setRequiredInformation(const char **EXTENSIONS, const size_t EXT_SIZE, const char* name) {
-    if(EXT_SIZE <= 0){
+bool Vulkan::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
+    if(requiredInformation.vulkan_EXT_SIZE <= 0){
         std::cerr << "ERROR: Required Extensions are missing data: Required Extension Length > 0" << std::endl;
         return false;
     }
 
-    requiredExtensions.reserve(EXT_SIZE);
+    requiredExtensions.reserve(requiredInformation.vulkan_EXT_SIZE);
 
-    for(size_t i = 0; i < EXT_SIZE; i++){
-        requiredExtensions.push_back(EXTENSIONS[i]);
+    for(size_t i = 0; i < requiredInformation.vulkan_EXT_SIZE; i++){
+        requiredExtensions.push_back(requiredInformation.vulkan_DEVICE_EXTENSIONS[i]);
     }
 
-    this->applicationName = name;
-    requiredExtensionsSet = true;
-    return true;
+    this->applicationName = requiredInformation.appName.c_str();
+    requiredExtensionsSet = !requiredExtensions.empty();
+    return requiredExtensionsSet;
 }
 
-void Vulkan::setOptionInformation(const char **VALIDATION_LAYERS, const size_t VALID_LAYER_SIZE,
-                                  const char **EXTENSIONS, const size_t EXT_SIZE) {
-    if(EXT_SIZE < 0){
-        std::cerr << "ERROR: Optional Extensions are missing data: Optional Extension Length >= 0" << std::endl;
+void Vulkan::setOptionInformation(const PlexiGFX_OptionalInformation &optionalInformation) {
+    if(optionalInformation.vulkan_EXT_SIZE < 0){
+        std::cerr << "ERROR: Optional Extensions are missing data: Optional Extension Length > 0" << std::endl;
     }
-    if(VALID_LAYER_SIZE < 0){
-        std::cerr << "ERROR: Optional Validation Layers are missing data: Optional Validation Length >= 0" << std::endl;
+    if(optionalInformation.vulkan_VALID_LAYER_SIZE < 0){
+        std::cerr << "ERROR: Optional Validation Layers are missing data: Optional Validation Length > 0" << std::endl;
     }
 
     //Todo: Warning if length = 0
 
-    optionalExtensions.reserve(EXT_SIZE);
-    optionalValidationLayers.reserve(VALID_LAYER_SIZE);
+    optionalExtensions.reserve(optionalInformation.vulkan_EXT_SIZE);
+    optionalValidationLayers.reserve(optionalInformation.vulkan_VALID_LAYER_SIZE);
 
-    for(size_t i = 0; i < EXT_SIZE; i++){
-        optionalExtensions.push_back(EXTENSIONS[i]);
+    for(size_t i = 0; i < optionalInformation.vulkan_EXT_SIZE; i++){
+        optionalExtensions.push_back(optionalInformation.vulkan_DEVICE_EXTENSIONS[i]);
     }
 
-    for(size_t i = 0; i < VALID_LAYER_SIZE; i++){
-        optionalValidationLayers.push_back(VALIDATION_LAYERS[i]);
+    for(size_t i = 0; i < optionalInformation.vulkan_VALID_LAYER_SIZE; i++){
+        optionalValidationLayers.push_back(optionalInformation.vulkan_VALIDATION_LAYERS[i]);
     }
 
-    validationLayersEnabled = optionalValidationLayers.empty();
+    validationLayersEnabled = !optionalValidationLayers.empty();
 
 
 }
@@ -64,6 +63,7 @@ std::vector<const char*> Vulkan::getRequiredExtensions() {
         extensions.push_back(glfwExtensions[i]);
     }
 
+
     if(validationLayersEnabled){
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
@@ -77,9 +77,10 @@ void Vulkan::initWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-    glfwWindow = glfwCreateWindow(800, 600, applicationName, glfwGetPrimaryMonitor(), nullptr);//Makes full screen w/ res 800x600
+    //glfwWindow = glfwCreateWindow(800, 600, applicationName, glfwGetPrimaryMonitor(), nullptr);//Makes full screen w/ res 800x600
+	glfwWindow = glfwCreateWindow(800, 600, applicationName, nullptr, nullptr);
 
-    glfwSetWindowUserPointer(glfwWindow, this);
+    //glfwSetWindowUserPointer(glfwWindow, this);
 
 //    glfwSetFramebufferSizeCallback(glfwWindow, frameBufferResizeCallBack);//TODO: Implement Later
 
@@ -105,16 +106,18 @@ bool Vulkan::createInstance() {
     VkInstanceCreateInfo instanceInfo = {};
     instanceInfo.sType  = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instanceInfo.pApplicationInfo = &appInfo;
-    instanceInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size());
+    instanceInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     instanceInfo.ppEnabledExtensionNames = extensions.data();
     if(validationLayersEnabled){
         instanceInfo.enabledLayerCount = static_cast<uint32_t>(optionalValidationLayers.size());
-        instanceInfo.ppEnabledLayerNames = extensions.data();
+        instanceInfo.ppEnabledLayerNames = optionalValidationLayers.data();
     } else{
         instanceInfo.enabledLayerCount = 0;
     }
 
     VkResult err = vkCreateInstance(&instanceInfo, nullptr, &vulkanInstance);
+
+
     if(err != VK_SUCCESS){
         std::cerr << "ERROR: Failed to create Vulkan instance: Device or required extensions may not be supported. Check Plexi Config. VK Error Code: " << err << std::endl;
         return false;
@@ -142,7 +145,7 @@ bool Vulkan::isSupported() {
     return createInstance();
 }
 
-GLFWwindow* Vulkan::getWindow() {
+GLFWwindow* Vulkan::getWindowRef() {
     return glfwWindow;
 }
 
@@ -156,6 +159,7 @@ void Vulkan::runBackend() {
     while(!glfwWindowShouldClose(glfwWindow)){
         glfwPollEvents();
     }
+	cleanup();
 
 }
 

@@ -2,20 +2,27 @@
 #define PLEXI_BACKEND_HPP
 
 #include <map>
-#include <any>
 #include "PlexiBackend_Vulkan/vulkanMain.hpp"
 
+
 namespace Plexi {
+
     enum PLEXI_GFX_BACKENDS {
-        PLEXI_NULL_BACKEND = 0, PLEXI_VULKAN//Add more backends at a later date
+        PLEXI_NULL_BACKEND = 0, PLEXI_CPU, PLEXI_VULKAN, PLEXI_OPENGL, PLEXI_DIRECTX, PLEXI_METAL//Add more backends at a later date
     };
+
+
+    typedef std::map<Plexi::PLEXI_GFX_BACKENDS, PlexiGFXBackend*> PlexiBackendMap;
 
     //Instance Vars
-    static std::map<Plexi::PLEXI_GFX_BACKENDS, Vulkan*> GFXBackendMap = {//WARNING: This is a very non portable **WORKAROUND** to this bug! - TODO: FIX FOR PRODUCTION
-            {Plexi::PLEXI_NULL_BACKEND, nullptr},
-            {Plexi::PLEXI_VULKAN, new Vulkan()}
+    static PlexiBackendMap GFXBackendMap = {
+            {PLEXI_NULL_BACKEND, nullptr},
+            {PLEXI_CPU, nullptr},
+            {PLEXI_VULKAN, new Vulkan()},
+            {PLEXI_OPENGL, nullptr},
+            {PLEXI_DIRECTX, nullptr},
+            {PLEXI_METAL, nullptr}
     };
-
 }
 
 #endif//PLEXI_BACKEND_HPP

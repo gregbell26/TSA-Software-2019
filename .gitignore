@@ -3,6 +3,8 @@
 /.idea/
 .vs/
 /.vs/
+.vscode/
+/.vscode/
 Makefile
 cmake-build-debug/
 cmake-build-release/

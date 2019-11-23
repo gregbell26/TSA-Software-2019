@@ -1,15 +1,11 @@
 #ifndef VULKAN_MAIN_HPP
 #define VULKAN_MAIN_HPP
 
-#define GLFW_INCLUDE_VULKAN
-
-#include <GLFW/glfw3.h>
 #include <vector>
 #include <iostream>
 
 
-
-class Vulkan {
+class Vulkan: public PlexiGFXBackend {
 public:
     Vulkan() = default;
 
@@ -17,19 +13,19 @@ public:
     //Create instance - If that fails vulkan is not supported
     //Enum physical devices - If that's 0 vulkan is not supported
     //Extension check - Make sure all required extensions are supported
-    bool isSupported();
+    bool isSupported() override;
 
-    bool setRequiredInformation(const char **EXTENSIONS, size_t EXT_SIZE, const char* name);
+    bool setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) override;
 
-    void setOptionInformation(const char **VALIDATION_LAYERS, size_t VALID_LAYER_SIZE, const char** EXTENSIONS, size_t EXT_SIZE);
+    void setOptionInformation(const PlexiGFX_OptionalInformation &optionalInformation) override;
 
-    bool initBackend();
+    bool initBackend() override;
 
-    void runBackend();
+    void runBackend() override;
 
-    void cleanup();
+    void cleanup() override;
 
-    GLFWwindow* getWindow();
+    GLFWwindow* getWindowRef() override;
 
 
 
