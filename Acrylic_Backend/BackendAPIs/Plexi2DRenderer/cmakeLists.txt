@@ -14,7 +14,6 @@ set(HEADER_FILES ${VULKAN_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./Plex
 set(TST_FILES ${VULKAN_SOURCE} main.nfp.cpp)
 
 
-
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     include_directories(/usr/local/include)
 
@@ -32,7 +31,10 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
     #Disable MSVC Bullshit
-    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT /NODEFAULTLIB:library" )
+#    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT /NODEFAULTLIB:library" )
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCPRTD" )
 
     add_compile_definitions(WINDOWS)
 
@@ -46,9 +48,9 @@ else()
     message(FATAL_ERROR "Unable to detect operating system. Build halted")
 endif()
 
-
 find_package(vulkan REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
+
 
 add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
 add_executable(PlexiTester1000 ${TST_FILES})
