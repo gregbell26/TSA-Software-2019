@@ -1,10 +1,10 @@
 #include "../plexiHelper.hpp"
 #include "vulkanMain.hpp"
 #include "./VulkanHelpers/validationLayers.hpp"
+#include "./VulkanHelpers/queueFamilies.hpp"
+#include "./VulkanHelpers/swapChains.hpp"
 
-//Vulkan::Vulkan(){//Commented out rn be using trivial default instead
-//
-//}
+
 
 bool Vulkan::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
     if(requiredInformation.vulkan_EXT_SIZE <= 0){
@@ -94,6 +94,7 @@ bool Vulkan::createInstance() {
         return false;
     }
     auto extensions = getRequiredExtensions();
+
 
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;

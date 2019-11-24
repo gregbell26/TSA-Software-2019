@@ -1,7 +1,7 @@
 #ifndef PLEXIRENDERER_CORE_HPP
 #define PLEXIRENDERER_CORE_HPP
 
-#define PLEXI_LIBARAY_ACTIVE
+#define PLEXI_LIBRARY_ACTIVE
 
 
 #include "./PlexiBackend/plexiHelper.hpp"

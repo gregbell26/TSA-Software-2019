@@ -1,6 +1,8 @@
 #ifndef VULKAN_MAIN_HPP
 #define VULKAN_MAIN_HPP
 
+#include <vulkan/vulkan.h>
+#include <GLFW/glfw3.h>
 #include <vector>
 #include <iostream>
 

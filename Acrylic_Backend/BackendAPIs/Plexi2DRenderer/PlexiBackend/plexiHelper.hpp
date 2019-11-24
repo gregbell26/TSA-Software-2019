@@ -1,9 +1,9 @@
 #ifndef PLEXI_HELPER_HPP
 #define PLEXI_HELPER_HPP
 
-#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <string>
+#include <iostream>
 
 struct PlexiGFX_RequiredInformation{
     const char** vulkan_DEVICE_EXTENSIONS = nullptr;

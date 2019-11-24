@@ -4,7 +4,6 @@
 
 #include "acrylic_plexiRenderer.hpp"
 
-
 void Plexi::initPlexi() {
     //TODO: CONNECT LOGGER - For now we'll be using std::out
 
@@ -39,14 +38,14 @@ void Plexi::initPlexi() {
     }
 
 
-    activeConfig = &plexiConfig;
+    activeConfig = plexiConfig;
 
     //Assuming that if we got here there were no errors in checking for support
 
     //Remove all other pointer to backend backends then delete the unused references
 
     for(auto &[GFXBackendName, GFXBackend] : GFXBackendMap){
-        if(GFXBackendName != activeConfig->activeBackendName){
+        if(GFXBackendName != activeConfig.activeBackendName){
             delete GFXBackend;
             GFXBackend = nullptr;
 
@@ -54,18 +53,17 @@ void Plexi::initPlexi() {
         }
     }
 
-    activeConfig->setPlexiInit(GFXBackendMap[activeConfig->activeBackendName]->initBackend());
-    std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig->getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
+    activeConfig.setPlexiInit(GFXBackendMap[activeConfig.activeBackendName]->initBackend());
+    std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
 
-    if(activeConfig->getPlexiInit()){
+    if(activeConfig.getPlexiInit()){
         //Add thread for this task
-        GFXBackendMap[activeConfig->activeBackendName]->runBackend();
+        GFXBackendMap[activeConfig.activeBackendName]->runBackend();
         //display message w/ thread PID
     }
     else {
-//        GFXBackendMap[activeConfig->activeBackendName]->cleanup();
+//        GFXBackendMap[activeConfig.activeBackendName]->cleanup();
     }
-
 }
 
 void Plexi::initPlexi(const Plexi::PlexiConfig &config) {
@@ -73,21 +71,21 @@ void Plexi::initPlexi(const Plexi::PlexiConfig &config) {
     exit(0);
 }
 
+
+GLFWwindow* Plexi::getWindowRef(){
+    return GFXBackendMap[activeConfig.activeBackendName]->getWindowRef();
+}
+
 void Plexi::cleanupPlexi() {
-//    GFXBackendMap[activeConfig->activeBackendName]->cleanup();
+	std::cout << activeConfig.activeBackendName << std::endl;
+    Plexi::GFXBackendMap[Plexi::activeConfig.activeBackendName]->cleanup();
 
-//    delete GFXBackendMap[activeConfig->activeBackendName];
+    delete GFXBackendMap[activeConfig.activeBackendName];
 
-//    activeConfig->activeBackendName = PLEXI_NULL_BACKEND;
+    activeConfig.activeBackendName = PLEXI_NULL_BACKEND;
 
-//    activeConfig->setPlexiInit(false);
+    activeConfig.setPlexiInit(false);
 
     //maybe deref active config?
 }
 
-//int main(void){
-//    Plexi::initPlexi();
-//    //GLFWwindow* window = Plexi::GFXBackendMap[Plexi::activeConfig->activeBackendName]->getWindowRef();
-//    Plexi::cleanupPlexi();
-//    return 0;
-//}

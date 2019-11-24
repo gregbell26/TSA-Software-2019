@@ -15,6 +15,7 @@ namespace Plexi {
     typedef std::map<Plexi::PLEXI_GFX_BACKENDS, PlexiGFXBackend*> PlexiBackendMap;
 
     //Instance Vars
+#ifndef PLEXI_LIBRARY_ACTIVE
     static PlexiBackendMap GFXBackendMap = {
             {PLEXI_NULL_BACKEND, nullptr},
             {PLEXI_CPU, nullptr},
@@ -23,6 +24,10 @@ namespace Plexi {
             {PLEXI_DIRECTX, nullptr},
             {PLEXI_METAL, nullptr}
     };
+
+#endif
+
+    GLFWwindow *getWindowRef();
 }
 
 #endif//PLEXI_BACKEND_HPP
