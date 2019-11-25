@@ -55,21 +55,21 @@ void Plexi::initPlexi() {
         Shader vertexShaderTemp = {};
         Shader fragShaderTemp = {};
 
-        if(Shaders::checkForPrecompiledShaders(plexiConfig.vertexShaderNames[i], vertexShaderTemp) &&
-           Shaders::checkForPrecompiledShaders(plexiConfig.fragmentShaderNames[i], fragShaderTemp)) {
-            vertexShaderTemp.shaderType = shaderc_vertex_shader;
-            fragShaderTemp.shaderType = shaderc_fragment_shader;
+    if(Shaders::checkForPrecompiledShaders(plexiConfig.vertexShaderNames[i], vertexShaderTemp) &&
+       Shaders::checkForPrecompiledShaders(plexiConfig.fragmentShaderNames[i], fragShaderTemp)) {
+        vertexShaderTemp.shaderType = shaderc_vertex_shader;
+        fragShaderTemp.shaderType = shaderc_fragment_shader;
 
-            loadedVertexShaders.push_back(vertexShaderTemp);
-            loadedFragmentShaders.push_back(fragShaderTemp);
-        } else {
+        loadedVertexShaders.push_back(vertexShaderTemp);
+        loadedFragmentShaders.push_back(fragShaderTemp);
+    } else {
 //            plexiConfig.vertexShaderNames.erase(plexiConfig.vertexShaderNames.begin()+i);
 //            plexiConfig.fragmentShaderNames.erase(plexiConfig.fragmentShaderNames.begin()+i);
 
-            std::cerr << "A default precompiled shader was not found. Ensure all default Plexi shaders are compiled and in default location" << std::endl;
-        }
-
+        std::cerr << "A default precompiled shader was not found. Ensure all default Plexi shaders are compiled and in default location" << std::endl;
     }
+
+}
 
     plexiConfig.vertexShaderNames.shrink_to_fit();
     plexiConfig.vertexShaderNames.shrink_to_fit();

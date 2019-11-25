@@ -452,6 +452,10 @@ void Vulkan::createRenderPass() {
 
 }
 
+void Vulkan::createDescriptorSetLayout() {
+
+}
+
 void Vulkan::createGraphicsPipeline() {
     auto vertShaderCode = readFile("shaders/vert.spv");
     auto fragShaderCode = readFile("shaders/frag.spv");
