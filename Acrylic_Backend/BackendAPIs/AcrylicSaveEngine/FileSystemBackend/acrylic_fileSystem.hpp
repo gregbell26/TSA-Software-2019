@@ -6,7 +6,7 @@
 namespace fs = std::filesystem;
 
 
-std::string gameDataPath;
+std::string gameDataPath = "./GAME_DATA";
 
 
 nlohmann::json readJSON(char id/*the final character, will probably change later*/){
