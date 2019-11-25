@@ -10,6 +10,8 @@ add_subdirectory(./BackendAPIs/Plexi2DRenderer)
 
 set(CPU_SOURCE BackendAPIs/CPU/TaskScheduler.cpp)
 set(CPU_HEADER BackendAPIs/CPU/TaskScheduler.hpp)
+set(DYNAMIC_MEMORY BackendAPIs/Dynamic memory/Hash_Table.cpp)
+set(DYNAMIC_MEMORY BackendAPIs/Dynamic memory/Hash_Table.h)
 set(SOURCE_FILES ${CPU_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp)
 set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp)
 
