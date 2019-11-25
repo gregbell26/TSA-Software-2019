@@ -4,28 +4,35 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include <map>
-#include "acrylic_engine.hpp"
+#include "BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 
-std::map<std::string, int> key_codes;
-std::map<int, void (*)(int)> key_bindings;
+struct keyInfo {
+    int key;
+    int action;
+    void (func*);
+};
 
+std::vector<keyInfo> keys;
 
-
-void initializeKeys(){
-    glfwSetKeyCallback(Plexi::getWindowPtr<GLFWwindow>());
-    key_codes.insert(std::pair<std::string, int>("w", glfwGetKeyScancode(GLFW_KEY_W)));
-    key_codes.insert(std::pair<std::string, int>("a", glfwGetKeyScancode(GLFW_KEY_A)));
-    key_codes.insert(std::pair<std::string, int>("s", glfwGetKeyScancode(GLFW_KEY_S)));
-    key_codes.insert(std::pair<std::string, int>("d", glfwGetKeyScancode(GLFW_KEY_D)));
-    key_codes.insert(std::pair<std::string, int>("space", glfwGetKeyScancode(GLFW_KEY_SPACE)));
-    key_codes.insert(std::pair<std::string, int>("right arrow", glfwGetKeyScancode(GLFW_KEY_RIGHT)));
-    key_codes.insert(std::pair<std::string, int>("left arrow", glfwGetKeyScancode(GLFW_KEY_LEFT)));
-    key_codes.insert(std::pair<std::string, int>("up arrow", glfwGetKeyScancode(GLFW_KEY_UP)));
-    key_codes.insert(std::pair<std::string, int>("down arrow", glfwGetKeyScancode(GLFW_KEY_DOWN)));
-    key_codes.insert(std::pair<std::string, int>("left shift", glfwGetKeyScancode(GLFW_KEY_LEFT_SHIFT)));
-    key_codes.insert(std::pair<std::string, int>("right shift", glfwGetKeyScancode(GLFW_KEY_RIGHT_SHIFT)));
+void addKeyMap(int key, int action, void (*func)){
+    keys.push_back({key, action, func});
 }
 
-void bindKey(std::string keyName, void (*func)(int)){
+static void callback(GLFWwindow* window, int key, int scanCode, int action, int mods){
+    int count = 0;
+    for (int i = 0; i < keys.size(); ++i) {
+        if (keys.at(i).key == key){
+            *keys.at(i).func;
+            count++;
+        }
+    }
+    if (count == 0){
+        //TODO Use logger instead of cout
+        std::cout << "Keymap doesn't exist" << std::endl;
+    }
+}
+
+void initialize(){
+    glfwSetKeyCallback(Plexi::getWindowRef(), callback);
 
 }
