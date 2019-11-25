@@ -13,7 +13,7 @@ struct Link{
 
 class Hash_Table {
     private:
-    unsigned long* table;
+    Link* table;
     unsigned size;
     hash(T value){
         hash<T> hashVal;
@@ -22,10 +22,18 @@ class Hash_Table {
     public:
     Hash_Table(unsigned tableSize){
         size = tableSize;
-        table = unsigned long[size*2];
+        table = Link[size];
     }
     loadMember(T value){
-        (table + (hash(value)));
+        Link* pathToEdit = (table + (hash(value)%size));
+        while(true) {//please forgive me
+            if (pathToEdit->link == 0) {
+
+                break;
+            } else {
+                pathToEdit = pathToEdit->link;
+            }
+        }
     }
 
 };
