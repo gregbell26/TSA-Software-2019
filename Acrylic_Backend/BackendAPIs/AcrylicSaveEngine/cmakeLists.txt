@@ -35,5 +35,5 @@ else()
 endif()
 
 
-#add_library(AcrylicSaveEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})
-add_executable(AcrylicSaveEngine ${SOURCE_FILES} ${HEADER_FILES})
+add_library(AcrylicSaveEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})
+#add_executable(AcrylicSaveEngine ${SOURCE_FILES} ${HEADER_FILES})

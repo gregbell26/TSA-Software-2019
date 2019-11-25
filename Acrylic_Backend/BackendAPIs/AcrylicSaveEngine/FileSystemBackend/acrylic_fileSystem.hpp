@@ -1,3 +1,6 @@
+#ifndef ACRYLIC_FILESYSTEM_HPP
+#define ACRYLIC_FILESYSTEM_HPP
+
 #include <fstream>
 #include <string>
 #include <filesystem>
@@ -24,3 +27,5 @@ nlohmann::json readJSON(char id/*the final character, will probably change later
     }
     return level;
 }
+
+#endif //ACRYLIC_FILESYSYTEM_HPP
