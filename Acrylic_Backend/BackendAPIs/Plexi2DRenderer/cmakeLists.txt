@@ -14,7 +14,7 @@ set(HEADER_FILES ${VULKAN_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./Plex
 set(TST_FILES ${VULKAN_SOURCE} main.nfp.cpp)
 
 
-#Load Modules
+#Load cmake modules for GLFW and Shaderc_Combined
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -32,7 +32,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
 
     #Disable MSVC Bullshit
-#    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT /NODEFAULTLIB:library" )
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCPRTD" )
@@ -49,19 +48,19 @@ else()
     message(FATAL_ERROR "Unable to detect operating system. Build halted")
 endif()
 
+#Find all packages for Plexi
 find_package(vulkan REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 find_package(shaderc_combined REQUIRED)
 
 add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
 add_executable(PlexiTester1000 ${TST_FILES})
+
+
+#Link Plexi with libs
 target_link_libraries(Plexi2DRenderer Vulkan::Vulkan)
 target_link_libraries(Plexi2DRenderer ${SHADERC_COMBINED})
+target_link_libraries(Plexi2DRenderer ${GLFW3_LIBRARY})
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries(Plexi2DRenderer ${GLFW3_LIBRARY})#For somereason this only works on AMD64 for windows. Not AMD64 for mac
-else()
-    target_link_libraries(Plexi2DRenderer glfw)
-endif()
-
+#Link Tester with Plexi
 target_link_libraries(PlexiTester1000 Plexi2DRenderer)
