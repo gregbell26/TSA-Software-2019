@@ -16,7 +16,7 @@ set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp 
 #add_library(AcrylicEngine SHARED ${SOURCE_FILES} ${HEADER_FILES}) #We are going to staticly link til we have exports
 add_library(AcrylicEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
-target_link_libraries(AcrylicEngine AcrylicSaveEngine)
+#target_link_libraries(AcrylicEngine AcrylicSaveEngine)
 #target_link_libraries(AcrylicEngine Plexi2DRenderer)
 
 
