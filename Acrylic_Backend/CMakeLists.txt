@@ -13,6 +13,7 @@ set(CPU_HEADER BackendAPIs/CPU/TaskScheduler.hpp)
 set(SOURCE_FILES ${CPU_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp)
 set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp)
 
+set(TEST_CODE main.nfp.cpp)
 #Load cmake modules for GLFW and Shaderc_Combined
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -50,8 +51,9 @@ endif()
 
 #add_library(AcrylicEngine SHARED ${SOURCE_FILES} ${HEADER_FILES}) #We are going to staticly link til we have exports
 add_library(AcrylicEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(AcrylicTestinator1000 ${TEST_CODE})
 
-#target_link_libraries(AcrylicEngine AcrylicSaveEngine)
-#target_link_libraries(AcrylicEngine Plexi2DRenderer)
+target_link_libraries(AcrylicEngine AcrylicSaveEngine)
+target_link_libraries(AcrylicEngine Plexi2DRenderer)
 
-
+target_link_libraries(AcrylicTestinator1000 AcrylicEngine)
