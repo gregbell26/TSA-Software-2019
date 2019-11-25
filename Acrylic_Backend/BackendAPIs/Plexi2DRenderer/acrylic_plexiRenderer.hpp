@@ -12,6 +12,8 @@ namespace Plexi {
     //Where the config will be stored
     static PlexiConfig activeConfig;
 //    std::thread plexiLoopThread;
+    static std::vector<Shader> loadedVertexShaders;
+    static std::vector<Shader> loadedFragmentShaders;
 
 #endif //PLEXI_LIBRARY_ACTIVE
     //will init Plexi to default settings
@@ -19,6 +21,8 @@ namespace Plexi {
 
     //will init Plexi to user provided settings
     void initPlexi(const PlexiConfig&);
+
+    void runPlexi();
 
     void cleanupPlexi();
 

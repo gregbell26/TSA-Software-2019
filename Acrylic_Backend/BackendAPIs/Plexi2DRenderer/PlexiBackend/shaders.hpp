@@ -6,30 +6,43 @@
 #include <fstream>
 #include <vector>
 #include <filesystem>
+#include <array>
 
 typedef std::string string;
-struct Shader {
-    string name = "Plexi2D Unloaded Shader";
-    shaderc_shader_kind shaderType = shaderc_glsl_infer_from_source;
-    std::vector<uint32_t> code = {};
-};
+namespace Plexi {
+    struct Shader {
+        string name = "Plexi2D Unloaded Shader";
+        shaderc_shader_kind shaderType = shaderc_glsl_infer_from_source;
+        const uint32_t *code = nullptr;
+        size_t codeSize = 0;
+//        const char* byteCode = nullptr;
+    };
 
-namespace PlexiShaders {
-    const string DEFAULT_SHADER_PATH = "./plexi_shaders/";
-    
-    Shader compileShaderFromString(string shaderName, string code, bool optimizeOutput);
+    namespace Shaders {
 
-    Shader compileShaderFromFile(string shaderName, bool optimizeOutput, bool deleteSrc);
+#ifndef PLEXI_LIBRARY_ACTIVE
+        static const string DEFAULT_SHADER_PATH = "./plexi_shaders/";
+        static const string DEFAULT_COMPILED_EXTENSION = ".spv";
 
-    void outputShader(const Shader& shader);
+        static const std::array<string, 3> RECOGNIZED_COMPILED_EXTENSIONS = {
+                ".spv", ".frag.spv", ".vert.spv"
+        };
+#endif //PLEXI_LIBRARY_ACTIVE
 
-    Shader loadShader(string shaderName);
+        Shader compileShaderFromString(const string &shaderName, const string &code, bool optimizeOutput);
 
-    //Look for .frag.spv .vert.spv and .spv if found then load them
-    bool checkForPrecompiledShaders(string shaderName);
+        Shader compileShaderFromFile(const string &shaderName, bool optimizeOutput, bool deleteSrc);
+
+        void outputShader(const Shader &shader);
+
+        Shader loadShader(const std::filesystem::path &shaderPath);
+
+        Shader loadShader(const string &shaderName);
+
+        //Look for .frag.spv .vert.spv and .spv if found then load them
+        bool checkForPrecompiledShaders(const string &shaderName, Shader &outputShader);
+    }
+
 
 }
-
-
-
 #endif //SHADERS_HPP

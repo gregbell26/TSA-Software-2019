@@ -1,3 +1,4 @@
+#include "../shaders.hpp"
 #include "../plexiHelper.hpp"
 #include "vulkanMain.hpp"
 #include "./VulkanHelpers/validationLayers.hpp"
@@ -146,14 +147,14 @@ bool Vulkan::isSupported() {
     return createInstance();
 }
 
-GLFWwindow* Vulkan::getWindowRef() {
-    return glfwWindow;
-}
-
 bool Vulkan::initBackend() {
 
 
     return false;
+}
+
+void Vulkan::addGraphicsPipeline(const Plexi::Shader &VERTEX_SHADER, const Plexi::Shader &FRAGMENT_SHADER) {
+
 }
 
 void Vulkan::runBackend() {
@@ -168,10 +169,15 @@ void Vulkan::destroyWindow() {
     glfwDestroyWindow(glfwWindow);
     glfwTerminate();
 }
-
 void Vulkan::cleanup() {
     //clean Up all other stuff up here
     vkDestroyInstance(vulkanInstance, nullptr);
 
     destroyWindow();
 }
+
+
+GLFWwindow* Vulkan::getWindowRef() {
+    return glfwWindow;
+}
+

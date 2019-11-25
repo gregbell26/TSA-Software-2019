@@ -10,6 +10,9 @@ namespace Plexi {
         PlexiGFX_RequiredInformation plexiGFXRequiredInformation = {};
         PlexiGFX_OptionalInformation plexiGFXOptionalInformation = {};
 
+        int shaderCount = 0;
+        std::vector<std::string> vertexShaderNames = {};
+        std::vector<std::string> fragmentShaderNames = {};
 
         //So that the user can't directly access these vars.
         void setPlexiInit(bool isPlexiInit){

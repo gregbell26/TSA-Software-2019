@@ -33,15 +33,18 @@ public:
 
     virtual bool isSupported() = 0;
 
+    virtual bool setRequiredInformation(const PlexiGFX_RequiredInformation& requiredInformation) = 0;
+
+    virtual void setOptionInformation(const PlexiGFX_OptionalInformation& optionalInformation) = 0;
+
     virtual bool initBackend() = 0;
+
+    virtual void addGraphicsPipeline(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) = 0;
 
     virtual void runBackend() = 0;
 
     virtual void cleanup() = 0;
 
-    virtual bool setRequiredInformation(const PlexiGFX_RequiredInformation& requiredInformation) = 0;
-
-    virtual void setOptionInformation(const PlexiGFX_OptionalInformation& optionalInformation) = 0;
 
     virtual GLFWwindow* getWindowRef(){
         return nullptr;
