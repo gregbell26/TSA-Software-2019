@@ -1,34 +1,34 @@
 #ifndef PLEXI_RENDERER_HPP
 #define PLEXI_RENDERER_HPP
 
-// #define GLFW_INCLUDE_VULKAN
 
-#include <vector>
 #include <iostream>
 #include <thread>
-#include "plexi_usrStructs.hpp"
-
 
 namespace Plexi {
+#ifndef PLEXI_LIBRARY_ACTIVE
+
     const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_VULKAN;
     //Where the config will be stored
-    PlexiConfig* activeConfig;
-    std::thread plexiLoopThread;
+    static PlexiConfig activeConfig;
+//    std::thread plexiLoopThread;
+    static std::vector<Shader> loadedVertexShaders;
+    static std::vector<Shader> loadedFragmentShaders;
+
+#endif //PLEXI_LIBRARY_ACTIVE
     //will init Plexi to default settings
     void initPlexi();
 
     //will init Plexi to user provided settings
     void initPlexi(const PlexiConfig&);
 
-
-    //Adds a render task to the active backend. Returns false if it fails
-    bool addRenderTask(const RenderTask*);
+    void runPlexi();
 
     void cleanupPlexi();
 
-    template <typename T>
+    //Adds a render task to the active backend. Returns false if it fails
+    bool addRenderTask(const RenderTask&);
 
-    T* getWindowPtr();
 
 
 }

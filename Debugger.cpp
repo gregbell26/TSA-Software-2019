@@ -59,7 +59,7 @@ void process(std::string *in) {
         incrementVar(std::stoi(in -> substr(in->find(' ') + 1, in->size() - 1)));
     } else if (command == "flag"){
         std::string str = in -> substr(in->find(' ') + 1, in->size() - 1);
-        flagVar( , str);
+//        flagVar( , str);
     } else if (command == "readVar"){
         findVar(in -> substr(in->find(' ') + 1, in->size() - 1));
     } else if (command == "close") {

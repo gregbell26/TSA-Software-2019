@@ -20,7 +20,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     #We have to do this because windows doesn't havea central include directory
 
     #Disable MSVC Bullshit
-    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT /NODEFAULTLIB:library" )
 
     add_compile_definitions(WINDOWS)
 

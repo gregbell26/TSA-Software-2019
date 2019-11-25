@@ -9,7 +9,16 @@ set(VULKAN_SOURCE PlexiBackend/PlexiBackend_Vulkan/vulkanMain.cpp)
 set(VULKAN_HEADER PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/queueFamilies.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/shaders.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/swapChains.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/validationLayers.hpp)
 set(SOURCE_FILES ${VULKAN_SOURCE} acrylic_plexiRenderer.cpp)
 set(HEADER_FILES ${VULKAN_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp ../../UserInputKeys.cpp)
+set(VULKAN_HEADER PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/queueFamilies.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/swapChains.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/validationLayers.hpp)
 
+set(SOURCE_FILES ${VULKAN_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/shaders.cpp)
+set(HEADER_FILES ${VULKAN_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/shaders.hpp)
+
+set(TST_FILES ${VULKAN_SOURCE} main.nfp.cpp)
+
+
+#Load cmake modules for GLFW and Shaderc_Combined
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     include_directories(/usr/local/include)
@@ -24,11 +33,11 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     include_directories(C:/SDKS/GLM0.9)
     #GLFW
     include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
-    #Load Modules
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
     #Disable MSVC Bullshit
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCPRTD" )
 
     add_compile_definitions(WINDOWS)
 
@@ -42,16 +51,19 @@ else()
     message(FATAL_ERROR "Unable to detect operating system. Build halted")
 endif()
 
-
+#Find all packages for Plexi
 find_package(vulkan REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
+find_package(shaderc_combined REQUIRED)
 
-#add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
-add_executable(Plexi2DRenderer ${SOURCE_FILES} ${HEADER_FILES})
+add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(PlexiTester1000 ${TST_FILES})
+
+
+#Link Plexi with libs
 target_link_libraries(Plexi2DRenderer Vulkan::Vulkan)
+target_link_libraries(Plexi2DRenderer ${SHADERC_COMBINED})
+target_link_libraries(Plexi2DRenderer ${GLFW3_LIBRARY})
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries(Plexi2DRenderer ${GLFW3_LIBRARY})#For somereason this only works on AMD64 for windows. Not AMD64 for mac
-else()
-    target_link_libraries(Plexi2DRenderer glfw)
-endif()
+#Link Tester with Plexi
+target_link_libraries(PlexiTester1000 Plexi2DRenderer)
