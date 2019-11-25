@@ -106,7 +106,7 @@ struct Image
             for (int i = 0; i < length; i++)
             {
                 unsigned char v = buffer[i];
-                if (v == '\0' || v == NULL)
+                if (v == '\0')
                 {
                     bff2[i] = 0;
                 }
