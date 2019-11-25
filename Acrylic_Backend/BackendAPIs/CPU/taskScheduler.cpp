@@ -61,15 +61,16 @@ void TaskScheduler::threadRun()
 
             while (!threadCheck)
             {
-                if (/*TODO: check to make sure the thread is doene*/)
-                {
-                    threadPool[threadCount](taskPool[taskNumber-1].function);
-                    threadCheck = true;
-                }
-                else
-                {
-                    threadCount++;
-                }
+                /// Yes I commented this out cause it was breaking stuff
+//                if (/*TODO: check to make sure the thread is done*/)
+//                {
+//                    threadPool[threadCount](taskPool[taskNumber-1].function);
+//                    threadCheck = true;
+//                }
+//                else
+//                {
+//                    threadCount++;
+//                }
 
                 if (threadCount >= 99)
                 {

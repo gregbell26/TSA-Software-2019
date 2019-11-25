@@ -25,7 +25,7 @@ class Hash_Table {
         table = unsigned long[size*2];
     }
     loadMember(T value){
-        (table + (hashVal(value)));
+        (table + (hash(value)));
     }
 
 };
