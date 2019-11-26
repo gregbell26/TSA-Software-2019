@@ -2,8 +2,12 @@
 #define VULKAN_H
 
 #define GLFW_INCLUDE_VULKAN
+#define GLM_FORCE_RADIANS
 
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -11,6 +15,7 @@
 #include <cstdlib>
 #include <vector>
 #include <set>
+#include <chrono>
 
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
@@ -81,6 +86,8 @@ private:
 
     void createIndexBuffer();
 
+    void createUniformBuffers();
+
     uint32_t findMemoryTypes(uint32_t, VkMemoryPropertyFlags);
 
     void createCommandBuffers();
@@ -96,6 +103,8 @@ private:
     void mainLoop();
 
     void drawFrame();
+
+    void updateUniformBuffer(uint32_t currentImage);
 
     void cleanUp();
 
@@ -121,6 +130,7 @@ private:
     VkExtent2D swapChainExtent;
 
     VkRenderPass vkRenderPass;
+    VkDescriptorSetLayout vkDescriptorSetLayout;
     VkPipelineLayout vkPipelineLayout;
     VkPipeline vkGraphicsPipeline;
 
@@ -139,6 +149,10 @@ private:
 
     VkBuffer vkIndexBuffer;
     VkDeviceMemory vkIndexBufferMemory;
+
+    std::vector<VkBuffer> uniformBuffers;
+    std::vector<VkDeviceMemory> uniformBuffersMemory;
+
 
 public:
     bool frameBufferResized = false;
