@@ -57,8 +57,8 @@ void Plexi::initPlexi() {
 
     if(Shaders::checkForPrecompiledShaders(plexiConfig.vertexShaderNames[i], vertexShaderTemp) &&
        Shaders::checkForPrecompiledShaders(plexiConfig.fragmentShaderNames[i], fragShaderTemp)) {
-        vertexShaderTemp.shaderType = shaderc_vertex_shader;
-        fragShaderTemp.shaderType = shaderc_fragment_shader;
+        vertexShaderTemp.shaderType = 0;
+        fragShaderTemp.shaderType = 0;
 
         loadedVertexShaders.push_back(vertexShaderTemp);
         loadedFragmentShaders.push_back(fragShaderTemp);

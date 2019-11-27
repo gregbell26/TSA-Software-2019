@@ -36,7 +36,7 @@ include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    # include_directories(/usr/local/include)
+    include_directories(/usr/local/include)
 
     add_compile_definitions(MACOS)
 

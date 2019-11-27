@@ -36,7 +36,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(./../BackendAPIs/required/GLFW3 build)
 
 #Load cmake modules for GLFW and Shaderc_Combined
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     # include_directories(/usr/local/include)
@@ -76,7 +76,7 @@ add_library(glad STATIC ${GLAD_SOURCE})
 #Find all packages for Plexi
 find_package(vulkan REQUIRED)
 # find_package(glfw3 3.3 REQUIRED)
-find_package(shaderc_combined REQUIRED)
+# find_package(shaderc_combined REQUIRED)
 
 add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
 add_executable(PlexiTester1000 ${TST_FILES})
@@ -84,7 +84,7 @@ add_executable(PlexiTester1000 ${TST_FILES})
 
 #Link Plexi with libs
 target_link_libraries(Plexi2DRenderer Vulkan::Vulkan)
-target_link_libraries(Plexi2DRenderer ${SHADERC_COMBINED})
+# target_link_libraries(Plexi2DRenderer ${SHADERC_COMBINED})
 # target_link_libraries(Plexi2DRenderer ${GLFW3_LIBRARY})
 
 target_link_libraries(Plexi2DRenderer glfw)

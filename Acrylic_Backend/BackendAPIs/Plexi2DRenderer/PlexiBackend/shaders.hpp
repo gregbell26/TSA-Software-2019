@@ -1,7 +1,7 @@
 #ifndef SHADERS_HPP
 #define SHADERS_HPP
 
-#include <shaderc/shaderc.hpp>
+//#include <shaderc/shaderc.hpp>
 #include <string>
 #include <fstream>
 #include <vector>
@@ -12,7 +12,7 @@ typedef std::string string;
 namespace Plexi {
     struct Shader {
         string name = "Plexi2D Unloaded Shader";
-        shaderc_shader_kind shaderType = shaderc_glsl_infer_from_source;
+        int shaderType = 0;
         const uint32_t *code = nullptr;
         size_t codeSize = 0;
     };
