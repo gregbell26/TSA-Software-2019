@@ -16,11 +16,27 @@ set(SOURCE_FILES ${CPU_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp 
 set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp)
 
 set(TEST_CODE main.nfp.cpp)
+
+
+
+#Include OpenGL
+include_directories(./BackendAPIs/Plexi2DRenderer/GraphicsAPIs/required/glad/include)
+
+#Include GLM
+include_directories(./BackendAPIs/Plexi2DRenderer/GraphicsAPIs/required/glm/include)
+
+#Include GLFW3
+include_directories(./BackendAPIs/BackendAPIs/required/GLFW3/include)
+
+#include Nlohmann JSON
+include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
+
+
 #Load cmake modules for GLFW and Shaderc_Combined
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    include_directories(/usr/local/include)
+    # include_directories(/usr/local/include)
 
     add_compile_definitions(MACOS)
 

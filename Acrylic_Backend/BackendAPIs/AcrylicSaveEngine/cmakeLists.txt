@@ -9,8 +9,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp)
 set(HEADER_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp FileSystemBackend/acrylic_bitmap.cpp FileSystemBackend/acrylic_bitmap.h)
 
+#include Nlohmann JSON
+include_directories(./../BackendAPIs/required/nlohmannJSON/include)
+
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    include_directories(/usr/local/include)
+    # include_directories(/usr/local/include)
 
     add_compile_definitions(MACOS)
 
