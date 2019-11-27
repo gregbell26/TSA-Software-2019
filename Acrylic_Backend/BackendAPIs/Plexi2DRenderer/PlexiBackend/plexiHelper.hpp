@@ -39,9 +39,9 @@ public:
 
     virtual bool initBackend() = 0;
 
-    virtual void addGraphicsPipeline(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) = 0;
+    virtual void bindShaders(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) = 0;
 
-    virtual void runBackend() = 0;
+//    virtual void runBackend() = 0;
 
     virtual void cleanup() = 0;
 
@@ -49,6 +49,10 @@ public:
     virtual GLFWwindow* getWindowRef(){
         return nullptr;
     }
+
+};
+
+class PlexiBuffer {
 
 };
 

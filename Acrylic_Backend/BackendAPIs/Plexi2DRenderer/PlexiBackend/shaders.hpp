@@ -15,7 +15,6 @@ namespace Plexi {
         shaderc_shader_kind shaderType = shaderc_glsl_infer_from_source;
         const uint32_t *code = nullptr;
         size_t codeSize = 0;
-//        const char* byteCode = nullptr;
     };
 
     namespace Shaders {

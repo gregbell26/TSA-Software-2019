@@ -8,8 +8,10 @@
 namespace Plexi {
 
     enum PLEXI_GFX_BACKENDS {
-        PLEXI_NULL_BACKEND = 0, PLEXI_CPU, PLEXI_VULKAN, PLEXI_OPENGL, PLEXI_DIRECTX, PLEXI_METAL//Add more backends at a later date
+        PLEXI_NULL_BACKEND = 0, PLEXI_CPU, PLEXI_VULKAN, PLEXI_OPENGL//, PLEXI_DIRECTX, PLEXI_METAL//Add more backends at a later date
     };
+
+
 
 
     typedef std::map<Plexi::PLEXI_GFX_BACKENDS, PlexiGFXBackend*> PlexiBackendMap;
@@ -20,9 +22,9 @@ namespace Plexi {
             {PLEXI_NULL_BACKEND, nullptr},
             {PLEXI_CPU, nullptr},
             {PLEXI_VULKAN, new Vulkan()},
-            {PLEXI_OPENGL, nullptr},
-            {PLEXI_DIRECTX, nullptr},
-            {PLEXI_METAL, nullptr}
+            {PLEXI_OPENGL, nullptr}
+//            {PLEXI_DIRECTX, nullptr},
+//            {PLEXI_METAL, nullptr}
     };
 
 #endif

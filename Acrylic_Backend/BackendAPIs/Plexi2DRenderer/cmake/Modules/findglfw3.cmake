@@ -29,7 +29,7 @@ endif()
 
 # Put user specified location at beginning of search
 if( GLFW3_ROOT )
-  list( INSERT _glfw3_HEADER_SEARCH_DIRS 0 "${GLFW3_ROOT}/include" )
+  list( INSERT _glfw3_HEADER_S EARCH_DIRS 0 "${GLFW3_ROOT}/include" )
   list( INSERT _glfw3_LIB_SEARCH_DIRS 0 "${GLFW3_ROOT}/lib" )
 endif()
 

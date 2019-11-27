@@ -23,9 +23,9 @@ public:
 
     bool initBackend() override;
 
-    void addGraphicsPipeline(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) override;
+    void bindShaders(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) override;
 
-    void runBackend() override;
+//    void runBackend() override;
 
     void cleanup() override;
 

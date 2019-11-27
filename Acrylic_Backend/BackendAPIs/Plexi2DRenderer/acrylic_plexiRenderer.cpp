@@ -90,7 +90,6 @@ void Plexi::initPlexi() {
             delete GFXBackend;
             GFXBackend = nullptr;
 
-//            GFXBackendMap.erase(GFXBackendName);
         }
     }
 
@@ -98,17 +97,13 @@ void Plexi::initPlexi() {
     std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
 
     if(activeConfig.getPlexiInit()){
-//        //Add thread for this task
-//        GFXBackendMap[activeConfig.activeBackendName]->runBackend();
-//        //display message w/ thread PID
+
         for(size_t i = 0; i < loadedVertexShaders.size(); i++){
-            GFXBackendMap[activeConfig.activeBackendName]->addGraphicsPipeline(loadedVertexShaders[i], loadedFragmentShaders[i]);
+            GFXBackendMap[activeConfig.activeBackendName]->bindShaders(loadedVertexShaders[i], loadedFragmentShaders[i]);
         }
 
     }
-//    else {
-////        GFXBackendMap[activeConfig.activeBackendName]->cleanup();
-//    }
+
 }
 
 void Plexi::initPlexi(const Plexi::PlexiConfig &config) {
@@ -116,12 +111,6 @@ void Plexi::initPlexi(const Plexi::PlexiConfig &config) {
     exit(0);
 }
 
-void Plexi::runPlexi() {
-    if(activeConfig.getPlexiInit()){
-        GFXBackendMap[activeConfig.activeBackendName]->runBackend();
-    }
-
-}
 
 GLFWwindow* Plexi::getWindowRef(){
     return GFXBackendMap[activeConfig.activeBackendName]->getWindowRef();

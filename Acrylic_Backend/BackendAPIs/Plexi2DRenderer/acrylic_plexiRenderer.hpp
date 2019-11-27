@@ -15,6 +15,8 @@ namespace Plexi {
     static std::vector<Shader> loadedVertexShaders;
     static std::vector<Shader> loadedFragmentShaders;
 
+    static std::vector<RenderTask> renderQueue;
+
 #endif //PLEXI_LIBRARY_ACTIVE
     //will init Plexi to default settings
     void initPlexi();
@@ -22,7 +24,13 @@ namespace Plexi {
     //will init Plexi to user provided settings
     void initPlexi(const PlexiConfig&);
 
-    void runPlexi();
+//    void runPlexi();
+
+
+
+    bool submitCurrentQueue();
+
+    bool drawFrame();
 
     void cleanupPlexi();
 

@@ -89,6 +89,8 @@ void Vulkan::initVulkan() {
     createVertexBuffer();
     createIndexBuffer();
     createUniformBuffers();
+    createDescriptorPools();
+    createDescriptorSets();
     createCommandBuffers();
     createSyncObjects();
 }
@@ -533,7 +535,7 @@ void Vulkan::createGraphicsPipeline() {
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-    rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     rasterizer.depthBiasEnable = VK_FALSE;
 
     VkPipelineMultisampleStateCreateInfo multiSampling = {};
@@ -723,6 +725,57 @@ void Vulkan::createUniformBuffers() {
 
 }
 
+void Vulkan::createDescriptorPools() {
+    VkDescriptorPoolSize poolSize = {};
+    poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSize.descriptorCount = static_cast<uint32_t >(swapChainImages.size());
+
+    VkDescriptorPoolCreateInfo poolCreateInfo = {};
+    poolCreateInfo.sType =  VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    poolCreateInfo.poolSizeCount = 1;
+    poolCreateInfo.pPoolSizes = &poolSize;
+    poolCreateInfo.maxSets = static_cast<uint32_t >(swapChainImages.size());
+
+    if(vkCreateDescriptorPool(vkDevice, &poolCreateInfo, nullptr, &vkDescriptorPool) != VK_SUCCESS){
+        throw std::runtime_error("Failed to create Vulkan Descriptor Pool");
+    }
+}
+
+void Vulkan::createDescriptorSets() {
+    std::vector<VkDescriptorSetLayout> layouts(swapChainImages.size(), vkDescriptorSetLayout);
+
+    VkDescriptorSetAllocateInfo setAllocateInfo = {};
+    setAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    setAllocateInfo.descriptorPool = vkDescriptorPool;
+    setAllocateInfo.descriptorSetCount = static_cast<uint32_t >(swapChainImages.size());
+    setAllocateInfo.pSetLayouts = layouts.data();
+
+    descriptorSets.resize(swapChainImages.size());
+    if(vkAllocateDescriptorSets(vkDevice, &setAllocateInfo, descriptorSets.data()) != VK_SUCCESS){
+        throw std::runtime_error("Failed to allocate Vulkan Descriptor Sets");
+    }
+
+
+    for(size_t i = 0; i < swapChainImages.size(); i++){
+        VkDescriptorBufferInfo bufferInfo = {};
+        bufferInfo.buffer = uniformBuffers[i];
+        bufferInfo.offset = 0;
+        bufferInfo.range = sizeof(UniformBufferObject);
+
+        VkWriteDescriptorSet descriptorSet = {};
+        descriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorSet.dstSet = descriptorSets[i];
+        descriptorSet.dstBinding = 0;
+        descriptorSet.dstArrayElement = 0;
+        descriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptorSet.descriptorCount = 1;
+        descriptorSet.pBufferInfo = &bufferInfo;
+
+        vkUpdateDescriptorSets(vkDevice, 1, &descriptorSet, 0, nullptr);
+
+    }
+}
+
 void Vulkan::createBuffer(VkDeviceSize deviceSize, VkBufferUsageFlags bufferUsage, VkMemoryPropertyFlags memoryProperties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
     VkMemoryRequirements memoryRequirements;
 
@@ -811,6 +864,9 @@ void Vulkan::createCommandBuffers() {
         vkCmdBindIndexBuffer(commandBuffers[i], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
 //        vkCmdDraw(commandBuffers[i], static_cast<uint32_t >(verties.size()),1,0,0);
+        vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipelineLayout, 0, 1, &descriptorSets[i], 0,
+                                nullptr);
+
         vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t >(indies.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffers[i]);
@@ -989,6 +1045,8 @@ void Vulkan::cleanUpSwapChain() {
         vkFreeMemory(vkDevice, uniformBuffersMemory[i], nullptr);
     }
 
+    vkDestroyDescriptorPool(vkDevice, vkDescriptorPool, nullptr);
+
     for(auto frameBuffer : swapChainFrameBuffer){
         vkDestroyFramebuffer(vkDevice, frameBuffer, nullptr);
     }
@@ -1024,6 +1082,9 @@ void Vulkan::recreateSwapChain() {
     createRenderPass();
     createGraphicsPipeline();
     createFrameBuffers();
+    createUniformBuffers();
+    createDescriptorPools();
+    createDescriptorSets();
     createCommandBuffers();
 
 }

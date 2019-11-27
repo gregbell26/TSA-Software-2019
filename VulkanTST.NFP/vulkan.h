@@ -88,6 +88,10 @@ private:
 
     void createUniformBuffers();
 
+    void createDescriptorPools();
+
+    void createDescriptorSets();
+
     uint32_t findMemoryTypes(uint32_t, VkMemoryPropertyFlags);
 
     void createCommandBuffers();
@@ -152,6 +156,9 @@ private:
 
     std::vector<VkBuffer> uniformBuffers;
     std::vector<VkDeviceMemory> uniformBuffersMemory;
+
+    VkDescriptorPool vkDescriptorPool;
+    std::vector<VkDescriptorSet> descriptorSets;
 
 
 public:

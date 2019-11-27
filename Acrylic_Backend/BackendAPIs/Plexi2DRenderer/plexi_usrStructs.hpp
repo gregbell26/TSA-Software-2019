@@ -27,6 +27,10 @@ namespace Plexi {
         bool plexiInit = false;
     };
 
+    struct BufferLayouts {
+
+    };
+
     struct RenderTask {
         const char* taskType;
         const char* batch;
