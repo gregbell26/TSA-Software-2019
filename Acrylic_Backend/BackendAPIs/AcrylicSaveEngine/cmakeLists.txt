@@ -20,11 +20,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     #We have to do this because windows doesn't havea central include directory
-    #Nlohmann JSON
-    include_directories(C:/SDKS/NlohmannJSON/include)
+    # #Nlohmann JSON
+    # include_directories(C:/SDKS/NlohmannJSON/include)
 
     #Disable MSVC Bullshit
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
+    SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCPRTD" )
 
     add_compile_definitions(WINDOWS)
 

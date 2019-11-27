@@ -44,12 +44,12 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     #We have to do this because windows doesn't havea central include directory
     #PlexiBackend_Vulkan
     include_directories(C:/SDKS/VulkanSDK/1.1.114.0/Include)
-    #GLM
-    include_directories(C:/SDKS/GLM0.9)
-    #GLFW
-    include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
-    #Nlohmann JSON
-    include_directories(C:/SDKS/NlohmannJSON/include)
+    # #GLM
+    # include_directories(C:/SDKS/GLM0.9)
+    # #GLFW
+    # include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
+    # #Nlohmann JSON
+    # include_directories(C:/SDKS/NlohmannJSON/include)
 
     #Disable MSVC Bullshit
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
