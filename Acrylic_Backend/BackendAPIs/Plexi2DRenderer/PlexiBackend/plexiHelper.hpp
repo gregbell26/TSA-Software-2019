@@ -39,7 +39,7 @@ public:
 
     virtual bool initBackend() = 0;
 
-    virtual void bindShaders(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) = 0;
+    virtual void bindShaders(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Shader& FRAGMENT_SHADER) = 0;
 
 //    virtual void runBackend() = 0;
 

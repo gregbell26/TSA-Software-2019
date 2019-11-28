@@ -25,7 +25,7 @@ public:
 
     bool initBackend() override;
 
-    void bindShaders(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) override;
+    void bindShaders(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Shader& FRAGMENT_SHADER) override;
 
 //    void runBackend() override;
 

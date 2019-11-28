@@ -68,6 +68,8 @@ else()
     message(FATAL_ERROR "Unable to detect operating system. Build halted")
 endif()
 
+#Disable GLFW includes
+add_compile_definitions(GLFW_INCLUDE_NONE)
 
 #add_library(AcrylicEngine SHARED ${SOURCE_FILES} ${HEADER_FILES}) #We are going to staticly link til we have exports
 add_library(AcrylicEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})

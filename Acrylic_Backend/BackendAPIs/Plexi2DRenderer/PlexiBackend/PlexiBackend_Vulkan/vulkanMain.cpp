@@ -155,7 +155,7 @@ bool Vulkan::initBackend() {
     return false;
 }
 
-void Vulkan::bindShaders(const Plexi::Shader &VERTEX_SHADER, const Plexi::Shader &FRAGMENT_SHADER) {
+void Vulkan::bindShaders(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Shader& FRAGMENT_SHADER) {
 
 }
 

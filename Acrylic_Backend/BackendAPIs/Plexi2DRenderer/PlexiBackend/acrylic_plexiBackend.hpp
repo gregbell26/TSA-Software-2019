@@ -14,11 +14,10 @@ namespace Plexi {
 
 
 
-    typedef std::map<Plexi::PLEXI_GFX_BACKENDS, PlexiGFXBackend*> PlexiBackendMap;
 
     //Instance Vars
 #ifndef PLEXI_LIBRARY_ACTIVE
-    static PlexiBackendMap GFXBackendMap = {
+    static std::map<Plexi::PLEXI_GFX_BACKENDS, PlexiGFXBackend*> GFXBackendMap = {
             {PLEXI_NULL_BACKEND, nullptr},
             {PLEXI_CPU, nullptr},
             {PLEXI_VULKAN, new Vulkan()},

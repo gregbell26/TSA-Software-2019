@@ -12,8 +12,7 @@ namespace Plexi {
     //Where the config will be stored
     static PlexiConfig activeConfig;
 //    std::thread plexiLoopThread;
-    static std::vector<Shader> loadedVertexShaders;
-    static std::vector<Shader> loadedFragmentShaders;
+    static std::vector<Plexi::Shaders::ShaderCreateInfo> loadedShaders;
 
     static std::vector<RenderTask> renderQueue;
 

@@ -13,7 +13,7 @@ set(OPENGL_HEADER ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.hpp)
 
 
 set(SOURCE_FILES ${VULKAN_SOURCE} ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/shaders.cpp)
-set(HEADER_FILES ${VULKAN_HEADER} ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/shaders.hpp)
+set(HEADER_FILES ${VULKAN_HEADER} ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/shaders.hpp PlexiBackend/plexiBuffer.hpp)
 
 
 
@@ -80,6 +80,7 @@ find_package(vulkan REQUIRED)
 
 #Disable GLFW includes
 add_compile_definitions(GLFW_INCLUDE_NONE)
+
 add_library(Plexi2DRenderer STATIC ${SOURCE_FILES} ${HEADER_FILES})
 add_executable(PlexiTester1000 ${TST_FILES})
 

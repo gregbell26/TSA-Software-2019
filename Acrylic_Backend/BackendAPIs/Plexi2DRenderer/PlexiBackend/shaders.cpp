@@ -1,99 +1,193 @@
-#include <iostream>
+
 #include "shaders.hpp"
 
-Plexi::Shader Plexi::Shaders::compileShaderFromString(const string &shaderName, const string &code, bool optimizeOutput) {
-    return Shader();
-}
-
-Plexi::Shader Plexi::Shaders::compileShaderFromFile(const string &shaderName, bool optimizeOutput, bool deleteSrc) {
-    return Shader();
-}
-
-void Plexi::Shaders::outputShader(const Shader &shader) {
-    std::cerr << "Writing shaders is currently unsupported" << std::endl;
-    return;
-
-    std::ofstream fout((DEFAULT_SHADER_PATH + shader.name + DEFAULT_COMPILED_EXTENSION), std::ios::binary);
-
-    if(!fout.is_open()){
-        std::cerr << "Failed to open file for writing" << std::endl;
-        return;
+GLenum Plexi::Shaders::convertDataTypeToGLSLBaseType(const DataType &dataType) {
+    switch(dataType){
+        case DataType::Float:
+            return GL_FLOAT;
+        case DataType::Float2:
+            return GL_FLOAT;
+        case DataType::Float3:
+            return GL_FLOAT;
+        case DataType::Float4:
+            return GL_FLOAT;
+        case DataType::Int:
+            return GL_INT;
+        case DataType::Int2:
+            return GL_INT;
+        case DataType::Int3:
+            return GL_INT;
+        case DataType::Int4:
+            return GL_INT;
+        case DataType::Bool:
+            return GL_BOOL;
+        case DataType::Mat3:
+            return GL_FLOAT;
+        case DataType::Mat4:
+            return GL_FLOAT;
+        default:
+            std::cerr << "Unrecognised data type" << std::endl;
+            return 0;
     }
 
-//    if((size_t) sizeof(shader.byteCode) != shader.codeSize){
-//        std::cout << "Warning: Shader size does not equal given size. Using given size" << std::endl;
-//    }
-//
-//    fout.write((char *) &shader.byteCode, shader.codeSize); //Might have to convert this differently from 4 byte blocks to 1 byte blocks
-    fout.close();
-
 }
 
-Plexi::Shader Plexi::Shaders::loadShader(const std::filesystem::path &shaderPath) {
-    std::cout << "Attempting to load compiled shader from " << shaderPath << "." << std::endl;
-    Shader shader = {};
-    std::ifstream fin(shaderPath, std::ios::ate | std::ios::binary);
+uint32_t Plexi::Shaders::getDataTypeSize(const Plexi::Shaders::DataType &dataType) {
+    switch(dataType){
+        case DataType::Float://1 X 4
+            return 4;
+        case DataType::Float2:
+            return 8;
+        case DataType::Float3:
+            return 12;
+        case DataType::Float4:
+            return 16;
+        case DataType::Int://1 X 4
+            return 4;
+        case DataType::Int2:
+            return 8;
+        case DataType::Int3:
+            return 12;
+        case DataType::Int4:
+            return 16;
+        case DataType::Bool://1 X 1
+            return 1;
+        case DataType::Mat3://4 X 3 X 3
+            return 36;
+        case DataType::Mat4://4 X 4 X 4
+            return 64;
+        default:
+            std::cerr << "Unrecognised Data Type" << std::endl;
+            return 0;
+    }
+}
 
+uint32_t Plexi::Shaders::getDataTypeCount(const Plexi::Shaders::DataType &dataType) {
+    switch(dataType){
+        case DataType::Float:
+            return 1;
+        case DataType::Float2:
+            return 2;
+        case DataType::Float3:
+            return 3;
+        case DataType::Float4:
+            return 4;
+        case DataType::Int:
+            return 1;
+        case DataType::Int2:
+            return 2;
+        case DataType::Int3:
+            return 3;
+        case DataType::Int4:
+            return 4;
+        case DataType::Bool:
+            return 1;
+        case DataType::Mat3:
+            return 9;
+        case DataType::Mat4:
+            return 16;
+        default:
+            std::cerr << "Unrecognised Data Type" << std::endl;
+            return 0;
+    }}
+
+string Plexi::Shaders::loadGLSLShaderFromFile(const std::filesystem::path &shaderPath) {
+    if(!std::filesystem::exists(shaderPath) || !(shaderPath.has_filename() && shaderPath.has_extension())){
+        std::cerr << "Invalid shader path provided" << std::endl;
+        return string();
+    }
+    std::ifstream fin(shaderPath);
     if(!fin.is_open()){
-        std::cerr << "Failed to open compiled shader at " << shaderPath << std::endl;
-        std::cout << "Unloaded shader returned" << std::endl;
-        return shader;
+        std::cerr << "An error occurred when attempting to open " << shaderPath << std::endl;
+        return string();
+    }
+    string loadedShader;
+    while(std::getline(fin, loadedShader)){
+
+    }
+    fin.close();
+    return loadedShader;
+}
+
+uint32_t *Plexi::Shaders::loadSPIRVShaderFromFile(const std::filesystem::path &shaderPath) {
+    if(!std::filesystem::exists(shaderPath) || !(shaderPath.has_filename() && shaderPath.has_extension())){
+        std::cerr << "Invalid shader path provided" << std::endl;
+        return nullptr;
+    }
+    std::ifstream fin(shaderPath);
+    if(!fin.is_open()){
+        std::cerr << "An error occurred when attempting to open " << shaderPath << std::endl;
+        return nullptr;
     }
 
-    size_t fileSize = (size_t)fin.tellg();//Returns the cursor pos which is at end of file for loading in ate thus being the size
-    std::vector<char> loadedBuffer(fileSize);
-
-    fin.seekg(0);//Move to top of file
-
-    fin.read(loadedBuffer.data(), fileSize);//Load into loadedBuffer w/ size fileSize
-
-    fin.close();
-
-//    shader.byteCode = loadedBuffer.data();
-    shader.codeSize = loadedBuffer.size();
-    shader.code = reinterpret_cast<const uint32_t *>(loadedBuffer.data());
-    shader.name = shaderPath.filename().string();
-
-
-
-    shader.name.erase(shader.name.find( '.'));
-    std::cout << "Compiled shader \'" << shader.name << "\' loaded." << std::endl;
-
-    return shader;
+    //Todo finish this function
+    return nullptr;
 }
 
-Plexi::Shader Plexi::Shaders::loadShader(const string &shaderName) {
-    std::filesystem::path shaderPath;
+std::filesystem::path Plexi::Shaders::locateShader(const std::filesystem::path &pathToSearch, const string &shaderName,
+                                                   Plexi::Shaders::ShaderLanguage shaderType) {
+    std::filesystem::path currentSearchPath;
+    std::filesystem::path validResult;
+    uint32_t possMatches = 0;
+    std::cout << "Attempting to locate shader \'" << shaderName << "\' in " << pathToSearch << std::endl;
 
-    shaderPath.assign(DEFAULT_SHADER_PATH + shaderName + DEFAULT_COMPILED_EXTENSION);
-
-    return loadShader(shaderPath);
-}
-
-bool Plexi::Shaders::checkForPrecompiledShaders(const string &shaderName, Shader& outputShader) {
-    std::filesystem::path pathToCheck;
-    bool exists = false;
-    std::cout << "Searching for shader \'" << shaderName << "\'"<< std::endl;
-    for(const auto &EXTENSION : RECOGNIZED_COMPILED_EXTENSIONS){
-        pathToCheck.assign(DEFAULT_SHADER_PATH + shaderName); //Reset to default
-        pathToCheck += EXTENSION; // Add extension
-        std::cout << "\tSearching " << pathToCheck << std::endl;
-        if(std::filesystem::exists(pathToCheck)){
-            exists = true;
-            break;
+    if(pathToSearch.has_filename() && pathToSearch.has_extension()){//If the path provided is a valid shader path
+        if(std::filesystem::exists(pathToSearch)) {
+            return pathToSearch;
+        }
+        else {
+            std::cerr << "Invalid shader path provided" << std::endl;
+            //Poss make path valid
+            return std::filesystem::path();
+        }
+    }
+    for(const auto & extension : RECOGNISED_EXTENSIONS[shaderType]){
+        currentSearchPath.assign(pathToSearch);
+        currentSearchPath += shaderName;
+        currentSearchPath += extension;
+        if(std::filesystem::exists(currentSearchPath)){
+            std::cout << "Possible match found at " << currentSearchPath << std::endl;
+            possMatches++;
+            validResult = currentSearchPath;
         }
     }
 
-    if(exists){
-        std::cout << "Precompiled shader \'" << shaderName << "\' found at: " << pathToCheck << std::endl;
-        outputShader = loadShader(pathToCheck);
-        //Todo: Set Shader type
-    } else {
-        std::cerr << "Failed to locate precompiled shader \'" << shaderName << "\' with default search paths" << std::endl;
+    if(possMatches != 1) {
+        std::cout << "Warning: There were " << possMatches << " possible matches located. Using " << validResult;
     }
 
+    if(possMatches == 0){
+        std::cerr << "No matches found for shader \'" << shaderName << "\'" << std::endl;
+    }
 
-
-
-    return exists;
+    return validResult;
 }
+
+std::filesystem::path Plexi::Shaders::locateShader(const string &shaderName, Plexi::Shaders::ShaderLanguage shaderType) {
+
+    return locateShader(DEFAULT_SHADER_PATH, shaderName, shaderType);
+}
+
+bool Plexi::Shaders::ShaderCreateInfo::isComplete(){
+    //GLSL
+    if(shaderLanguage == UNKNOWN){
+        std::cout << "Unknown Shader type." << std::endl;
+        return false;
+    } else if (shaderLanguage == GLSL){
+        if(glslFragmentCode != nullptr && glslVertexCode != nullptr){
+            return true;
+        }
+        std::cerr << "GLSL Shader is not complete. Missing GLSL shader data." << std::endl;
+        return false;
+    } else if(shaderLanguage == SPIRV){
+        if(spirvFragmentSize != 0 && spirvVertexSize != 0 && spirvFragmentCode != nullptr && spirvVertexCode == nullptr){
+            return true;
+        }
+        std::cerr << "SPIR-V shader is not complete. Missing SPIR-V shader data." << std::endl;
+        return false;
+    }
+
+    std::cerr << "Unrecognised shader type." << std::endl;
+    return false;
+}
+

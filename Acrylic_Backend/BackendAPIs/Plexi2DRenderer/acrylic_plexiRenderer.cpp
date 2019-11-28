@@ -1,4 +1,5 @@
 #include "./PlexiBackend/shaders.hpp"
+#include "./PlexiBackend/plexiBuffer.hpp"
 #include "./PlexiBackend/plexiHelper.hpp"
 #include "./PlexiBackend/acrylic_plexiBackend.hpp"
 #include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here
@@ -21,6 +22,8 @@ void Plexi::initPlexi() {
             "plexi_fragment_default_primitive",
             "plexi_fragment_default_text"
     };
+
+
     plexiConfig.shaderCount = plexiConfig.vertexShaderNames.size();
     if(plexiConfig.userPreferredGFXBackend == PLEXI_VULKAN) {
         //Only for vulkan - Do check to see if these need to be populated in the initPlexi function - If they aren't runtime error as this is information that Vulkan needs to know

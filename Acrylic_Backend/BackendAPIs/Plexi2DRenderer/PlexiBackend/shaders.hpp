@@ -1,46 +1,75 @@
 #ifndef SHADERS_HPP
 #define SHADERS_HPP
 
-//#include <shaderc/shaderc.hpp>
+#include <glad/glad.h>
 #include <string>
-#include <fstream>
-#include <vector>
+#include <memory>
+#include <iostream>
 #include <filesystem>
-#include <array>
+#include <map>
+#include <vector>
+#include <fstream>
 
 typedef std::string string;
-namespace Plexi {
-    struct Shader {
-        string name = "Plexi2D Unloaded Shader";
-        int shaderType = 0;
-        const uint32_t *code = nullptr;
-        size_t codeSize = 0;
+namespace Plexi::Shaders {
+    enum DataType {//Data types that correspond to those inside of the shader NOTE: vecs are floats
+        None = 0,
+        Float, Float2, Float3, Float4,
+        Int, Int2, Int3, Int4,
+        Bool,
+        Mat3, Mat4
     };
 
-    namespace Shaders {
+    //OpenGL specif - Might want to move in to OpenGL
+    //Converts Plexi Data types to Open GL data types
+    static GLenum convertDataTypeToGLSLBaseType(const DataType& dataType);
 
-#ifndef PLEXI_LIBRARY_ACTIVE
-        static const string DEFAULT_SHADER_PATH = "./plexi_shaders/";
-        static const string DEFAULT_COMPILED_EXTENSION = ".spv";
+    //Gets the size of the data type as it is in most shading languages
+    static uint32_t getDataTypeSize(const DataType& dataType);
 
-        static const std::array<string, 3> RECOGNIZED_COMPILED_EXTENSIONS = {
-                ".spv", ".frag.spv", ".vert.spv"
-        };
-#endif //PLEXI_LIBRARY_ACTIVE
+    //Gets number of elements represented by each data type eg: float4 has four elements
+    static uint32_t getDataTypeCount(const DataType& dataType);
 
-        Shader compileShaderFromString(const string &shaderName, const string &code, bool optimizeOutput);
+    enum ShaderLanguage {
+        UNKNOWN = 0,
+        GLSL,
+        SPIRV,
+    };
 
-        Shader compileShaderFromFile(const string &shaderName, bool optimizeOutput, bool deleteSrc);
+    struct ShaderCreateInfo {
+        string shaderName;
+        ShaderLanguage shaderLanguage;
+        std::shared_ptr<string> glslVertexCode;
+        std::shared_ptr<string> glslFragmentCode;
+        std::shared_ptr<uint32_t > spirvVertexCode;
+        std::shared_ptr<uint32_t > spirvFragmentCode;
+        size_t spirvVertexSize;
+        size_t spirvFragmentSize;
 
-        void outputShader(const Shader &shader);
+        ShaderCreateInfo(string name, ShaderLanguage language) : shaderName(std::move(name)), shaderLanguage(language) {
+            spirvVertexSize = 0;
+            spirvFragmentSize = 0;
+        }
+        //Simple function to check if the required shader data is set
+        bool isComplete();
+    };
 
-        Shader loadShader(const std::filesystem::path &shaderPath);
+    static std::map<Plexi::Shaders::ShaderLanguage, std::vector<std::string>> RECOGNISED_EXTENSIONS = {
+            {GLSL, {".glsl.vert", ".glsl.frag", ".glsl"}},
+            {SPIRV, {".spv.vert", ".spv.frag", ".spv"}}
+    };
 
-        Shader loadShader(const string &shaderName);
+    const std::filesystem::path DEFAULT_SHADER_PATH("./plexi_shaders/");
 
-        //Look for .frag.spv .vert.spv and .spv if found then load them
-        bool checkForPrecompiledShaders(const string &shaderName, Shader &outputShader);
-    }
+    static string loadGLSLShaderFromFile(const std::filesystem::path& shaderPath);
+
+    static uint32_t* loadSPIRVShaderFromFile(const std::filesystem::path& shaderPath);
+
+    static std::filesystem::path locateShader(const std::filesystem::path& pathToSearch, const string& shaderName, ShaderLanguage shaderType);
+
+    static std::filesystem::path locateShader(const string& shaderName, ShaderLanguage shaderType);
+
+    //TODO shader conversions with shader c
 
 
 }
