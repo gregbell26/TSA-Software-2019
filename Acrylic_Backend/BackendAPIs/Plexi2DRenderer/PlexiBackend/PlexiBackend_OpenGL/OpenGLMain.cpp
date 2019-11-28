@@ -19,6 +19,12 @@ bool OpenGL::createWindow() {
         std::cerr << "Failed to initialize GLFW" <<  std::endl;
         return false;
     }
+    //Enforces OpenGL 4.1 on mac and windows
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
     glfwWindow = glfwCreateWindow(1280, 720, appName, nullptr, nullptr);
 
     if(!glfwWindow){
