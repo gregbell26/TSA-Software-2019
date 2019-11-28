@@ -2,10 +2,10 @@
 #include "./PlexiBackend/plexiHelper.hpp"
 #include "./PlexiBackend/acrylic_plexiBackend.hpp"
 #include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here
-
-
-
 #include "acrylic_plexiRenderer.hpp"
+
+
+
 
 void Plexi::initPlexi() {
     //TODO: CONNECT LOGGER - For now we'll be using std::out
@@ -22,13 +22,11 @@ void Plexi::initPlexi() {
             "plexi_fragment_default_text"
     };
     plexiConfig.shaderCount = plexiConfig.vertexShaderNames.size();
-
-	if (plexiConfig.userPreferredGFXBackend == PLEXI_NULL_BACKEND) {
-		std::cerr << "No default plexi renderer specified. Please specify a plexi config or change the default renderer" << std::endl;
-	} else if(plexiConfig.userPreferredGFXBackend == PLEXI_VULKAN) {
+    if(plexiConfig.userPreferredGFXBackend == PLEXI_VULKAN) {
         //Only for vulkan - Do check to see if these need to be populated in the initPlexi function - If they aren't runtime error as this is information that Vulkan needs to know
-        std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};//Init to blank bc we are going to assume that if the user wants to render that they will say I NEED SWAPCHAIN SUPPORT
-        std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
+        std::vector<const char *> deviceExtensions = {
+                VK_KHR_SWAPCHAIN_EXTENSION_NAME};//Init to blank bc we are going to assume that if the user wants to render that they will say I NEED SWAPCHAIN SUPPORT
+        std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
 
         plexiConfig.plexiGFXRequiredInformation.vulkan_DEVICE_EXTENSIONS = deviceExtensions.data();
         plexiConfig.plexiGFXRequiredInformation.vulkan_EXT_SIZE = deviceExtensions.size();
@@ -37,39 +35,56 @@ void Plexi::initPlexi() {
 
         plexiConfig.plexiGFXOptionalInformation.vulkan_VALIDATION_LAYERS = validationLayers.data();
         plexiConfig.plexiGFXOptionalInformation.vulkan_VALID_LAYER_SIZE = validationLayers.size();
+    } else if (plexiConfig.userPreferredGFXBackend = PLEXI_OPENGL){
+
+    }
+
+
+
+
+    initPlexi(plexiConfig);
+
+
+}
+
+void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
+    if (plexiConfig.userPreferredGFXBackend == PLEXI_NULL_BACKEND) {
+        std::cerr << "No plexi renderer specified. Please specify a plexi config or change the default renderer" << std::endl;
+        return;
+    } else {
 
         GFXBackendMap[plexiConfig.userPreferredGFXBackend]->setRequiredInformation(plexiConfig.plexiGFXRequiredInformation);
         GFXBackendMap[plexiConfig.userPreferredGFXBackend]->setOptionInformation(plexiConfig.plexiGFXOptionalInformation);
 
 
         if(!GFXBackendMap[plexiConfig.userPreferredGFXBackend]->isSupported()){
-            std::cerr << "Plexi Default renderer is unsupported. Please specify a plexi config or change the default renderer" << std::endl;
+            std::cerr << "Selected Plexi renderer is unsupported. Please specify a plexi config or change the default renderer" << std::endl;
             return;
         }
 
-        plexiConfig.activeBackendName = plexiConfig.userPreferredGFXBackend;
     }
+    plexiConfig.activeBackendName = plexiConfig.userPreferredGFXBackend;
 
 
     for(size_t i = 0; i < plexiConfig.shaderCount; i++){
         Shader vertexShaderTemp = {};
         Shader fragShaderTemp = {};
 
-    if(Shaders::checkForPrecompiledShaders(plexiConfig.vertexShaderNames[i], vertexShaderTemp) &&
-       Shaders::checkForPrecompiledShaders(plexiConfig.fragmentShaderNames[i], fragShaderTemp)) {
-        vertexShaderTemp.shaderType = 0;
-        fragShaderTemp.shaderType = 0;
+        if(Shaders::checkForPrecompiledShaders(plexiConfig.vertexShaderNames[i], vertexShaderTemp) &&
+           Shaders::checkForPrecompiledShaders(plexiConfig.fragmentShaderNames[i], fragShaderTemp)) {
+            vertexShaderTemp.shaderType = 0;
+            fragShaderTemp.shaderType = 0;
 
-        loadedVertexShaders.push_back(vertexShaderTemp);
-        loadedFragmentShaders.push_back(fragShaderTemp);
-    } else {
+            loadedVertexShaders.push_back(vertexShaderTemp);
+            loadedFragmentShaders.push_back(fragShaderTemp);
+        } else {
 //            plexiConfig.vertexShaderNames.erase(plexiConfig.vertexShaderNames.begin()+i);
 //            plexiConfig.fragmentShaderNames.erase(plexiConfig.fragmentShaderNames.begin()+i);
 
-        std::cerr << "A default precompiled shader was not found. Ensure all default Plexi shaders are compiled and in default location" << std::endl;
-    }
+            std::cerr << "A precompiled shader was not found. Ensure all Plexi shaders are compiled and in the default location" << std::endl;
+        }
 
-}
+    }
 
     plexiConfig.vertexShaderNames.shrink_to_fit();
     plexiConfig.vertexShaderNames.shrink_to_fit();
@@ -96,19 +111,14 @@ void Plexi::initPlexi() {
     activeConfig.setPlexiInit(GFXBackendMap[activeConfig.activeBackendName]->initBackend());
     std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
 
-    if(activeConfig.getPlexiInit()){
+    if(activeConfig.getPlexiInit()) {
 
-        for(size_t i = 0; i < loadedVertexShaders.size(); i++){
-            GFXBackendMap[activeConfig.activeBackendName]->bindShaders(loadedVertexShaders[i], loadedFragmentShaders[i]);
+        for (size_t i = 0; i < loadedVertexShaders.size(); i++) {
+            GFXBackendMap[activeConfig.activeBackendName]->bindShaders(loadedVertexShaders[i],
+                                                                       loadedFragmentShaders[i]);
         }
 
     }
-
-}
-
-void Plexi::initPlexi(const Plexi::PlexiConfig &config) {
-    std::cout << "UNSUPPORTED" << std::endl;
-    exit(0);
 }
 
 

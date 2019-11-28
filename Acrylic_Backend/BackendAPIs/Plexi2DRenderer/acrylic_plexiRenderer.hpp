@@ -8,7 +8,7 @@
 namespace Plexi {
 #ifndef PLEXI_LIBRARY_ACTIVE
 
-    const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_VULKAN;
+    const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_OPENGL;
     //Where the config will be stored
     static PlexiConfig activeConfig;
 //    std::thread plexiLoopThread;
@@ -22,7 +22,7 @@ namespace Plexi {
     void initPlexi();
 
     //will init Plexi to user provided settings
-    void initPlexi(const PlexiConfig&);
+    void initPlexi(PlexiConfig&);
 
 //    void runPlexi();
 
