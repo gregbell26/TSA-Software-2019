@@ -1,7 +1,7 @@
 //Dependencies
+//#include "./../../plexi_usrStructs.hpp"
 #include "../plexiShaders.hpp"
 #include "../plexiBuffer.hpp"
-#include "./../../plexi_usrStructs.hpp"
 #include "../plexiHelper.hpp"
 
 #include "vulkanMain.hpp"
@@ -163,7 +163,7 @@ void Vulkan::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
 
 }
 
-void Vulkan::submitScene(const std::vector<Plexi::RenderTask> &currentScene) {
+void Vulkan::submitScene() {
 
 }
 void Vulkan::destroyWindow() {

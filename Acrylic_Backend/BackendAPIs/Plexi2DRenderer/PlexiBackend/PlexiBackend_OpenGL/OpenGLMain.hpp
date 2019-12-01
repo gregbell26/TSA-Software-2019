@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <map>
 
 class OpenGL: public PlexiGFXBackend {
 public:
@@ -19,7 +20,11 @@ public:
 
     void createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) override;
 
-    void submitScene(const std::vector<Plexi::RenderTask>& currentScene) override;
+    void setClearColor(const float& r, const float& g, const float& b, const float& a) override;
+
+    void submitScene() override;
+
+
 
     void onUpdate() override;
 
@@ -32,6 +37,18 @@ private:
     bool createWindow();
     bool initCore();
 
+    bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName);
+
+    bool createVertexBuffer(float* vertices, const size_t& size);
+
+    bool createIndexBuffer(uint32_t* indices, const size_t& size);
+
+    bool createVertexArray(const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo);
+
+    void clear();
+
+    void cleanUpGraphicsPipeline();
+
 public:
 
 private:
@@ -39,6 +56,13 @@ private:
     bool requiredInfoSet = false;
 
     GLFWwindow* glfwWindow;
+
+    //Maybe add this as a vector in future
+    std::map<std::string, GLuint> activeShaderProgramIds;
+    GLuint vertexBufferId;
+    GLuint indexBufferId;
+    GLuint vertexArrayId;
+    uint32_t vertexBufferIndex = 0;
 
 };
 

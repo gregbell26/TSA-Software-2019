@@ -1,9 +1,13 @@
 #ifndef PLEXI_RENDERER_HPP
 #define PLEXI_RENDERER_HPP
 
+#include <vulkan/vulkan.h>
 
 #include <iostream>
 #include <thread>
+#include <cstdlib>
+#include <ctime>
+
 
 namespace Plexi {
 
@@ -30,9 +34,9 @@ namespace Plexi {
 
 
 
-    bool submitCurrentQueue();
+    void submitScene();
 
-    bool drawFrame();
+    void onUpdate();
 
     void cleanupPlexi();
 

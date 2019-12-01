@@ -42,7 +42,9 @@ public:
 
     virtual void createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) = 0;
 
-    virtual void submitScene(const std::vector<Plexi::RenderTask>& currentScene) = 0;
+    virtual void submitScene() = 0;
+
+    virtual void setClearColor(const float& r, const float& g, const float& b, const float& a) = 0;
 
     virtual void onUpdate() {
 

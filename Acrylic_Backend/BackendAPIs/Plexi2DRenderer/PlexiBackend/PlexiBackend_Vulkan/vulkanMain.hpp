@@ -1,8 +1,6 @@
 #ifndef VULKAN_MAIN_HPP
 #define VULKAN_MAIN_HPP
 
-#define GLFW_INCLUDE_NONE
-
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -29,7 +27,7 @@ public:
 
 //    void runBackend() override;
 
-    void submitScene(const std::vector<Plexi::RenderTask>& currentScene);
+    void submitScene();
 
     void cleanup() override;
 

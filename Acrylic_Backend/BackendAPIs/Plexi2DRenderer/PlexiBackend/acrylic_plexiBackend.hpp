@@ -3,7 +3,7 @@
 
 #include <map>
 #include "PlexiBackend_OpenGL/OpenGLMain.hpp"
-#include "PlexiBackend_Vulkan/vulkanMain.hpp"
+//#include "PlexiBackend_Vulkan/vulkanMain.hpp"
 
 namespace Plexi {
 
@@ -20,7 +20,7 @@ namespace Plexi {
     static std::map<Plexi::PLEXI_GFX_BACKENDS, PlexiGFXBackend*> GFXBackendMap = {
             {PLEXI_NULL_BACKEND, nullptr},
             {PLEXI_CPU, nullptr},
-            {PLEXI_VULKAN, new Vulkan()},
+            {PLEXI_VULKAN, nullptr},
             {PLEXI_OPENGL, new OpenGL()}
 //            {PLEXI_DIRECTX, nullptr},
 //            {PLEXI_METAL, nullptr}

@@ -21,13 +21,13 @@ namespace Plexi::Shaders {
 
     //OpenGL specif - Might want to move in to OpenGL
     //Converts Plexi Data types to Open GL data types
-    static GLenum convertDataTypeToGLSLBaseType(const DataType& dataType);
+    GLenum convertDataTypeToGLSLBaseType(const DataType& dataType);
 
     //Gets the size of the data type as it is in most shading languages
-    static uint32_t getDataTypeSize(const DataType& dataType);
+    uint32_t getDataTypeSize(const DataType& dataType);
 
     //Gets number of elements represented by each data type eg: float4 has four elements
-    static uint32_t getDataTypeCount(const DataType& dataType);
+    uint32_t getDataTypeCount(const DataType& dataType);
 
     enum ShaderLanguage {
         UNKNOWN = 0,
@@ -38,35 +38,31 @@ namespace Plexi::Shaders {
     struct ShaderCreateInfo {
         std::string shaderName;
         ShaderLanguage shaderLanguage;
-        std::shared_ptr<std::string> glslVertexCode;
-        std::shared_ptr<std::string> glslFragmentCode;
+        std::string glslVertexCode;
+        std::string glslFragmentCode;
         std::shared_ptr<uint32_t > spirvVertexCode;
         std::shared_ptr<uint32_t > spirvFragmentCode;
         size_t spirvVertexSize;
         size_t spirvFragmentSize;
 
-        ShaderCreateInfo(std::string name, ShaderLanguage language) : shaderName(std::move(name)), shaderLanguage(language) {
+        ShaderCreateInfo(std::string name, ShaderLanguage language) :
+        shaderName(std::move(name)), shaderLanguage(language), glslVertexCode(""), glslFragmentCode("")
+        {
             spirvVertexSize = 0;
             spirvFragmentSize = 0;
         }
         //Simple function to check if the required shader data is set
-        bool isComplete();
+        bool isComplete() const;
     };
 
-    static std::map<Plexi::Shaders::ShaderLanguage, std::vector<std::string>> RECOGNISED_EXTENSIONS = {
-            {GLSL, {".glsl.vert", ".glsl.frag", ".glsl"}},
-            {SPIRV, {".spv.vert", ".spv.frag", ".spv"}}
-    };
 
-    const std::filesystem::path DEFAULT_SHADER_PATH("./plexi_shaders/");
+    std::string loadGLSLShaderFromFile(const std::filesystem::path& shaderPath);
 
-    static std::string loadGLSLShaderFromFile(const std::filesystem::path& shaderPath);
+    uint32_t* loadSPIRVShaderFromFile(const std::filesystem::path& shaderPath);
 
-    static uint32_t* loadSPIRVShaderFromFile(const std::filesystem::path& shaderPath);
+    std::filesystem::path locateShader(const std::filesystem::path& pathToSearch, const std::string& shaderName, ShaderLanguage shaderType);
 
-    static std::filesystem::path locateShader(const std::filesystem::path& pathToSearch, const std::string& shaderName, ShaderLanguage shaderType);
-
-    static std::filesystem::path locateShader(const std::string& shaderName, ShaderLanguage shaderType);
+    std::filesystem::path locateShader(const std::string& shaderName, ShaderLanguage shaderType);
 
     //TODO shader conversions with shader c
 

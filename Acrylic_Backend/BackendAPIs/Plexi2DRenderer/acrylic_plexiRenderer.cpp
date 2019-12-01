@@ -1,8 +1,8 @@
 #include "PlexiBackend/plexiShaders.hpp"
 #include "./PlexiBackend/plexiBuffer.hpp"
-#include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here
 #include "./PlexiBackend/plexiHelper.hpp"
 #include "./PlexiBackend/acrylic_plexiBackend.hpp"
+#include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here
 
 
 #include "acrylic_plexiRenderer.hpp"
@@ -71,32 +71,32 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
     plexiConfig.activeBackendName = plexiConfig.userPreferredGFXBackend;
 
 
-    for(size_t i = 0; i < plexiConfig.shaderCount; i++){
-        Shader vertexShaderTemp = {};
-        Shader fragShaderTemp = {};
+//    for(size_t i = 0; i < plexiConfig.shaderCount; i++){
+//        Shader vertexShaderTemp = {};
+//        Shader fragShaderTemp = {};
+//
+//        if(Shaders::checkForPrecompiledShaders(plexiConfig.vertexShaderNames[i], vertexShaderTemp) &&
+//           Shaders::checkForPrecompiledShaders(plexiConfig.fragmentShaderNames[i], fragShaderTemp)) {
+//            vertexShaderTemp.shaderType = 0;
+//            fragShaderTemp.shaderType = 0;
+//
+//            loadedVertexShaders.push_back(vertexShaderTemp);
+//            loadedFragmentShaders.push_back(fragShaderTemp);
+//        } else {
+////            plexiConfig.vertexShaderNames.erase(plexiConfig.vertexShaderNames.begin()+i);
+////            plexiConfig.fragmentShaderNames.erase(plexiConfig.fragmentShaderNames.begin()+i);
+//
+//            std::cerr << "A precompiled shader was not found. Ensure all Plexi shaders are compiled and in the default location" << std::endl;
+//        }
+//
+//    }
 
-        if(Shaders::checkForPrecompiledShaders(plexiConfig.vertexShaderNames[i], vertexShaderTemp) &&
-           Shaders::checkForPrecompiledShaders(plexiConfig.fragmentShaderNames[i], fragShaderTemp)) {
-            vertexShaderTemp.shaderType = 0;
-            fragShaderTemp.shaderType = 0;
+//    plexiConfig.vertexShaderNames.shrink_to_fit();
+//    plexiConfig.vertexShaderNames.shrink_to_fit();
 
-            loadedVertexShaders.push_back(vertexShaderTemp);
-            loadedFragmentShaders.push_back(fragShaderTemp);
-        } else {
-//            plexiConfig.vertexShaderNames.erase(plexiConfig.vertexShaderNames.begin()+i);
-//            plexiConfig.fragmentShaderNames.erase(plexiConfig.fragmentShaderNames.begin()+i);
-
-            std::cerr << "A precompiled shader was not found. Ensure all Plexi shaders are compiled and in the default location" << std::endl;
-        }
-
-    }
-
-    plexiConfig.vertexShaderNames.shrink_to_fit();
-    plexiConfig.vertexShaderNames.shrink_to_fit();
-
-    if(loadedFragmentShaders.empty() || loadedVertexShaders.empty()){
-        std::cerr << "No shaders were loaded. Plexi is currently unable to render." << std::endl;
-    }
+//    if(loadedFragmentShaders.empty() || loadedVertexShaders.empty()){
+//        std::cerr << "No shaders were loaded. Plexi is currently unable to render." << std::endl;
+//    }
 
 
     activeConfig = plexiConfig;
@@ -115,17 +115,20 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
 
     activeConfig.setPlexiInit(GFXBackendMap[activeConfig.activeBackendName]->initBackend());
     std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
+    srand (static_cast <unsigned> (time(0)));
 
-    if(activeConfig.getPlexiInit()) {
-
-        for (size_t i = 0; i < loadedVertexShaders.size(); i++) {
-            GFXBackendMap[activeConfig.activeBackendName]->createGraphicsPipeline(loadedVertexShaders[i],
-                                                                                  loadedFragmentShaders[i]);
-        }
-
-    }
 }
 
+
+void Plexi::submitScene() {
+
+}
+
+void Plexi::onUpdate() {
+
+    GFXBackendMap[activeConfig.activeBackendName]->setClearColor(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), 1.0f);
+    GFXBackendMap[activeConfig.activeBackendName]->onUpdate();
+}
 
 GLFWwindow* Plexi::getWindowRef(){
     return GFXBackendMap[activeConfig.activeBackendName]->getWindowRef();
@@ -142,4 +145,5 @@ void Plexi::cleanupPlexi() {
 
     //maybe deref active config?
 }
+
 

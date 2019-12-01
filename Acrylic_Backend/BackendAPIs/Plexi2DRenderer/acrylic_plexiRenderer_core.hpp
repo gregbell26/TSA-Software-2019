@@ -5,6 +5,7 @@
 
 
 #include "PlexiBackend/plexiShaders.hpp"
+#include "PlexiBackend/plexiBuffer.hpp"
 #include "./PlexiBackend/plexiHelper.hpp"
 #include "./PlexiBackend/acrylic_plexiBackend.hpp"
 #include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here

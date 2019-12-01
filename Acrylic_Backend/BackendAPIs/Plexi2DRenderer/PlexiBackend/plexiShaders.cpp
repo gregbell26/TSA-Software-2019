@@ -1,5 +1,13 @@
 #include "plexiShaders.hpp"
 
+namespace Plexi::Shaders {
+    std::map<Plexi::Shaders::ShaderLanguage, std::vector<std::string>> RECOGNISED_EXTENSIONS = {
+            {GLSL,  {".glsl.vert", ".glsl.frag", ".glsl"}},
+            {SPIRV, {".spv.vert",  ".spv.frag",  ".spv"}}
+    };
+
+    const std::filesystem::path DEFAULT_SHADER_PATH("./plexi_shaders/");
+}
 GLenum Plexi::Shaders::convertDataTypeToGLSLBaseType(const DataType &dataType) {
     switch(dataType){
         case DataType::Float:
@@ -90,17 +98,17 @@ uint32_t Plexi::Shaders::getDataTypeCount(const Plexi::Shaders::DataType &dataTy
             return 0;
     }}
 
-string Plexi::Shaders::loadGLSLShaderFromFile(const std::filesystem::path &shaderPath) {
+std::string Plexi::Shaders::loadGLSLShaderFromFile(const std::filesystem::path &shaderPath) {
     if(!std::filesystem::exists(shaderPath) || !(shaderPath.has_filename() && shaderPath.has_extension())){
         std::cerr << "Invalid shader path provided" << std::endl;
-        return string();
+        return std::string();
     }
     std::ifstream fin(shaderPath);
     if(!fin.is_open()){
         std::cerr << "An error occurred when attempting to open " << shaderPath << std::endl;
-        return string();
+        return std::string();
     }
-    string loadedShader;
+    std::string loadedShader;
     while(std::getline(fin, loadedShader)){
 
     }
@@ -123,7 +131,7 @@ uint32_t *Plexi::Shaders::loadSPIRVShaderFromFile(const std::filesystem::path &s
     return nullptr;
 }
 
-std::filesystem::path Plexi::Shaders::locateShader(const std::filesystem::path &pathToSearch, const string &shaderName,
+std::filesystem::path Plexi::Shaders::locateShader(const std::filesystem::path &pathToSearch, const std::string &shaderName,
                                                    Plexi::Shaders::ShaderLanguage shaderType) {
     std::filesystem::path currentSearchPath;
     std::filesystem::path validResult;
@@ -162,18 +170,18 @@ std::filesystem::path Plexi::Shaders::locateShader(const std::filesystem::path &
     return validResult;
 }
 
-std::filesystem::path Plexi::Shaders::locateShader(const string &shaderName, Plexi::Shaders::ShaderLanguage shaderType) {
+std::filesystem::path Plexi::Shaders::locateShader(const std::string &shaderName, Plexi::Shaders::ShaderLanguage shaderType) {
 
     return locateShader(DEFAULT_SHADER_PATH, shaderName, shaderType);
 }
 
-bool Plexi::Shaders::ShaderCreateInfo::isComplete(){
+bool Plexi::Shaders::ShaderCreateInfo::isComplete() const{
     //GLSL
     if(shaderLanguage == UNKNOWN){
         std::cout << "Unknown Shader type." << std::endl;
         return false;
     } else if (shaderLanguage == GLSL){
-        if(glslFragmentCode != nullptr && glslVertexCode != nullptr){
+        if(!glslFragmentCode.empty() && !glslVertexCode.empty()){
             return true;
         }
         std::cerr << "GLSL Shader is not complete. Missing GLSL shader data." << std::endl;
