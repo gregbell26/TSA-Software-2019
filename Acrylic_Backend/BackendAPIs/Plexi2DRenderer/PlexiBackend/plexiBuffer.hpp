@@ -47,7 +47,7 @@ namespace Plexi::Buffer {
 
     private:
         //Private Functions
-        void Plexi::Buffer::BufferLayout::calcStrideAndOffset(std::vector<BufferElement> &elements) { // Defined here bc other wise it would be one function in a cpp file
+        void calcStrideAndOffset(std::vector<BufferElement> &elements) { // Defined here bc other wise it would be one function in a cpp file
             size_t offset = 0;
             stride = 0;
 
