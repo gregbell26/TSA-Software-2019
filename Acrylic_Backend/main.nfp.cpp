@@ -29,13 +29,32 @@ UserInput::Returns doTheThing(int times){
     }
     Plexi::setClearColor(red, 0.0f, blue, 1.0f);
 
-    Plexi::onUpdate();
     return {};
 }
 
 UserInput::Returns scroll(double i, double j){
-    Plexi::onUpdate();
-    glfwSwapBuffers(Plexi::getWindowRef());    return {};
+    j = abs(j);
+    float t = (float)(j)/100;
+    if(usingRed){
+        red += t;
+        blue -= t;
+        if(blue <= 0.0f)
+            blue = 0.0f;
+    } else {
+        blue += t;
+        red -= t;
+        if(red <= 0.0f)
+            red = 0.0f;
+    }
+    if(red >= 1.0f){
+//        red = 0.0f;
+        usingRed = false;
+    } else if(blue >= 1.0f){
+//        blue = 0.0f;
+        usingRed = true;
+    }
+    Plexi::setClearColor(red, 0.0f, blue, 1.0f);
+    return {};
 }
 int main(){
     Plexi::initPlexi();
@@ -48,6 +67,7 @@ int main(){
     UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, doTheThing);
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
+        Plexi::onUpdate();
     }
     Plexi::cleanupPlexi();
 //    readJSON('a');
