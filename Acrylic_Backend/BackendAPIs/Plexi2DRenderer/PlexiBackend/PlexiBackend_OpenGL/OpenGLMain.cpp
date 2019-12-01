@@ -1,8 +1,18 @@
-#include  "./../shaders.hpp"
+#include  "../plexiShaders.hpp"
+#include "./../plexiBuffer.hpp"
+#include "./../../plexi_usrStructs.hpp"
 #include "./../plexiHelper.hpp"
 
-
 #include "OpenGLMain.hpp"
+static void glfwErrorCallBack(int errorCode, const char* description){
+    if(errorCode == GLFW_NO_ERROR){
+        return;
+    }
+
+    std::cerr << "GLFW ERROR: " << errorCode << ": " << description << std::endl;
+    //todo handle errors
+}
+
 
 bool OpenGL::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
     appName = requiredInformation.appName.c_str();
@@ -24,6 +34,8 @@ bool OpenGL::createWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+    glfwSetErrorCallback(glfwErrorCallBack);
 
     glfwWindow = glfwCreateWindow(1280, 720, appName, nullptr, nullptr);
 
@@ -56,7 +68,11 @@ bool OpenGL::initBackend() {
     return false;
 }
 
-void OpenGL::bindShaders(const Plexi::Shader &VERTEX_SHADER, const Plexi::Shader &FRAGMENT_SHADER) {
+void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) {
+
+}
+
+void OpenGL::submitScene(const std::vector<Plexi::RenderTask> &currentScene) {
 
 }
 

@@ -12,8 +12,8 @@ set(OPENGL_SOURCE ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.cpp)
 set(OPENGL_HEADER ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.hpp)
 
 
-set(SOURCE_FILES ${VULKAN_SOURCE} ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/shaders.cpp)
-set(HEADER_FILES ${VULKAN_HEADER} ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/shaders.hpp PlexiBackend/plexiBuffer.hpp)
+set(SOURCE_FILES ${VULKAN_SOURCE} ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/plexiShaders.cpp)
+set(HEADER_FILES ${VULKAN_HEADER} ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/plexiShaders.hpp PlexiBackend/plexiBuffer.hpp)
 
 
 

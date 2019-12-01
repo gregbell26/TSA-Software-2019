@@ -1,10 +1,14 @@
-#include "../shaders.hpp"
+//Dependencies
+#include "../plexiShaders.hpp"
+#include "../plexiBuffer.hpp"
+#include "./../../plexi_usrStructs.hpp"
 #include "../plexiHelper.hpp"
+
 #include "vulkanMain.hpp"
+
 #include "./VulkanHelpers/validationLayers.hpp"
 #include "./VulkanHelpers/queueFamilies.hpp"
 #include "./VulkanHelpers/swapChains.hpp"
-
 
 
 bool Vulkan::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
@@ -155,23 +159,27 @@ bool Vulkan::initBackend() {
     return false;
 }
 
-void Vulkan::bindShaders(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Shader& FRAGMENT_SHADER) {
+void Vulkan::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) {
 
 }
 
+void Vulkan::submitScene(const std::vector<Plexi::RenderTask> &currentScene) {
+
+}
 void Vulkan::destroyWindow() {
     glfwDestroyWindow(glfwWindow);
     glfwTerminate();
 }
+
+
 void Vulkan::cleanup() {
     //clean Up all other stuff up here
     vkDestroyInstance(vulkanInstance, nullptr);
 
     destroyWindow();
 }
-
-
 GLFWwindow* Vulkan::getWindowRef() {
     return glfwWindow;
 }
+
 

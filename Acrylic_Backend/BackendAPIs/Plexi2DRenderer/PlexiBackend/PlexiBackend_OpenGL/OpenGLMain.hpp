@@ -7,7 +7,7 @@
 class OpenGL: public PlexiGFXBackend {
 public:
     OpenGL() = default;
-    ~OpenGL() = default;
+    ~OpenGL() override = default;
 
     bool isSupported() override ;
 
@@ -17,8 +17,11 @@ public:
 
     bool initBackend() override;
 
-    void bindShaders(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) override;
-//    virtual void runBackend() = 0;
+    void createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) override;
+
+    void submitScene(const std::vector<Plexi::RenderTask>& currentScene) override;
+
+    void onUpdate() override;
 
     void cleanup() override;
 

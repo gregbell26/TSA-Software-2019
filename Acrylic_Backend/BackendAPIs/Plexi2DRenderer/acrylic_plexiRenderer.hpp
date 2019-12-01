@@ -6,6 +6,7 @@
 #include <thread>
 
 namespace Plexi {
+
 #ifndef PLEXI_LIBRARY_ACTIVE
 
     const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_OPENGL;
@@ -13,10 +14,12 @@ namespace Plexi {
     static PlexiConfig activeConfig;
 //    std::thread plexiLoopThread;
     static std::vector<Plexi::Shaders::ShaderCreateInfo> loadedShaders;
+    static std::vector<Plexi::Buffer::BufferCreateInfo> bufferData;
 
     static std::vector<RenderTask> renderQueue;
 
 #endif //PLEXI_LIBRARY_ACTIVE
+
     //will init Plexi to default settings
     void initPlexi();
 

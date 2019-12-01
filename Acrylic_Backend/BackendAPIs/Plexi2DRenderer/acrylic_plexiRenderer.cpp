@@ -1,8 +1,10 @@
-#include "./PlexiBackend/shaders.hpp"
+#include "PlexiBackend/plexiShaders.hpp"
 #include "./PlexiBackend/plexiBuffer.hpp"
+#include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here
 #include "./PlexiBackend/plexiHelper.hpp"
 #include "./PlexiBackend/acrylic_plexiBackend.hpp"
-#include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here
+
+
 #include "acrylic_plexiRenderer.hpp"
 
 
@@ -117,8 +119,8 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
     if(activeConfig.getPlexiInit()) {
 
         for (size_t i = 0; i < loadedVertexShaders.size(); i++) {
-            GFXBackendMap[activeConfig.activeBackendName]->bindShaders(loadedVertexShaders[i],
-                                                                       loadedFragmentShaders[i]);
+            GFXBackendMap[activeConfig.activeBackendName]->createGraphicsPipeline(loadedVertexShaders[i],
+                                                                                  loadedFragmentShaders[i]);
         }
 
     }

@@ -25,9 +25,11 @@ public:
 
     bool initBackend() override;
 
-    void bindShaders(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Shader& FRAGMENT_SHADER) override;
+    void createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) override;
 
 //    void runBackend() override;
+
+    void submitScene(const std::vector<Plexi::RenderTask>& currentScene);
 
     void cleanup() override;
 

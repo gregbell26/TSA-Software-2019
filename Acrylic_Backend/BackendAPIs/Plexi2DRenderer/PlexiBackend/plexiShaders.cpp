@@ -1,5 +1,4 @@
-
-#include "shaders.hpp"
+#include "plexiShaders.hpp"
 
 GLenum Plexi::Shaders::convertDataTypeToGLSLBaseType(const DataType &dataType) {
     switch(dataType){

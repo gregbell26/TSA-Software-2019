@@ -1,5 +1,5 @@
-#ifndef SHADERS_HPP
-#define SHADERS_HPP
+#ifndef PLEXI_SHADERS_HPP
+#define PLEXI_SHADERS_HPP
 
 #include <glad/glad.h>
 #include <string>
@@ -10,7 +10,6 @@
 #include <vector>
 #include <fstream>
 
-typedef std::string string;
 namespace Plexi::Shaders {
     enum DataType {//Data types that correspond to those inside of the shader NOTE: vecs are floats
         None = 0,
@@ -37,16 +36,16 @@ namespace Plexi::Shaders {
     };
 
     struct ShaderCreateInfo {
-        string shaderName;
+        std::string shaderName;
         ShaderLanguage shaderLanguage;
-        std::shared_ptr<string> glslVertexCode;
-        std::shared_ptr<string> glslFragmentCode;
+        std::shared_ptr<std::string> glslVertexCode;
+        std::shared_ptr<std::string> glslFragmentCode;
         std::shared_ptr<uint32_t > spirvVertexCode;
         std::shared_ptr<uint32_t > spirvFragmentCode;
         size_t spirvVertexSize;
         size_t spirvFragmentSize;
 
-        ShaderCreateInfo(string name, ShaderLanguage language) : shaderName(std::move(name)), shaderLanguage(language) {
+        ShaderCreateInfo(std::string name, ShaderLanguage language) : shaderName(std::move(name)), shaderLanguage(language) {
             spirvVertexSize = 0;
             spirvFragmentSize = 0;
         }
@@ -61,16 +60,16 @@ namespace Plexi::Shaders {
 
     const std::filesystem::path DEFAULT_SHADER_PATH("./plexi_shaders/");
 
-    static string loadGLSLShaderFromFile(const std::filesystem::path& shaderPath);
+    static std::string loadGLSLShaderFromFile(const std::filesystem::path& shaderPath);
 
     static uint32_t* loadSPIRVShaderFromFile(const std::filesystem::path& shaderPath);
 
-    static std::filesystem::path locateShader(const std::filesystem::path& pathToSearch, const string& shaderName, ShaderLanguage shaderType);
+    static std::filesystem::path locateShader(const std::filesystem::path& pathToSearch, const std::string& shaderName, ShaderLanguage shaderType);
 
-    static std::filesystem::path locateShader(const string& shaderName, ShaderLanguage shaderType);
+    static std::filesystem::path locateShader(const std::string& shaderName, ShaderLanguage shaderType);
 
     //TODO shader conversions with shader c
 
 
 }
-#endif //SHADERS_HPP
+#endif //PLEXI_SHADERS_HPP
