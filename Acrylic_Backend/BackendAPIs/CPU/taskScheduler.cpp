@@ -69,7 +69,7 @@ void TaskScheduler::threadRun()
                 //TODO: check to make sure the thread is done
                 if (threadPool[threadCount-1].joinable())
                 {
-                    threadPool[threadCount] = std::thread(taskPool[taskNumber-1].function);
+//                    threadPool[threadCount] = std::thread(taskPool[taskNumber-1].function);
                     threadCheck = true;
                 }
                 else

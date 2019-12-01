@@ -115,7 +115,7 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
 
     activeConfig.setPlexiInit(GFXBackendMap[activeConfig.activeBackendName]->initBackend());
     std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
-    srand (static_cast <unsigned> (time(0)));
+//    srand (static_cast <unsigned> (time(0)));
 
 }
 
@@ -124,10 +124,16 @@ void Plexi::submitScene() {
 
 }
 
+void Plexi::setClearColor(const float &r, const float &g, const float &b, const float &a) {
+    GFXBackendMap[activeConfig.activeBackendName]->setClearColor(r,g,b,a);
+}
+
 void Plexi::onUpdate() {
 
-    GFXBackendMap[activeConfig.activeBackendName]->setClearColor(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), 1.0f);
+//    GFXBackendMap[activeConfig.activeBackendName]->setClearColor(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), 1.0f);
     GFXBackendMap[activeConfig.activeBackendName]->onUpdate();
+    glfwSwapBuffers(Plexi::getWindowRef());
+
 }
 
 GLFWwindow* Plexi::getWindowRef(){

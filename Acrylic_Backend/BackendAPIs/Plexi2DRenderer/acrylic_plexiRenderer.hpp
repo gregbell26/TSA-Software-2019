@@ -36,6 +36,8 @@ namespace Plexi {
 
     void submitScene();
 
+    void setClearColor(const float &r, const float &g, const float &b, const float &a);
+
     void onUpdate();
 
     void cleanupPlexi();
