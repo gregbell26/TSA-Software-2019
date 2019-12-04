@@ -1,6 +1,7 @@
 #ifndef PLEXI_USR_STRUCT_HPP
 #define PLEXI_USR_STRUCT_HPP
 
+
 namespace Plexi {
     struct PlexiConfig {
         PLEXI_GFX_BACKENDS userPreferredGFXBackend = PLEXI_NULL_BACKEND;
@@ -25,6 +26,10 @@ namespace Plexi {
 
     protected:
         bool plexiInit = false;
+    };
+
+    struct BufferLayouts {
+
     };
 
     struct RenderTask {

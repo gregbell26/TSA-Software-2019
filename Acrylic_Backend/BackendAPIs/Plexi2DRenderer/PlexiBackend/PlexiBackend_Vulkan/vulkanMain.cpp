@@ -1,10 +1,14 @@
-#include "../shaders.hpp"
+//Dependencies
+//#include "./../../plexi_usrStructs.hpp"
+#include "../plexiShaders.hpp"
+#include "../plexiBuffer.hpp"
 #include "../plexiHelper.hpp"
+
 #include "vulkanMain.hpp"
+
 #include "./VulkanHelpers/validationLayers.hpp"
 #include "./VulkanHelpers/queueFamilies.hpp"
 #include "./VulkanHelpers/swapChains.hpp"
-
 
 
 bool Vulkan::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
@@ -75,76 +79,78 @@ std::vector<const char*> Vulkan::getRequiredExtensions() {
 }
 
 void Vulkan::initWindow() {
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-    //glfwWindow = glfwCreateWindow(800, 600, applicationName, glfwGetPrimaryMonitor(), nullptr);//Makes full screen w/ res 800x600
-	glfwWindow = glfwCreateWindow(800, 600, applicationName, nullptr, nullptr);
-
-    //glfwSetWindowUserPointer(glfwWindow, this);
-
-//    glfwSetFramebufferSizeCallback(glfwWindow, frameBufferResizeCallBack);//TODO: Implement Later
+//    glfwInit();
+//    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+//
+//    //glfwWindow = glfwCreateWindow(800, 600, applicationName, glfwGetPrimaryMonitor(), nullptr);//Makes full screen w/ res 800x600
+//	glfwWindow = glfwCreateWindow(800, 600, applicationName, nullptr, nullptr);
+//
+//    //glfwSetWindowUserPointer(glfwWindow, this);
+//
+////    glfwSetFramebufferSizeCallback(glfwWindow, frameBufferResizeCallBack);//TODO: Implement Later
 
 
 }
 
 
 bool Vulkan::createInstance() {
-    if(!requiredExtensionsSet) {
-        std::cerr << "ERROR: No Vulkan Extensions have been set: Ensure that required extensions are set in Plexi Config" << std::endl;
-        return false;
-    }
-    auto extensions = getRequiredExtensions();
-
-
-    VkApplicationInfo appInfo = {};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = applicationName;
-    appInfo.applicationVersion = VK_MAKE_VERSION(0,1,0);
-    appInfo.pEngineName = "No Engine";
-    appInfo.engineVersion = VK_MAKE_VERSION(1,0,0);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
-
-    VkInstanceCreateInfo instanceInfo = {};
-    instanceInfo.sType  = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    instanceInfo.pApplicationInfo = &appInfo;
-    instanceInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-    instanceInfo.ppEnabledExtensionNames = extensions.data();
-    if(validationLayersEnabled){
-        instanceInfo.enabledLayerCount = static_cast<uint32_t>(optionalValidationLayers.size());
-        instanceInfo.ppEnabledLayerNames = optionalValidationLayers.data();
-    } else{
-        instanceInfo.enabledLayerCount = 0;
-    }
-
-    VkResult err = vkCreateInstance(&instanceInfo, nullptr, &vulkanInstance);
-
-
-    if(err != VK_SUCCESS){
-        std::cerr << "ERROR: Failed to create Vulkan instance: Device or required extensions may not be supported. Check Plexi Config. VK Error Code: " << err << std::endl;
-        return false;
-    }
-
-    return true;
+    return false;
+//    if(!requiredExtensionsSet) {
+//        std::cerr << "ERROR: No Vulkan Extensions have been set: Ensure that required extensions are set in Plexi Config" << std::endl;
+//        return false;
+//    }
+//    auto extensions = getRequiredExtensions();
+//
+//
+//    VkApplicationInfo appInfo = {};
+//    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+//    appInfo.pApplicationName = applicationName;
+//    appInfo.applicationVersion = VK_MAKE_VERSION(0,1,0);
+//    appInfo.pEngineName = "No Engine";
+//    appInfo.engineVersion = VK_MAKE_VERSION(1,0,0);
+//    appInfo.apiVersion = VK_API_VERSION_1_0;
+//
+//    VkInstanceCreateInfo instanceInfo = {};
+//    instanceInfo.sType  = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+//    instanceInfo.pApplicationInfo = &appInfo;
+//    instanceInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+//    instanceInfo.ppEnabledExtensionNames = extensions.data();
+//    if(validationLayersEnabled){
+//        instanceInfo.enabledLayerCount = static_cast<uint32_t>(optionalValidationLayers.size());
+//        instanceInfo.ppEnabledLayerNames = optionalValidationLayers.data();
+//    } else{
+//        instanceInfo.enabledLayerCount = 0;
+//    }
+//
+//    VkResult err = vkCreateInstance(&instanceInfo, nullptr, &vulkanInstance);
+//
+//
+//    if(err != VK_SUCCESS){
+//        std::cerr << "ERROR: Failed to create Vulkan instance: Device or required extensions may not be supported. Check Plexi Config. VK Error Code: " << err << std::endl;
+//        return false;
+//    }
+//
+//    return true;
 }
 
 bool Vulkan::isSupported() {
-    if(!requiredExtensionsSet) {
-        std::cerr << "ERROR: No Vulkan Extensions have been set: Ensure that required extensions are set in Plexi Config" << std::endl;
-        return false;
-    }
-
-    //validation layer support - Extensions are checked in the instance
-    if(validationLayersEnabled){
-        if(!checkValidationLayerSupport(optionalValidationLayers)) {
-            std::cerr << "WARNING: Validation Layers requested but unsupported: Verify device support and check Plexi Config" << std::endl;
-            validationLayersEnabled = false;
-        }
-    }
-
-    initWindow();
-
-    return createInstance();
+    return false;
+//    if(!requiredExtensionsSet) {
+//        std::cerr << "ERROR: No Vulkan Extensions have been set: Ensure that required extensions are set in Plexi Config" << std::endl;
+//        return false;
+//    }
+//
+//    //validation layer support - Extensions are checked in the instance
+//    if(validationLayersEnabled){
+//        if(!checkValidationLayerSupport(optionalValidationLayers)) {
+//            std::cerr << "WARNING: Validation Layers requested but unsupported: Verify device support and check Plexi Config" << std::endl;
+//            validationLayersEnabled = false;
+//        }
+//    }
+//
+//    initWindow();
+//
+//    return createInstance();
 }
 
 bool Vulkan::initBackend() {
@@ -153,31 +159,27 @@ bool Vulkan::initBackend() {
     return false;
 }
 
-void Vulkan::addGraphicsPipeline(const Plexi::Shader &VERTEX_SHADER, const Plexi::Shader &FRAGMENT_SHADER) {
+void Vulkan::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) {
 
 }
 
-void Vulkan::runBackend() {
-    while(!glfwWindowShouldClose(glfwWindow)){
-        glfwPollEvents();
-    }
-	cleanup();
+void Vulkan::submitScene() {
 
 }
-
 void Vulkan::destroyWindow() {
     glfwDestroyWindow(glfwWindow);
     glfwTerminate();
 }
+
+
 void Vulkan::cleanup() {
     //clean Up all other stuff up here
     vkDestroyInstance(vulkanInstance, nullptr);
 
     destroyWindow();
 }
-
-
 GLFWwindow* Vulkan::getWindowRef() {
     return glfwWindow;
 }
+
 

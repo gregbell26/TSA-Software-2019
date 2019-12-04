@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <iostream>
+#include <vector>
 
 struct PlexiGFX_RequiredInformation{
     const char** vulkan_DEVICE_EXTENSIONS = nullptr;
@@ -39,9 +40,17 @@ public:
 
     virtual bool initBackend() = 0;
 
-    virtual void addGraphicsPipeline(const Plexi::Shader& VERTEX_SHADER, const Plexi::Shader& FRAGMENT_SHADER) = 0;
+    virtual void createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) = 0;
 
-    virtual void runBackend() = 0;
+    virtual void submitScene() = 0;
+
+    virtual void setClearColor(const float& r, const float& g, const float& b, const float& a) = 0;
+
+    virtual void onUpdate() {
+
+    }
+
+//    virtual void runBackend() = 0;
 
     virtual void cleanup() = 0;
 
@@ -49,6 +58,10 @@ public:
     virtual GLFWwindow* getWindowRef(){
         return nullptr;
     }
+
+};
+
+class PlexiBuffer {
 
 };
 

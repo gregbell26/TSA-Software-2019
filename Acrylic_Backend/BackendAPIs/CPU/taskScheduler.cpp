@@ -34,12 +34,15 @@ int TaskScheduler::createTask()
 // Runs the threads with an infinite loop checking the queue and executing threads
 void TaskScheduler::threadRun()
 {
-    // Checking when a thread is finisheded
+    // Checking when a thread is finished
     int threadCount = 0;
     bool threadCheck = false;
 
+    // Creat thread pool
     std::thread threadPool[100];
+    // Creates a task
     Task task;
+    // Creat array for Tasks
     std::vector<Task> taskPool;
     while (Run)
     {
@@ -62,15 +65,17 @@ void TaskScheduler::threadRun()
             while (!threadCheck)
             {
                 /// Yes I commented this out cause it was breaking stuff
-//                if (/*TODO: check to make sure the thread is done*/)
-//                {
-//                    threadPool[threadCount](taskPool[taskNumber-1].function);
-//                    threadCheck = true;
-//                }
-//                else
-//                {
-//                    threadCount++;
-//                }
+
+                //TODO: check to make sure the thread is done
+                if (threadPool[threadCount-1].joinable())
+                {
+//                    threadPool[threadCount] = std::thread(taskPool[taskNumber-1].function);
+                    threadCheck = true;
+                }
+                else
+                {
+                    threadCount++;
+                }
 
                 if (threadCount >= 99)
                 {

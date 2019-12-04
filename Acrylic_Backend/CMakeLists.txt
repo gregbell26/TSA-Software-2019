@@ -13,9 +13,25 @@ set(CPU_HEADER BackendAPIs/CPU/TaskScheduler.hpp)
 set(DYNAMIC_MEMORY BackendAPIs/Dynamic memory/Hash_Table.cpp)
 set(DYNAMIC_MEMORY BackendAPIs/Dynamic memory/Hash_Table.h)
 set(SOURCE_FILES ${CPU_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp)
-set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp)
+set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp UserInput.hpp)
 
 set(TEST_CODE main.nfp.cpp)
+
+
+
+#Include OpenGL
+include_directories(./BackendAPIs/Plexi2DRenderer/GraphicsAPIs/required/glad/include)
+
+#Include GLM
+include_directories(./BackendAPIs/Plexi2DRenderer/GraphicsAPIs/required/glm/include)
+
+#Include GLFW3
+include_directories(./BackendAPIs/BackendAPIs/required/GLFW3/include)
+
+#include Nlohmann JSON
+include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
+
+
 #Load cmake modules for GLFW and Shaderc_Combined
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -52,6 +68,8 @@ else()
     message(FATAL_ERROR "Unable to detect operating system. Build halted")
 endif()
 
+#Disable GLFW includes
+add_compile_definitions(GLFW_INCLUDE_NONE)
 
 #add_library(AcrylicEngine SHARED ${SOURCE_FILES} ${HEADER_FILES}) #We are going to staticly link til we have exports
 add_library(AcrylicEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})

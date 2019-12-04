@@ -1,20 +1,73 @@
 #include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
-#include "UserInputKeys.cpp"
+#include "UserInput.cpp"
 #include <iostream>
-void doTheThing(int times){
-    std::cout << "hi: " << times<< std::endl;
+
+static float red = 0.0f;
+static float blue = 0.0f;
+static float green = 0.0f;
+static bool usingRed = true;
+UserInput::Returns doTheThing(int times){
+    float t = (float)times/100;
+    if(usingRed){
+        red += t;
+        blue -= t;
+        if(blue <= 0.0f)
+            blue = 0.0f;
+    } else {
+        blue += t;
+        red -= t;
+        if(red <= 0.0f)
+            red = 0.0f;
+    }
+    if(red >= 1.0f){
+//        red = 0.0f;
+        usingRed = false;
+    } else if(blue >= 1.0f){
+//        blue = 0.0f;
+        usingRed = true;
+    }
+    Plexi::setClearColor(red, 0.0f, blue, 1.0f);
+
+    return {};
 }
 
+UserInput::Returns scroll(double i, double j){
+    j = abs(j);
+    float t = (float)(j)/100;
+    if(usingRed){
+        red += t;
+        blue -= t;
+        if(blue <= 0.0f)
+            blue = 0.0f;
+    } else {
+        blue += t;
+        red -= t;
+        if(red <= 0.0f)
+            red = 0.0f;
+    }
+    if(red >= 1.0f){
+//        red = 0.0f;
+        usingRed = false;
+    } else if(blue >= 1.0f){
+//        blue = 0.0f;
+        usingRed = true;
+    }
+    Plexi::setClearColor(red, 0.0f, blue, 1.0f);
+    return {};
+}
 int main(){
     Plexi::initPlexi();
-    initialize();
-    addKeyMap(GLFW_KEY_W, GLFW_PRESS, doTheThing);
-    addKeyMap(GLFW_KEY_A, GLFW_PRESS, nullptr);
-    addKeyMap(GLFW_KEY_S, GLFW_PRESS, doTheThing);
-    addKeyMap(GLFW_KEY_D, GLFW_PRESS, doTheThing);
+    UserInput::initialize();
+    UserInput::addKeyMap(GLFW_KEY_W, GLFW_PRESS, doTheThing);
+    UserInput::addKeyMap(GLFW_KEY_A, GLFW_PRESS, doTheThing);
+    UserInput::addKeyMap(GLFW_KEY_S, GLFW_PRESS, doTheThing);
+    UserInput::addKeyMap(GLFW_KEY_D, GLFW_PRESS, doTheThing);
+    UserInput::setScrollFunc(scroll);
+    UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, doTheThing);
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
+        Plexi::onUpdate();
     }
     Plexi::cleanupPlexi();
 //    readJSON('a');

@@ -1,28 +1,44 @@
 #ifndef PLEXI_RENDERER_HPP
 #define PLEXI_RENDERER_HPP
 
+#include <vulkan/vulkan.h>
 
 #include <iostream>
 #include <thread>
+#include <cstdlib>
+#include <ctime>
+
 
 namespace Plexi {
+
 #ifndef PLEXI_LIBRARY_ACTIVE
 
-    const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_VULKAN;
+    const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_OPENGL;
     //Where the config will be stored
     static PlexiConfig activeConfig;
 //    std::thread plexiLoopThread;
-    static std::vector<Shader> loadedVertexShaders;
-    static std::vector<Shader> loadedFragmentShaders;
+    static std::vector<Plexi::Shaders::ShaderCreateInfo> loadedShaders;
+    static std::vector<Plexi::Buffer::BufferCreateInfo> bufferData;
+
+    static std::vector<RenderTask> renderQueue;
 
 #endif //PLEXI_LIBRARY_ACTIVE
+
     //will init Plexi to default settings
     void initPlexi();
 
     //will init Plexi to user provided settings
-    void initPlexi(const PlexiConfig&);
+    void initPlexi(PlexiConfig&);
 
-    void runPlexi();
+//    void runPlexi();
+
+
+
+    void submitScene();
+
+    void setClearColor(const float &r, const float &g, const float &b, const float &a);
+
+    void onUpdate();
 
     void cleanupPlexi();
 
