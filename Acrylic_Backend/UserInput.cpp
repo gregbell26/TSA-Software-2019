@@ -1,36 +1,15 @@
 //
 // Created by Corbin Estes on 11/20/19.
 //
-#include <iostream>
-#include <GLFW/glfw3.h>
-#include "BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
-//TODO add cursor move and exit events and parameter list
+#include "UserInput.hpp"
 namespace UserInput{
-    union Returns{
-        char str[100];
-        int integer;
-        float decimal;
-        double Double;
-        char character;
-    };
-
-    struct keyInfo {
-        int key;
-        int action;
-        Returns (*func)(int);
-    };
-
-    std::vector<keyInfo> keys;
-    Returns (*mouseButtonFunctions[8])(int);
-    Returns (*scrollFunc)(double, double);
-
-    void changeKeyMap(int key, int action, Returns (*func)(int)){
+    void changeKeyMap(int key, int action, Returns (*func)(int action)){
         for (auto & i : keys) {
             i = keyInfo{key, action, func};
         }
     }
 
-    void addKeyMap(int key, int action, Returns (*func)(int)){
+    void addKeyMap(int key, int action, Returns (*func)(int action)){
         if (func == nullptr){
             std::cout << "Invalid input function" << std::endl;
         } else {
@@ -38,7 +17,7 @@ namespace UserInput{
         }
     }
 
-    void setMouseRightFunc(int index, Returns (*func)(int)){
+    void setMouseRightFunc(int index, Returns (*func)(int action)){
         if (func == nullptr){
             std::cout << "Invalid input function" << std::endl;
         } else {
@@ -46,11 +25,27 @@ namespace UserInput{
         }
     }
 
-    void setScrollFunc(Returns (*func)(double, double)){
+    void setScrollFunc(Returns (*func)(double xoffset, double yoffset)){
         if (func == nullptr){
             std::cout << "Invalid input function" << std::endl;
         } else {
             scrollFunc = func;
+        }
+    }
+
+    void setWindowEnterFunc(Returns (*func)()){
+        if (func == nullptr){
+            std::cout << "Invalid input function" << std::endl;
+        } else {
+            enterWindowFunc = func;
+        }
+    }
+
+    void setWindowExitFunc(Returns (*func)()){
+        if (func == nullptr){
+            std::cout << "Invalid input function" << std::endl;
+        } else {
+            exitWindowFunc = func;
         }
     }
 
@@ -69,16 +64,36 @@ namespace UserInput{
     }
 
     static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
-        mouseButtonFunctions[button];
+        mouseButtonFunctions[button](action);
     }
 
     static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
         scrollFunc(xoffset, yoffset);
     }
 
+    static void cursorEnterCallback(GLFWwindow* window, int entered){
+        if (entered){
+            enterWindowFunc();
+        }
+        else{
+            exitWindowFunc();
+        }
+    }
+
+    static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos){
+        int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+        if (state == GLFW_PRESS) {
+            cursorPressedMoveFunc(xpos, ypos);
+        } else {
+            cursorMoveFunc(xpos, ypos);
+        }
+    }
+
     void initialize(){
         glfwSetKeyCallback(Plexi::getWindowRef(), keyCallback);
         glfwSetMouseButtonCallback(Plexi::getWindowRef(), mouseButtonCallback);
         glfwSetScrollCallback(Plexi::getWindowRef(), scrollCallback);
+        glfwSetCursorEnterCallback(Plexi::getWindowRef(), cursorEnterCallback);
+        glfwSetCursorPosCallback(Plexi::getWindowRef(), cursorPositionCallback);
     }
 }
