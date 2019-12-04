@@ -30,6 +30,8 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     include_directories(C:/SDKS/VulkanSDK/1.1.114.0/Include)
     #GLM
     include_directories(C:/SDKS/GLM0.9)
+    #JOSN BOI
+    include_directories(C:/SDKS/NlohmannJSON/include)
     #GLFW
     include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
 
