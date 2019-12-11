@@ -56,14 +56,20 @@ ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
             }
         }
         std::cout << "msg start \n";
-        int offset = bff2[10];
-        height = bff2[18];
-        width = bff2[22];
+        int offset;
+        try{
+        offset = bff2[10];
+        height = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
+        width = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
         bytes = bff2[28] / 8;
+        }
+        catch (std::out_of_range){
+            return;
+        }
 
         length = height * width * bytes;
 
-        std::cout << "Offset = " << offset << " Hight = " << height << " Width = " << width << " \n";
+        std::cout << "Offset = " << offset << " Height = " << height << " Width = " << width << " \n";
 
         imageData = new unsigned char[length]();
 
@@ -135,11 +141,11 @@ void ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
         Data[i + Offset] = imageData[i];
         std::cout << "Data[" << i << "] = " << (int)Data[i + Offset] << "\n";
     }
-
     Data[10] = (unsigned char)Offset;
     Data[18] = (unsigned char)height;
     Data[22] = (unsigned char)width;
     Data[28] = (unsigned char)(bytes * 8);
+
 
     fs.write((const char *)Data, length + Offset);
 
