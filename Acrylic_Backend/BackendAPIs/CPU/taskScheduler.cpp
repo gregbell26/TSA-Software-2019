@@ -39,7 +39,18 @@ void TaskScheduler::threadRun()
     bool threadCheck = false;
 
     // Creat thread pool
-    std::thread threadPool[100];
+//    std::thread threadPool[100];
+
+
+
+    std::vector<std::thread> threadPool;
+
+//    for (int i = 0; i < 100; i++)
+//    {
+//        threadPool[i].join();
+//    }
+
+
     // Creates a task
     Task task;
     // Creat array for Tasks
@@ -64,12 +75,13 @@ void TaskScheduler::threadRun()
 
             while (!threadCheck)
             {
-                /// Yes I commented this out cause it was breaking stuff
-
-                //TODO: check to make sure the thread is done
                 if (threadPool[threadCount-1].joinable())
                 {
-//                    threadPool[threadCount] = std::thread(taskPool[taskNumber-1].function);
+                    threadPool.push_back(taskPool[taskNumber-1].function);
+
+                    std::thread threadPool[threadCount](taskPool[taskNumber-1].function);
+
+                    threadPool[threadCount] = std::thread(taskPool[taskNumber-1].function);
                     threadCheck = true;
                 }
                 else
