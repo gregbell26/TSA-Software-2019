@@ -96,4 +96,22 @@ namespace UserInput{
         glfwSetCursorEnterCallback(Plexi::getWindowRef(), cursorEnterCallback);
         glfwSetCursorPosCallback(Plexi::getWindowRef(), cursorPositionCallback);
     }
+
+    void cursorHiddenToggle(GLFWwindow* window){
+        int mode = glfwGetInputMode(window, GLFW_CURSOR);
+        if (mode == GLFW_CURSOR_HIDDEN) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        }
+    }
+
+    void cursorDisabledToggle(GLFWwindow* window){
+        int mode = glfwGetInputMode(window, GLFW_CURSOR);
+        if (mode == GLFW_CURSOR_DISABLED) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+    }
 }
