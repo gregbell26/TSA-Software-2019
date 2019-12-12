@@ -81,7 +81,7 @@ void TaskScheduler::threadRun()
                     // Create a thread using member function
                     std::thread th(taskPool[taskNumber-1].function);
                     threadPool.push_back(th);
-                    
+
                     // Badness
                     /*std::thread transfer = taskPool[taskNumber-1].function;
                     transfer.detach() = ;
