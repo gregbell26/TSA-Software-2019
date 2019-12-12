@@ -8,7 +8,7 @@ static float blue = 0.0f;
 static float green = 0.0f;
 static bool usingRed = true;
 UserInput::Returns doTheThing(int times){
-    float t = (float)times/100;
+    float t = (float)times/10;
     if(usingRed){
         red += t;
         blue -= t;
@@ -34,7 +34,7 @@ UserInput::Returns doTheThing(int times){
 
 UserInput::Returns scroll(double i, double j){
     j = abs(j);
-    float t = (float)(j)/100;
+    float t = (float)(j)/1000;
     if(usingRed){
         red += t;
         blue -= t;
@@ -65,6 +65,7 @@ int main(){
     UserInput::addKeyMap(GLFW_KEY_D, GLFW_PRESS, doTheThing);
     UserInput::setScrollFunc(scroll);
     UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, doTheThing);
+    Plexi::setClearColor(0.1,0.1,0.1,1);
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();
