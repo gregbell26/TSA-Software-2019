@@ -63,6 +63,7 @@ int main(){
     UserInput::addKeyMap(GLFW_KEY_A, GLFW_PRESS, doTheThing);
     UserInput::addKeyMap(GLFW_KEY_S, GLFW_PRESS, doTheThing);
     UserInput::addKeyMap(GLFW_KEY_D, GLFW_PRESS, doTheThing);
+    UserInput::setCursorPressedMoveFunc(scroll);
     UserInput::setScrollFunc(scroll);
     UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, doTheThing);
     Plexi::setClearColor(0.1,0.1,0.1,1);

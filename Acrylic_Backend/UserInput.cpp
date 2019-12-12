@@ -33,6 +33,15 @@ namespace UserInput{
         }
     }
 
+    void setCursorPressedMoveFunc(Returns(*func)(double xpos, double ypos)){
+        if(func == nullptr){
+            std::cout << "Invalid input function" << std::endl;
+        } else {
+            cursorPressedMoveFunc = func;
+        }
+    }
+
+
     void setWindowEnterFunc(Returns (*func)()){
         if (func == nullptr){
             std::cout << "Invalid input function" << std::endl;
@@ -87,7 +96,8 @@ namespace UserInput{
     static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos){
         int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
         if (state == GLFW_PRESS) {
-            cursorPressedMoveFunc(xpos, ypos);
+            if(cursorPressedMoveFunc != nullptr)
+                cursorPressedMoveFunc(xpos, ypos);
         } else {
             if(cursorMoveFunc != nullptr)
                 cursorMoveFunc(xpos, ypos);
