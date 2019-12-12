@@ -39,22 +39,23 @@ void TaskScheduler::threadRun()
     bool threadCheck = false;
 
     // Creat thread pool
-//    std::thread threadPool[100];
+    // std::thread threadPool[100];
 
 
 
     std::vector<std::thread> threadPool;
 
-//    for (int i = 0; i < 100; i++)
-//    {
-//        threadPool[i].join();
-//    }
+    for (int i = 0; i < 100; i++)
+    {
+        threadPool[i].join();
+    }
 
 
     // Creates a task
     Task task;
     // Creat array for Tasks
     std::vector<Task> taskPool;
+
     while (Run)
     {
         // Checks to ensure the function cycled
@@ -77,11 +78,19 @@ void TaskScheduler::threadRun()
             {
                 if (threadPool[threadCount-1].joinable())
                 {
+                    // Create a thread using member function
+                    std::thread th(taskPool[taskNumber-1].function);
+                    threadPool.push_back(th);
+                    
+                    // Badness
+                    /*std::thread transfer = taskPool[taskNumber-1].function;
+                    transfer.detach() = ;
                     threadPool.push_back(taskPool[taskNumber-1].function);
 
                     std::thread threadPool[threadCount](taskPool[taskNumber-1].function);
 
                     threadPool[threadCount] = std::thread(taskPool[taskNumber-1].function);
+*/
                     threadCheck = true;
                 }
                 else
