@@ -64,19 +64,23 @@ namespace UserInput{
     }
 
     static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
-        mouseButtonFunctions[button](action);
+        if(mouseButtonFunctions[button] != nullptr)
+            mouseButtonFunctions[button](action);
     }
 
     static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
-        scrollFunc(xoffset, yoffset);
+        if(scrollFunc != nullptr)
+            scrollFunc(xoffset, yoffset);
     }
 
     static void cursorEnterCallback(GLFWwindow* window, int entered){
         if (entered){
-            enterWindowFunc();
+            if(enterWindowFunc != nullptr)
+                enterWindowFunc();
         }
         else{
-            exitWindowFunc();
+            if(exitWindowFunc != nullptr)
+                exitWindowFunc();
         }
     }
 
@@ -85,7 +89,8 @@ namespace UserInput{
         if (state == GLFW_PRESS) {
             cursorPressedMoveFunc(xpos, ypos);
         } else {
-            cursorMoveFunc(xpos, ypos);
+            if(cursorMoveFunc != nullptr)
+                cursorMoveFunc(xpos, ypos);
         }
     }
 
