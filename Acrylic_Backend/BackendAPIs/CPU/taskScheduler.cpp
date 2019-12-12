@@ -11,7 +11,7 @@
 #include <thread>
 
 // Gets the function pointer, elapse time and       start time if applicable
-void TaskScheduler::addTask(int cycles, int start, void* function)
+void TaskScheduler::addTask(int cycles, int start, void (*function)())
 {
     // Initialize typeid non boolean values
 //    const type_info;
@@ -79,7 +79,7 @@ void TaskScheduler::threadRun()
                 if (threadPool[threadCount-1].joinable())
                 {
                     // Create a thread using member function
-                    std::thread th(taskPool[taskNumber-1].function);//note: in instantiation of function template specialization 'std::__1::thread::thread<void *&, void>' requested here
+                    std::thread th(taskPool[taskNumber-1].function, *taskPool[taskNumber-1].function);//note: in instantiation of function template specialization 'std::__1::thread::thread<void *&, void>' requested here
                     threadPool.push_back(th);//note: in instantiation of member function 'std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread> >::push_back' requested here
 
                     // Badness
