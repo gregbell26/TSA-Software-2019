@@ -5,15 +5,15 @@ project(Plexi2DRenderer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(VULKAN_SOURCE PlexiBackend/PlexiBackend_Vulkan/vulkanMain.cpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/Creators/GraphicsPiplines.cpp)
-set(VULKAN_HEADER PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/queueFamilies.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/swapChains.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/validationLayers.hpp)
+#set(VULKAN_SOURCE PlexiBackend/PlexiBackend_Vulkan/vulkanMain.cpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/Creators/GraphicsPiplines.cpp)
+#set(VULKAN_HEADER PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/queueFamilies.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/swapChains.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/validationLayers.hpp)
 
 set(OPENGL_SOURCE ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.cpp)
 set(OPENGL_HEADER ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.hpp)
 
 
-set(SOURCE_FILES ${VULKAN_SOURCE} ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/plexiShaders.cpp)
-set(HEADER_FILES ${VULKAN_HEADER} ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/plexiShaders.hpp PlexiBackend/plexiBuffer.hpp)
+set(SOURCE_FILES ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/plexiShaders.cpp)
+set(HEADER_FILES ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/plexiShaders.hpp PlexiBackend/plexiBuffer.hpp)
 
 
 
@@ -46,7 +46,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     #We have to do this because windows doesn't havea central include directory
     #PlexiBackend_Vulkan
-    include_directories(C:/SDKS/VulkanSDK/1.1.114.0/Include)
+#    include_directories(C:/SDKS/VulkanSDK/1.1.114.0/Include)
 
     # #GLM
     # include_directories(C:/SDKS/GLM0.9)
@@ -74,7 +74,7 @@ endif()
 add_library(glad STATIC ${GLAD_SOURCE})
 
 #Find all packages for Plexi
-find_package(vulkan REQUIRED)
+#find_package(vulkan REQUIRED)
 # find_package(glfw3 3.3 REQUIRED)
 # find_package(shaderc_combined REQUIRED)
 
@@ -86,7 +86,7 @@ add_executable(PlexiTester1000 ${TST_FILES})
 
 
 #Link Plexi with libs
-target_link_libraries(Plexi2DRenderer Vulkan::Vulkan)
+#target_link_libraries(Plexi2DRenderer Vulkan::Vulkan)
 # target_link_libraries(Plexi2DRenderer ${SHADERC_COMBINED})
 # target_link_libraries(Plexi2DRenderer ${GLFW3_LIBRARY})
 

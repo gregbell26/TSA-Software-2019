@@ -30,7 +30,8 @@ void Plexi::initPlexi() {
     if(plexiConfig.userPreferredGFXBackend == PLEXI_VULKAN) {
         //Only for vulkan - Do check to see if these need to be populated in the initPlexi function - If they aren't runtime error as this is information that Vulkan needs to know
         std::vector<const char *> deviceExtensions = {
-                VK_KHR_SWAPCHAIN_EXTENSION_NAME};//Init to blank bc we are going to assume that if the user wants to render that they will say I NEED SWAPCHAIN SUPPORT
+//                VK_KHR_SWAPCHAIN_EXTENSION_NAME
+        };//Init to blank bc we are going to assume that if the user wants to render that they will say I NEED SWAPCHAIN SUPPORT
         std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
 
         plexiConfig.plexiGFXRequiredInformation.vulkan_DEVICE_EXTENSIONS = deviceExtensions.data();
@@ -40,7 +41,7 @@ void Plexi::initPlexi() {
 
         plexiConfig.plexiGFXOptionalInformation.vulkan_VALIDATION_LAYERS = validationLayers.data();
         plexiConfig.plexiGFXOptionalInformation.vulkan_VALID_LAYER_SIZE = validationLayers.size();
-    } else if (plexiConfig.userPreferredGFXBackend = PLEXI_OPENGL){
+    } else if (plexiConfig.userPreferredGFXBackend == PLEXI_OPENGL){
 
     }
 

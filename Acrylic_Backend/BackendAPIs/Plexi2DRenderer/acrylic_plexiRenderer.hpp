@@ -1,7 +1,7 @@
 #ifndef PLEXI_RENDERER_HPP
 #define PLEXI_RENDERER_HPP
 
-#include <vulkan/vulkan.h>
+//#include <vulkan/vulkan.h>
 
 #include <iostream>
 #include <thread>
