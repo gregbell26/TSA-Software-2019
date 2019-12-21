@@ -35,13 +35,14 @@ public:
 
 private:
     bool createWindow();
+
     bool initCore();
 
     bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName);
 
-    bool createVertexBuffer(float* vertices, const size_t& size);
+    bool createVertexBuffer(const float* vertices, const size_t& size);
 
-    bool createIndexBuffer(uint32_t* indices, const size_t& size);
+    bool createIndexBuffer(const uint32_t* indices, const size_t& size);
 
     bool createVertexArray(const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo);
 

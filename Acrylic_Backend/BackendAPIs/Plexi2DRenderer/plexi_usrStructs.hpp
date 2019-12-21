@@ -3,6 +3,22 @@
 
 
 namespace Plexi {
+    struct PlexiColor {
+        float red;
+        float green;
+        float blue;
+        float alpha;
+
+        PlexiColor(float r, float g, float b, float a) :
+            red(r), green(g), blue(b), alpha(a)
+        {}
+
+        PlexiColor(float r, float g, float b) :
+                red(r), green(g), blue(b), alpha(1.0f)
+        {}
+    };
+
+
     struct PlexiConfig {
         PLEXI_GFX_BACKENDS userPreferredGFXBackend = PLEXI_NULL_BACKEND;
 
@@ -12,8 +28,11 @@ namespace Plexi {
         PlexiGFX_OptionalInformation plexiGFXOptionalInformation = {};
 
         int shaderCount = 0;
-        std::vector<std::string> vertexShaderNames = {};
-        std::vector<std::string> fragmentShaderNames = {};
+        std::vector<Plexi::Shaders::ShaderCreateInfo> shaderCreateInfos = {};
+        Plexi::Shaders::ShaderLanguage defaultShaderLanguage = Plexi::Shaders::UNKNOWN;
+        std::vector<Plexi::Buffer::BufferCreateInfo> bufferCreateInfos = {};
+
+        PlexiColor clearColor = {0, 0,0};
 
         //So that the user can't directly access these vars.
         void setPlexiInit(bool isPlexiInit){
@@ -22,6 +41,10 @@ namespace Plexi {
 
         bool getPlexiInit(){
             return plexiInit;
+        }
+
+        ~PlexiConfig(){
+            //Clean up!
         }
 
     protected:

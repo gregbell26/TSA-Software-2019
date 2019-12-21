@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 
+
 struct PlexiGFX_RequiredInformation{
     const char** vulkan_DEVICE_EXTENSIONS = nullptr;
 

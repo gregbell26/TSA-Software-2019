@@ -66,7 +66,7 @@ int main(){
     UserInput::setCursorPressedMoveFunc(scroll);
     UserInput::setScrollFunc(scroll);
     UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, doTheThing);
-    Plexi::setClearColor(0.1,0.1,0.1,1);
+    Plexi::setClearColor(0.1f,0.1f,0.1f,1.0f);
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();

@@ -30,7 +30,7 @@ ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
         // get length of file:
         is.seekg(0, is.end);
 //                int length = is.tellg();
-        length = is.tellg();
+        length = static_cast<int>(is.tellg());
         is.seekg(0, is.beg);
 
         char *buffer = new char[length];

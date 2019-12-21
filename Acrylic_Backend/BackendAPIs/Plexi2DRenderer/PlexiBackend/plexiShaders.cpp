@@ -108,9 +108,10 @@ std::string Plexi::Shaders::loadGLSLShaderFromFile(const std::filesystem::path &
         std::cerr << "An error occurred when attempting to open " << shaderPath << std::endl;
         return std::string();
     }
-    std::string loadedShader;
-    while(std::getline(fin, loadedShader)){
-
+    std::string temp;
+    std::string loadedShader = "";
+    while(std::getline(fin, temp)){
+        loadedShader += temp;
     }
     fin.close();
     return loadedShader;
@@ -159,13 +160,15 @@ std::filesystem::path Plexi::Shaders::locateShader(const std::filesystem::path &
         }
     }
 
-    if(possMatches != 1) {
-        std::cout << "Warning: There were " << possMatches << " possible matches located. Using " << validResult;
-    }
-
     if(possMatches == 0){
         std::cerr << "No matches found for shader \'" << shaderName << "\'" << std::endl;
+
+    } else if(possMatches != 1) {
+        std::cout << "Warning: There were " << possMatches << " possible matches located. Using " << validResult << std::endl;
+
     }
+
+
 
     return validResult;
 }

@@ -190,7 +190,7 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
     return true;
 }
 
-bool OpenGL::createVertexBuffer(float *vertices, const size_t &size) {
+bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size) {
     glGenBuffers(1, &vertexBufferId);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
@@ -199,7 +199,7 @@ bool OpenGL::createVertexBuffer(float *vertices, const size_t &size) {
     return true;
 }
 
-bool OpenGL::createIndexBuffer(uint32_t *indices, const size_t &size) {
+bool OpenGL::createIndexBuffer(const uint32_t *indices, const size_t &size) {
     glGenBuffers(1, &indexBufferId);
     glBindBuffer(GL_ARRAY_BUFFER, indexBufferId);
     glBufferData(GL_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);//The cherno does it like this so I guess Ill do it?
@@ -208,7 +208,7 @@ bool OpenGL::createIndexBuffer(uint32_t *indices, const size_t &size) {
 }
 
 bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCreateInfo) {
-    if(bufferCreateInfo.bufferLayout->getBufferElements().empty()){
+    if(bufferCreateInfo.getLayout().getBufferElements().empty()){
         std::cerr << "Buffer Layout is empty" << std::endl;
         return false;
     }
@@ -219,9 +219,9 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
 
-    const auto& bufferLayout = bufferCreateInfo.bufferLayout;
+    const auto& bufferLayout = bufferCreateInfo.getLayout();
 
-    for(const auto& element : *bufferLayout){
+    for(const auto& element : bufferLayout){
         glEnableVertexAttribArray(vertexBufferIndex);
 
         glVertexAttribPointer(
@@ -229,7 +229,7 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
                 Plexi::Shaders::getDataTypeCount(element.dataType),
                 Plexi::Shaders::convertDataTypeToGLSLBaseType(element.dataType),
                 element.normalized ? GL_TRUE : GL_FALSE,
-                bufferLayout->getStride(),
+                bufferLayout.getStride(),
                 (const void*) element.offset
         );
         //todo Add error check

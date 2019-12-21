@@ -36,21 +36,21 @@ namespace Plexi::Shaders {
     };
 
     struct ShaderCreateInfo {
-        std::string shaderName;
-        ShaderLanguage shaderLanguage;
-        std::string glslVertexCode;
-        std::string glslFragmentCode;
+        std::string shaderName = "";
+        ShaderLanguage shaderLanguage = UNKNOWN;
+        std::string glslVertexCode = "";
+        std::string glslFragmentCode = "";
         std::shared_ptr<uint32_t > spirvVertexCode;
         std::shared_ptr<uint32_t > spirvFragmentCode;
-        size_t spirvVertexSize;
-        size_t spirvFragmentSize;
+        size_t spirvVertexSize = 0;
+        size_t spirvFragmentSize = 0;
 
-        ShaderCreateInfo(std::string name, ShaderLanguage language) :
-        shaderName(std::move(name)), shaderLanguage(language), glslVertexCode(""), glslFragmentCode("")
-        {
-            spirvVertexSize = 0;
-            spirvFragmentSize = 0;
-        }
+//        ShaderCreateInfo(std::string name, ShaderLanguage language) :
+//        shaderName(std::move(name)), shaderLanguage(language), glslVertexCode(""), glslFragmentCode("")
+//        {
+//            spirvVertexSize = 0;
+//            spirvFragmentSize = 0;
+//        }
         //Simple function to check if the required shader data is set
         bool isComplete() const;
     };
