@@ -5,8 +5,6 @@
 #include "OpenGLMain.hpp"
 
 bool OpenGL::createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName, pipelineComponentMap& pipelineMap) {
-    // Read our shaders into the appropriate buffers
-
     // Create an empty vertex shader handle
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 

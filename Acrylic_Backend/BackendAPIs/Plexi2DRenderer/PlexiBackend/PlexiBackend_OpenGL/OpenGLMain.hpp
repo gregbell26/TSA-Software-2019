@@ -51,6 +51,7 @@ private:
 
     bool initCore();
 
+    //Pipeline Helper Functions
     bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName, pipelineComponentMap& pipelineMap);
 
     bool createVertexBuffer(const float* vertices, const size_t& size, pipelineComponentMap& pipelineMap);
@@ -59,9 +60,10 @@ private:
 
     bool createVertexArray(const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo, pipelineComponentMap& pipelineMap);
 
+    void cleanUpGraphicsPipeline(const std::string& pipelineName);
+
     void clear();
 
-    void cleanUpGraphicsPipeline(const std::string& pipelineName);
 
 public:
 
@@ -71,12 +73,6 @@ private:
 
     GLFWwindow* glfwWindow;
 
-    //Maybe add this as a vector in future
-    std::map<std::string, GLuint> activeShaderProgramIds;
-    //Move so that we can have multiple graphics pipe lines open at once
-    GLuint vertexBufferId;
-    GLuint indexBufferId;
-    GLuint vertexArrayId;
     uint32_t vertexBufferIndex = 0;
 
     std::map<std::string, pipelineComponentMap> activePipelines;

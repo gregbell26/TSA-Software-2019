@@ -15,7 +15,7 @@ struct PlexiGFX_RequiredInformation{
     std::string appName = "powered by Plexi 2D";
 };
 
-struct PlexiGFX_OptionalInformation{
+struct PlexiGFX_OptionalInformation {
     const char** vulkan_DEVICE_EXTENSIONS = nullptr;
 
     size_t vulkan_EXT_SIZE = 0;
@@ -28,8 +28,7 @@ struct PlexiGFX_OptionalInformation{
 
 class PlexiShader{
 public:
-
-
+    //Im gonna wanna do something with this soon
 };
 
 
@@ -56,8 +55,6 @@ public:
     virtual void onUpdate() {
 
     }
-
-//    virtual void runBackend() = 0;
 
     virtual void cleanup() = 0;
 
