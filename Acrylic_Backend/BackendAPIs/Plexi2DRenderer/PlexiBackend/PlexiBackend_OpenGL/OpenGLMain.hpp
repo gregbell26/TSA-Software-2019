@@ -5,7 +5,20 @@
 #include <glad/glad.h>
 #include <map>
 
+#define pipelineComponentMap std::map<OPEN_GL_GFX_PIPELINE_COMPONENT_IDS, GLuint>
+
+
 class OpenGL: public PlexiGFXBackend {
+protected:
+    //Enums and Config
+    enum OPEN_GL_GFX_PIPELINE_COMPONENT_IDS {
+        SHADER_PROGRAM = 0,
+        VERTEX_BUFFER,
+        INDEX_BUFFER,
+        VERTEX_ARRAY
+
+    };
+
 public:
     OpenGL() = default;
     ~OpenGL() override = default;
@@ -38,17 +51,17 @@ private:
 
     bool initCore();
 
-    bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName);
+    bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName, pipelineComponentMap& pipelineMap);
 
-    bool createVertexBuffer(const float* vertices, const size_t& size);
+    bool createVertexBuffer(const float* vertices, const size_t& size, pipelineComponentMap& pipelineMap);
 
-    bool createIndexBuffer(const uint32_t* indices, const size_t& size);
+    bool createIndexBuffer(const uint32_t* indices, const size_t& size, pipelineComponentMap& pipelineMap);
 
-    bool createVertexArray(const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo);
+    bool createVertexArray(const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo, pipelineComponentMap& pipelineMap);
 
     void clear();
 
-    void cleanUpGraphicsPipeline();
+    void cleanUpGraphicsPipeline(const std::string& pipelineName);
 
 public:
 
@@ -60,10 +73,13 @@ private:
 
     //Maybe add this as a vector in future
     std::map<std::string, GLuint> activeShaderProgramIds;
+    //Move so that we can have multiple graphics pipe lines open at once
     GLuint vertexBufferId;
     GLuint indexBufferId;
     GLuint vertexArrayId;
     uint32_t vertexBufferIndex = 0;
+
+    std::map<std::string, pipelineComponentMap> activePipelines;
 
 };
 

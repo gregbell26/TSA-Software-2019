@@ -75,149 +75,35 @@ bool OpenGL::initBackend() {
     return true;
 }
 
-bool OpenGL::createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName) {
-    // Read our shaders into the appropriate buffers
 
-    // Create an empty vertex shader handle
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-    // Send the vertex shader source code to GL
-    // Note that std::string's .c_str is NULL character terminated.
-    auto  *source = (const GLchar *)vertexSource.c_str();
-    glShaderSource(vertexShader, 1, &source, 0);
-
-    // Compile the vertex shader
-    glCompileShader(vertexShader);
-
-    GLint isCompiled = 0;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-
-    if(isCompiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-
-        // We don't need the shader anymore.
-        glDeleteShader(vertexShader);
-
-        // Use the infoLog as you see fit.
-        std::cerr << "OpenGL Shader Compilation Error: " << infoLog.data() << std::endl;
-
-        // In this simple program, we'll just leave
-        return false;
-    }
-
-// Create an empty fragment shader handle
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-// Send the fragment shader source code to GL
-// Note that std::string's .c_str is NULL character terminated.
-    source = (const GLchar *)fragmentSource.c_str();
-    glShaderSource(fragmentShader, 1, &source, 0);
-
-// Compile the fragment shader
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-
-        // We don't need the shader anymore.
-        glDeleteShader(fragmentShader);
-        // Either of them. Don't leak shaders.
-        glDeleteShader(vertexShader);
-
-        // Use the infoLog as you see fit.
-
-        std::cerr << "OpenGL Shader compilation error " << infoLog.data() << std::endl;
-        // In this simple program, we'll just leave
-        return false;
-    }
-
-    // Vertex and fragment shaders are successfully compiled.
-    // Now time to link them together into a program.
-    // Get a program object.
-    GLuint program = glCreateProgram();
-
-    // Attach our shaders to our program
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-
-    // Link our program
-    glLinkProgram(program);
-
-    // Note the different functions here: glGetProgram* instead of glGetShader*.
-    GLint isLinked = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
-    if (isLinked == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-
-        // We don't need the program anymore.
-        glDeleteProgram(program);
-        // Don't leak shaders either.
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-
-        // Use the infoLog as you see fit.
-        std::cerr << "OpenGL Shader link error: " << infoLog.data() << std::endl;
-        // In this simple program, we'll just leave
-        return false;
-    }
-
-    activeShaderProgramIds[shaderProgramName] =program;
-
-    // Always detach shaders after a successful link.
-    glDetachShader(program, vertexShader);
-    glDetachShader(program, fragmentShader);
-
-
-    return true;
-}
-
-bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size) {
-    glGenBuffers(1, &vertexBufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
+bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size, pipelineComponentMap& pipelineMap) {
+    glGenBuffers(1, &pipelineMap[VERTEX_BUFFER]);
+    glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[VERTEX_BUFFER]);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 
     //Todo check for errors - Pos add error Callback?
     return true;
 }
 
-bool OpenGL::createIndexBuffer(const uint32_t *indices, const size_t &size) {
-    glGenBuffers(1, &indexBufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, indexBufferId);
+bool OpenGL::createIndexBuffer(const uint32_t *indices, const size_t &size, pipelineComponentMap& pipelineMap) {
+    glGenBuffers(1, &pipelineMap[INDEX_BUFFER]);
+    glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[INDEX_BUFFER]);
     glBufferData(GL_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);//The cherno does it like this so I guess Ill do it?
 
     return true;
 }
 
-bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCreateInfo) {
+bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCreateInfo, pipelineComponentMap& pipelineMap) {
     if(bufferCreateInfo.getLayout().getBufferElements().empty()){
         std::cerr << "Buffer Layout is empty" << std::endl;
         return false;
     }
 
-    glGenVertexArrays(1, &vertexArrayId);//I have no idea why its called gen and not create
+    glGenVertexArrays(1, &pipelineMap[VERTEX_ARRAY]);//I have no idea why its called gen and not create
 
-    glBindVertexArray(vertexArrayId);
+    glBindVertexArray(pipelineMap[VERTEX_ARRAY]);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
+    glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[VERTEX_ARRAY]);
 
     const auto& bufferLayout = bufferCreateInfo.getLayout();
 
@@ -236,9 +122,9 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
         vertexBufferIndex++;
     }
 
-    glBindVertexArray(vertexArrayId);
+    glBindVertexArray(pipelineMap[VERTEX_ARRAY]);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pipelineMap[INDEX_BUFFER]);
 
     return true;
 
@@ -246,6 +132,13 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
 
 void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) {
     std::cout << "Attempting to create " << bufferCreateInfo.shaderName << " graphics pipeline" << std::endl;
+    //Create Pipeline
+    pipelineComponentMap pipelineMap = {
+            {SHADER_PROGRAM, 0},
+            {VERTEX_BUFFER, 0},
+            {INDEX_BUFFER, 0},
+            {VERTEX_ARRAY, 0}
+    };
 
     if(!shaderCreateInfo.isComplete()){
         //Error message Already displayed. We don't need to do it again
@@ -253,25 +146,27 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
     }
 
     std::cout << "Attempting to create OpenGL Shader " << shaderCreateInfo.shaderName << std::endl;
-    if(!createShaders(shaderCreateInfo.glslVertexCode, shaderCreateInfo.glslFragmentCode, shaderCreateInfo.shaderName)){
+    if(!createShaders(shaderCreateInfo.glslVertexCode, shaderCreateInfo.glslFragmentCode, shaderCreateInfo.shaderName, pipelineMap)){
         //Same as above
         return;
     }
 
     std::cout << "Shader created successfully" << std::endl;
 
-    createVertexBuffer(bufferCreateInfo.vertexArray, bufferCreateInfo.vertexArraySize);
+    createVertexBuffer(bufferCreateInfo.vertexArray, bufferCreateInfo.vertexArraySize, pipelineMap);
 
-    createIndexBuffer(bufferCreateInfo.indexArray, bufferCreateInfo.indexArraySize);
+    createIndexBuffer(bufferCreateInfo.indexArray, bufferCreateInfo.indexArraySize, pipelineMap);
 
     //Todo Move this vertex array stuff into a struct or something
 
-    if(!createVertexArray(bufferCreateInfo)){
+    if(!createVertexArray(bufferCreateInfo, pipelineMap)){
 
         return;
     }
 
-    glUseProgram(activeShaderProgramIds[shaderCreateInfo.shaderName]);
+    activePipelines.insert(std::pair(bufferCreateInfo.shaderName, pipelineMap));//Not passing by ref bc we need this always
+
+    glUseProgram(pipelineMap[SHADER_PROGRAM]);
 
 
 }
@@ -285,12 +180,12 @@ void OpenGL::submitScene() {
 }
 
 void OpenGL::onUpdate() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    clear();
 }
 
-void OpenGL::cleanUpGraphicsPipeline() {
+void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
 
-    for(auto& [key, item] : activeShaderProgramIds){
+    for(auto& [key, item] : activePipelines[pipelineName]){
 
     }
 }
@@ -306,6 +201,7 @@ GLFWwindow *OpenGL::getWindowRef() {
 }
 
 void OpenGL::clear() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 }
 

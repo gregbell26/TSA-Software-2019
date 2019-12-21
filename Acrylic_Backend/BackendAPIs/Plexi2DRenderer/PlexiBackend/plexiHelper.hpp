@@ -26,8 +26,14 @@ struct PlexiGFX_OptionalInformation{
 
 };
 
+class PlexiShader{
+public:
 
-class PlexiGFXBackend {
+
+};
+
+
+class PlexiGFXBackend: public PlexiShader {
 
 public:
     PlexiGFXBackend() = default;

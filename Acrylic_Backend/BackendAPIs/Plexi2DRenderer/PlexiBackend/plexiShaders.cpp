@@ -103,17 +103,24 @@ std::string Plexi::Shaders::loadGLSLShaderFromFile(const std::filesystem::path &
         std::cerr << "Invalid shader path provided" << std::endl;
         return std::string();
     }
-    std::ifstream fin(shaderPath);
+    std::ifstream fin(shaderPath, std::ios::binary);
     if(!fin.is_open()){
-        std::cerr << "An error occurred when attempting to open " << shaderPath << std::endl;
+        std::cerr << "An error occurred when attempting to open " << shaderPath.filename() << std::endl;
         return std::string();
     }
-    std::string temp;
-    std::string loadedShader = "";
-    while(std::getline(fin, temp)){
-        loadedShader += temp;
+
+    fin.seekg(0, std::ios::end);
+    size_t fileSize = fin.tellg();
+    fin.seekg(0, std::ios::beg);
+    if(fileSize == -1){
+        std::cerr << "Failed to read shader " << shaderPath.filename() << std::endl;
+        return std::string();
     }
+    std::string loadedShader;
+    loadedShader.resize(fileSize);
+    fin.read(&loadedShader[0], fileSize);
     fin.close();
+
     return loadedShader;
 }
 

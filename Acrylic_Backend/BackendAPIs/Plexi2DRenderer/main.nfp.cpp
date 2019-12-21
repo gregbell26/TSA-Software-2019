@@ -4,7 +4,6 @@
 
 int main(){
     Plexi::initPlexi();
-    glfwSwapInterval(30);
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();
