@@ -1,8 +1,9 @@
 #define PLEXI_LIBRARY_ACTIVE
 #include  "../plexiShaders.hpp"
 #include "./../plexiBuffer.hpp"
-//#include "./../../plexi_usrStructs.hpp"
 #include "./../plexiHelper.hpp"
+
+#include "OpenGL2DTexture.hpp"
 
 #include "OpenGLMain.hpp"
 
@@ -131,7 +132,7 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
 }
 
 void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) {
-    std::cout << "Attempting to create " << bufferCreateInfo.shaderName << " graphics pipeline" << std::endl;
+    std::cout << "Attempting to create \'" << bufferCreateInfo.shaderName << "\' graphics pipeline" << std::endl;
     //Create Pipeline
     pipelineComponentMap pipelineMap = {
             {SHADER_PROGRAM, 0},
@@ -145,13 +146,13 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
         return;
     }
 
-    std::cout << "Attempting to create OpenGL Shader " << shaderCreateInfo.shaderName << std::endl;
+    std::cout << "Attempting to create OpenGL Shader \'" << shaderCreateInfo.shaderName << "\'" << std::endl;
     if(!createShaders(shaderCreateInfo.glslVertexCode, shaderCreateInfo.glslFragmentCode, shaderCreateInfo.shaderName, pipelineMap)){
         //Same as above
         return;
     }
 
-    std::cout << "Shader created successfully" << std::endl;
+    std::cout << "Shader Created Successfully" << std::endl;
 
     createVertexBuffer(bufferCreateInfo.vertexArray, bufferCreateInfo.vertexArraySize, pipelineMap);
 
@@ -166,7 +167,11 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
 
     activePipelines.insert(std::pair(bufferCreateInfo.shaderName, pipelineMap));//Not passing by ref bc we need this always
 
+    std::cout << "Graphics Pipeline Created Successfully" << std::endl;
+
     glUseProgram(pipelineMap[SHADER_PROGRAM]);
+
+    setInt(bufferCreateInfo.shaderName, "texture2D", 0);
 
 
 }
@@ -196,14 +201,21 @@ void OpenGL::cleanup() {
     glfwTerminate();
 }
 
-GLFWwindow *OpenGL::getWindowRef() {
-    return glfwWindow;
-}
 
 void OpenGL::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 }
+
+void OpenGL::addTexture(Plexi2DTexture* texture) {
+
+}
+
+Plexi2DTexture* OpenGL::getNewTexture() {
+    return new OpenGL2DTexture();
+}
+
+
 
 
 

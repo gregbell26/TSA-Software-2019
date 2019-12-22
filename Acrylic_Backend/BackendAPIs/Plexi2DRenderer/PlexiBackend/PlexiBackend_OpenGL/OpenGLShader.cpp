@@ -117,3 +117,38 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
     return true;
 }
 
+void OpenGL::setInt(const std::string &pipelineName, const std::string &uniformName, const int &newValue) {
+    GLint uniformLocation = glGetUniformLocation(activePipelines[pipelineName][SHADER_PROGRAM], uniformName.c_str());
+    glUniform1i(uniformLocation, newValue);
+}
+
+void OpenGL::setFloat(const std::string& pipelineName, const std::string& uniformName, const float& newValue) {
+    GLint uniformLocation = glGetUniformLocation(activePipelines[pipelineName][SHADER_PROGRAM], uniformName.c_str());
+    glUniform1f(uniformLocation, newValue);
+}
+
+void OpenGL::setFloat2(const std::string& pipelineName, const std::string& uniformName, const glm::vec2& newValue) {
+    GLint uniformLocation = glGetUniformLocation(activePipelines[pipelineName][SHADER_PROGRAM], uniformName.c_str());
+    glUniform2f(uniformLocation, newValue.x, newValue.y);
+}
+
+void OpenGL::setFloat3(const std::string& pipelineName, const std::string& uniformName, const glm::vec3& newValue) {
+    GLint uniformLocation = glGetUniformLocation(activePipelines[pipelineName][SHADER_PROGRAM], uniformName.c_str());
+    glUniform3f(uniformLocation, newValue.x, newValue.y, newValue.z);
+}
+
+void OpenGL::setFloat4(const std::string& pipelineName, const std::string& uniformName, const glm::vec4& newValue) {
+    GLint uniformLocation = glGetUniformLocation(activePipelines[pipelineName][SHADER_PROGRAM], uniformName.c_str());
+    glUniform4f(uniformLocation, newValue.x, newValue.y, newValue.z, newValue.w);
+}
+
+void OpenGL::setMat3(const std::string& pipelineName, const std::string& uniformName, const glm::mat3& newValue) {
+    GLint uniformLocation = glGetUniformLocation(activePipelines[pipelineName][SHADER_PROGRAM], uniformName.c_str());
+    glUniformMatrix3fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(newValue));
+}
+
+void OpenGL::setMat4(const std::string& pipelineName, const std::string& uniformName, const glm::mat4& newValue) {
+    GLint uniformLocation = glGetUniformLocation(activePipelines[pipelineName][SHADER_PROGRAM], uniformName.c_str());
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(newValue));
+}
+

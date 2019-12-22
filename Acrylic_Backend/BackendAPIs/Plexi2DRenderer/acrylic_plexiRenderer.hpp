@@ -1,8 +1,6 @@
 #ifndef PLEXI_RENDERER_HPP
 #define PLEXI_RENDERER_HPP
 
-//#include <vulkan/vulkan.h>
-
 #include <iostream>
 #include <thread>
 #include <cstdlib>
@@ -12,6 +10,7 @@
 namespace Plexi {
 
 #ifndef PLEXI_LIBRARY_ACTIVE
+
 
     const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_OPENGL;
     //Where the config will be stored

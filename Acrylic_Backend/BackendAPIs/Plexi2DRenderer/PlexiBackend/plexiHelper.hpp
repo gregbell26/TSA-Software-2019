@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <glm/glm.hpp>
 
 
 struct PlexiGFX_RequiredInformation{
@@ -26,17 +27,27 @@ struct PlexiGFX_OptionalInformation {
 
 };
 
-class PlexiShader{
+class Plexi2DTexture {
 public:
-    //Im gonna wanna do something with this soon
+    Plexi2DTexture() = default;
+    virtual ~Plexi2DTexture() = default;
+    virtual void createTextureFromImage() = 0;//return void or id Im not sure
+
+    virtual void createTextureFromColor() = 0;
+
+    virtual void bind(uint32_t textureSlot) = 0;
+
+    virtual uint32_t getId() = 0;
+
+
 };
 
 
-class PlexiGFXBackend: public PlexiShader {
+class PlexiGraphicsAPI {
 
 public:
-    PlexiGFXBackend() = default;
-    virtual ~PlexiGFXBackend() = default;
+    PlexiGraphicsAPI() = default;
+    virtual ~PlexiGraphicsAPI() = default;
 
     virtual bool isSupported() = 0;
 
@@ -47,6 +58,10 @@ public:
     virtual bool initBackend() = 0;
 
     virtual void createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) = 0;
+
+    virtual void addTexture(Plexi2DTexture* texture) = 0;
+
+    virtual Plexi2DTexture* getNewTexture() = 0;
 
     virtual void submitScene() = 0;
 

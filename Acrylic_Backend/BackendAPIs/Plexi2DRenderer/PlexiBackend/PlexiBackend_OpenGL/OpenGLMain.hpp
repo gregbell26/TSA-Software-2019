@@ -3,12 +3,14 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <map>
 
 #define pipelineComponentMap std::map<OPEN_GL_GFX_PIPELINE_COMPONENT_IDS, GLuint>
 
 
-class OpenGL: public PlexiGFXBackend {
+class OpenGL: public PlexiGraphicsAPI {
 protected:
     //Enums and Config
     enum OPEN_GL_GFX_PIPELINE_COMPONENT_IDS {
@@ -37,6 +39,9 @@ public:
 
     void submitScene() override;
 
+    void addTexture(Plexi2DTexture* texture) override;
+
+    Plexi2DTexture* getNewTexture() override;
 
 
     void onUpdate() override;
@@ -44,12 +49,14 @@ public:
     void cleanup() override;
 
 
-    GLFWwindow* getWindowRef() override;
+    GLFWwindow* getWindowRef() override { return glfwWindow; };
 
 private:
     bool createWindow();
 
     bool initCore();
+
+    void clear();
 
     //Pipeline Helper Functions
     bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName, pipelineComponentMap& pipelineMap);
@@ -62,7 +69,20 @@ private:
 
     void cleanUpGraphicsPipeline(const std::string& pipelineName);
 
-    void clear();
+    //Shader Helper Functions
+    void setInt(const std::string& pipelineName, const std::string& uniformName, const int& newValue);
+
+    void setFloat(const std::string& pipelineName, const std::string& uniformName, const float& newValue);
+
+    void setFloat2(const std::string& pipelineName, const std::string& uniformName, const glm::vec2& newValue);
+
+    void setFloat3(const std::string& pipelineName, const std::string& uniformName, const glm::vec3& newValue);
+
+    void setFloat4(const std::string& pipelineName, const std::string& uniformName, const glm::vec4& newValue);
+
+    void setMat3(const std::string& pipelineName, const std::string& uniformName, const glm::mat3& newValue);
+
+    void setMat4(const std::string& pipelineName, const std::string& uniformName, const glm::mat4& newValue);
 
 
 public:

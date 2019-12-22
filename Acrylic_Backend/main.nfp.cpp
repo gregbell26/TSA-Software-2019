@@ -57,7 +57,30 @@ UserInput::Returns scroll(double i, double j){
     return {};
 }
 int main(){
-    Plexi::initPlexi();
+    Plexi::PlexiConfig plexiConfig = {};
+    plexiConfig.preferredGraphicsBackend = Plexi::PLEXI_GFX_BACKENDS::PLEXI_OPENGL;
+    plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
+    plexiConfig.clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
+    plexiConfig.plexiGFXRequiredInformation.appName = "Acrylic Testinator 1000";
+    plexiConfig.shaderCount = 1;
+    plexiConfig.shaderCreateInfos.resize(plexiConfig.shaderCount);
+    plexiConfig.shaderCreateInfos[0].shaderName = "Default Shader";
+    plexiConfig.shaderCreateInfos[0].shaderLanguage = plexiConfig.defaultShaderLanguage;
+    plexiConfig.shaderCreateInfos[0].glslVertexCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_vertex_default_primitive", plexiConfig.defaultShaderLanguage));
+    plexiConfig.shaderCreateInfos[0].glslFragmentCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_fragment_default_primitive", plexiConfig.defaultShaderLanguage));
+    plexiConfig.bufferCreateInfos.resize(plexiConfig.shaderCount);
+    plexiConfig.bufferCreateInfos[0].shaderName = plexiConfig.shaderCreateInfos[0].shaderName;
+    plexiConfig.bufferCreateInfos[0].setLayout({
+       {Plexi::Shaders::Float3, "positionCoords"},
+       {Plexi::Shaders::Float2, "textureCoords"}
+    });
+
+    plexiConfig.bufferCreateInfos[0].vertexArray = Plexi::Buffer::SQUARE_VERTICES_WITH_TEXTURE;
+    plexiConfig.bufferCreateInfos[0].vertexArraySize = Plexi::Buffer::SQUARE_VERTICES_WITH_TEXTURE_SIZE;
+    plexiConfig.bufferCreateInfos[0].indexArray = Plexi::Buffer::SQUARE_INDICES;
+    plexiConfig.bufferCreateInfos[0].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
+
+    Plexi::initPlexi(plexiConfig);
     UserInput::initialize();
     UserInput::addKeyMap(GLFW_KEY_W, GLFW_PRESS, doTheThing);
     UserInput::addKeyMap(GLFW_KEY_A, GLFW_PRESS, doTheThing);
@@ -66,7 +89,9 @@ int main(){
     UserInput::setCursorPressedMoveFunc(scroll);
     UserInput::setScrollFunc(scroll);
     UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, doTheThing);
-    Plexi::setClearColor(0.1f,0.1f,0.1f,1.0f);
+
+
+
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();

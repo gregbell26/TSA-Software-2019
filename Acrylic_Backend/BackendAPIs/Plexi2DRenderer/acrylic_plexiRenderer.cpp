@@ -2,7 +2,8 @@
 #include "./PlexiBackend/plexiBuffer.hpp"
 #include "./PlexiBackend/plexiHelper.hpp"
 #include "./PlexiBackend/acrylic_plexiBackend.hpp"
-#include "plexi_usrStructs.hpp" //All structs to work with plexi are defined here
+#include "plexi_usrStructs.hpp"
+#include "./PlexiBackend/plexiTexture.hpp"
 
 
 #include "acrylic_plexiRenderer.hpp"
@@ -28,13 +29,13 @@ void Plexi::initPlexi() {
     //TODO: CONNECT LOGGER - For now we'll be using std::out
 
     PlexiConfig plexiConfig = {};
-    plexiConfig.userPreferredGFXBackend = PLEXI_DEFAULT_GFX_BACKEND;
+    plexiConfig.preferredGraphicsBackend = PLEXI_DEFAULT_GFX_BACKEND;
 
 
     plexiConfig.shaderCount = 1;
     plexiConfig.clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
 
-    if(plexiConfig.userPreferredGFXBackend == PLEXI_VULKAN) {
+    if(plexiConfig.preferredGraphicsBackend == PLEXI_VULKAN) {
         //Only for vulkan - Do check to see if these need to be populated in the initPlexi function - If they aren't runtime error as this is information that Vulkan needs to know
         std::vector<const char *> deviceExtensions = {
                 "VK_KHR_SWAPCHAIN_EXTENSION_NAME"
@@ -50,7 +51,7 @@ void Plexi::initPlexi() {
         plexiConfig.plexiGFXOptionalInformation.vulkan_VALID_LAYER_SIZE = validationLayers.size();
         plexiConfig.defaultShaderLanguage = Shaders::SPIRV;
 
-    } else if (plexiConfig.userPreferredGFXBackend == PLEXI_OPENGL){
+    } else if (plexiConfig.preferredGraphicsBackend == PLEXI_OPENGL){
 
         plexiConfig.defaultShaderLanguage = Shaders::GLSL;
 
@@ -102,23 +103,23 @@ void Plexi::initPlexi() {
 }
 
 void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
-    if (plexiConfig.userPreferredGFXBackend == PLEXI_NULL_BACKEND) {
+    if (plexiConfig.preferredGraphicsBackend == PLEXI_NULL_BACKEND) {
         std::cerr << "No plexi renderer specified. Please specify a plexi config or change the default renderer" << std::endl;
         return;
     } else {
 
-        GFXBackendMap[plexiConfig.userPreferredGFXBackend]->setRequiredInformation(plexiConfig.plexiGFXRequiredInformation);
-        GFXBackendMap[plexiConfig.userPreferredGFXBackend]->setOptionInformation(plexiConfig.plexiGFXOptionalInformation);
+        GFXBackendMap[plexiConfig.preferredGraphicsBackend]->setRequiredInformation(plexiConfig.plexiGFXRequiredInformation);
+        GFXBackendMap[plexiConfig.preferredGraphicsBackend]->setOptionInformation(plexiConfig.plexiGFXOptionalInformation);
 
 
-        if(!GFXBackendMap[plexiConfig.userPreferredGFXBackend]->isSupported()){
+        if(!GFXBackendMap[plexiConfig.preferredGraphicsBackend]->isSupported()){
             std::cerr << "Selected Plexi renderer is unsupported. Please specify a plexi config or change the default renderer" << std::endl;
             return;
         }
 
     }
 
-    plexiConfig.activeBackendName = plexiConfig.userPreferredGFXBackend;
+    plexiConfig.activeBackendName = plexiConfig.preferredGraphicsBackend;
 
     activeConfig = plexiConfig;
 
@@ -143,6 +144,7 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
     }
 
     activeConfig.setPlexiInit(GFXBackendMap[activeConfig.activeBackendName]->initBackend());
+    Texture::setActiveBackend(activeConfig.activeBackendName);
     std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
 
 }
@@ -163,6 +165,7 @@ void Plexi::onUpdate() {
 
 }
 
+
 GLFWwindow* Plexi::getWindowRef(){
     return GFXBackendMap[activeConfig.activeBackendName]->getWindowRef();
 }
@@ -178,5 +181,6 @@ void Plexi::cleanupPlexi() {
 
     //maybe deref active config?
 }
+
 
 

@@ -1,7 +1,5 @@
 #ifndef PLEXI_USR_STRUCT_HPP
 #define PLEXI_USR_STRUCT_HPP
-
-
 namespace Plexi {
     struct PlexiColor {
         float red;
@@ -20,10 +18,11 @@ namespace Plexi {
 
 
     struct PlexiConfig {
-        PLEXI_GFX_BACKENDS userPreferredGFXBackend = PLEXI_NULL_BACKEND;
+        PLEXI_GFX_BACKENDS preferredGraphicsBackend = PLEXI_NULL_BACKEND;
 
+#ifndef PLEXI_LIBRARY_ACTIVE
         PLEXI_GFX_BACKENDS activeBackendName = PLEXI_NULL_BACKEND;
-
+#endif //PLEXI_LIBRARY_ACTIVE
         PlexiGFX_RequiredInformation plexiGFXRequiredInformation = {};
         PlexiGFX_OptionalInformation plexiGFXOptionalInformation = {};
 
@@ -34,11 +33,13 @@ namespace Plexi {
 
         PlexiColor clearColor = {0, 0,0};
 
+#ifndef PLEXI_LIBRARY_ACTIVE
         //So that the user can't directly access these vars.
         void setPlexiInit(bool isPlexiInit){
             plexiInit = isPlexiInit;
         }
 
+#endif //PLEXI_LIBRARY_ACTIVE
         bool getPlexiInit(){
             return plexiInit;
         }
@@ -51,17 +52,25 @@ namespace Plexi {
         bool plexiInit = false;
     };
 
-    struct BufferLayouts {
-
+    struct TextureCreateInfo {
+        unsigned char* textureData = nullptr;
+        void* data = nullptr;
+        uint32_t dataSize = 0;
+        int height = 0;
+        int width = 0;
+        bool fromImage = false;
     };
 
+
     struct RenderTask {
-        const char* taskType;
-        const char* batch;
+//        Texture* texture;
+        glm::vec4 position;
+
 
         //TODO: Add shader stuff for location
         //TODO: Different Render Tasks
     };
+
 }
 
 #endif //PLEXI_USR_STRUCT_HPP
