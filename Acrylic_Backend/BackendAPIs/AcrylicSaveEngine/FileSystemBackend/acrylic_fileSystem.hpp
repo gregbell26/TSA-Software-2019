@@ -6,26 +6,62 @@
 #include <filesystem>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <iostream>
+#include <map>
 namespace fs = std::filesystem;
 
+union primitiveType{
+    char;
+    short;
+    int;
+    long;
+    unsigned char;
+    unsigned short;
+    unsigned int;
+    unsigned long;
+    float;
+    double;
+    bool;
+};
 
-std::string gameDataPath = "./GAME_DATA";
+fs::path gameDataPath("./GAME_DATA");
 
 
-nlohmann::json readJSON(char id/*the final character, will probably change later*/){
+std::string readFile(std::string fileName){
     std::fstream jsonStream;// 1 stream for all different files
-    nlohmann::json level;// class, will be returned
-    std::string stringJson;// temporary variable for transfer
+    std::string tempString;// temporary variable for transfer
+    std::string fullFile;
+    if(!fs::exists(gameDataPath)){
+        std::cerr << "File path does not exist\n";
+        return "";
+    }
     for(const auto& file : fs::directory_iterator(gameDataPath)) {
-        if (file.path().string()[file.path().string().length()-1] == id) {//looking for id
-            jsonStream.open(gameDataPath + file.path().string());
-            jsonStream >> stringJson;// hopefully this works
-            level = nlohmann::json::parse(stringJson);
+        if (!file.path().filename().string().compare(fileName)) {//looking for id
+            jsonStream.open(file.path());
+            while(jsonStream >> tempString) {
+                fullFile.append(tempString);// hopefully this works
+            }
             jsonStream.close();
-            break;// Note will only get the first of dupes
+            return fullFile;
         }
     }
-    return level;
+    std::cerr << "File not found\n";
+    return "";
 }
+
+std::map<std::string, primitiveType> interpretJson(std::string stringJson){
+    while(stringJson.find(":") != -1)
+        ;
+    while(stringJson.find("\"") != -1)
+        ;
+    while(stringJson.find(",") != -1)
+        ;
+}
+
+
+
+//void stringToJson(){
+//
+//}
 
 #endif //ACRYLIC_FILESYSYTEM_HPP
