@@ -7,14 +7,16 @@
 #include "plexiTexture.hpp"
 
 
-void Plexi::Texture::create2DTexture(Plexi::TextureCreateInfo &createInfo) {
-    Plexi2DTexture* newTexture = GFXBackendMap[activeBackend]->getNewTexture();
-
-    if(createInfo.fromImage){
-        newTexture->createTextureFromImage();
-    } else {
-        newTexture->createTextureFromColor();
+void Plexi::Texture::create2DTexture(Plexi::TextureCreateInfo &createInfo, const Plexi::PLEXI_GFX_BACKENDS &backendToUse) {
+    if(!GFXBackendMap[backendToUse]) {
+        std::cerr << "Texture Creation Failed: Invalid Backend" << std::endl;
+        return;
     }
 
-    GFXBackendMap[activeBackend]->addTexture(newTexture);
+    Plexi2DTexture* newTexture = GFXBackendMap[backendToUse]->getNewTexture();
+
+    newTexture->createTexture(createInfo.textureData, createInfo.dataSize, createInfo.height, createInfo.width, createInfo.channelCount);
+
+    GFXBackendMap[backendToUse]->addTexture(newTexture);
+    newTexture->bind(0);
 }

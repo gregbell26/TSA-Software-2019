@@ -41,6 +41,8 @@ namespace Plexi {
 
     void cleanupPlexi();
 
+    PLEXI_GFX_BACKENDS getActiveBackend();
+
     //Adds a render task to the active backend. Returns false if it fails
     bool addRenderTask(const RenderTask&);
 

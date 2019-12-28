@@ -3,15 +3,9 @@
 
 
 namespace Plexi::Texture {
-#ifndef PLEXI_LIBRARY_ACTIVE
-    PLEXI_GFX_BACKENDS activeBackend;
-
-    void setActiveBackend(PLEXI_GFX_BACKENDS& backend) { activeBackend = backend; }
-
-#endif //PLEXI_LIBRARY_ACTIVE
 
 
-    void create2DTexture(TextureCreateInfo& createInfo);
+    void create2DTexture(TextureCreateInfo& createInfo, const Plexi::PLEXI_GFX_BACKENDS& backendToUse);
 
 
 

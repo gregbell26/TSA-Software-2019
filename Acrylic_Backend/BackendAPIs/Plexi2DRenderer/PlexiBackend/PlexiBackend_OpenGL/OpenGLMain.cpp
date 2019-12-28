@@ -73,6 +73,7 @@ bool OpenGL::initBackend() {
 
     glEnable(GL_DEPTH_TEST);
 
+
     return true;
 }
 

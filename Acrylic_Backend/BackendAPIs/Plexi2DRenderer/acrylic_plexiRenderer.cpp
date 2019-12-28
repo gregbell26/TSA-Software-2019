@@ -144,7 +144,6 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
     }
 
     activeConfig.setPlexiInit(GFXBackendMap[activeConfig.activeBackendName]->initBackend());
-    Texture::setActiveBackend(activeConfig.activeBackendName);
     std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
 
 }
@@ -180,6 +179,10 @@ void Plexi::cleanupPlexi() {
     activeConfig.setPlexiInit(false);
 
     //maybe deref active config?
+}
+
+Plexi::PLEXI_GFX_BACKENDS Plexi::getActiveBackend() {
+    return activeConfig.activeBackendName;
 }
 
 
