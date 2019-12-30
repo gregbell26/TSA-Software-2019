@@ -18,6 +18,7 @@ static void glfwErrorCallBack(int errorCode, const char* description){
     //todo handle errors
 }
 
+#if not defined (MACOS)
 static void GLAPIENTRY openGLDebugMessageCallBack(GLenum source,
                                                   GLenum type,
                                                   GLuint id,
@@ -28,6 +29,7 @@ static void GLAPIENTRY openGLDebugMessageCallBack(GLenum source,
     std::cout << ((type == GL_DEBUG_TYPE_ERROR) ? "openGL Error: " : "openGL Message: ") << message << std::endl;
 
 }
+#endif
 
 bool OpenGL::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
     appName = requiredInformation.appName.c_str();
@@ -67,8 +69,10 @@ bool OpenGL::initCore() {
     glfwMakeContextCurrent(glfwWindow);
     bool glStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
+#if not defined(MACOS)//OpenGL debugging is not supported on macOS
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(openGLDebugMessageCallBack, nullptr);
+#endif
 
     std::cout << "OpenGL status: " << (glStatus ? "SUCCESSFUL" : "FAILURE") << std::endl;
     std::cout << "\tVendor: " << glGetString(GL_VENDOR) << std::endl;

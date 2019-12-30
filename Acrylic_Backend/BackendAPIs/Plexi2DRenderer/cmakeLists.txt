@@ -19,6 +19,10 @@ set(HEADER_FILES ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./Plex
 
 set(TST_FILES main.nfp.cpp)
 
+#include TriHard Studios Helper Libs
+add_subdirectory(./../BackendAPIs/required/trihardstudios thsBuild)
+include_directories(./../BackendAPIs/required/trihardstudios/include)
+
 #Include Glad (OpenGL Loader)
 include_directories(./GraphicsAPIs/required/glad/include)
 set(GLAD_SOURCE ./GraphicsAPIs/required/glad/src/glad.c)
@@ -33,7 +37,7 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 #Add it as a sub project to be built
-add_subdirectory(./../BackendAPIs/required/GLFW3 build)
+add_subdirectory(./../BackendAPIs/required/GLFW3 glfw3Build)
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -69,6 +73,7 @@ add_executable(PlexiTester1000 ${TST_FILES})
 #Link Plexi with libs
 target_link_libraries(Plexi2DRenderer glfw)
 target_link_libraries(Plexi2DRenderer glad)
+target_link_libraries(Plexi2DRenderer A2D_log)
 
 #Link Tester with Plexi
 target_link_libraries(PlexiTester1000 Plexi2DRenderer)

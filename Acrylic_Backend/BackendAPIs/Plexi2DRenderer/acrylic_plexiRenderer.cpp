@@ -103,6 +103,7 @@ void Plexi::initPlexi() {
 }
 
 void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
+    logInformation("yee!")
     if (plexiConfig.preferredGraphicsBackend == PLEXI_NULL_BACKEND) {
         std::cerr << "No plexi renderer specified. Please specify a plexi config or change the default renderer" << std::endl;
         return;

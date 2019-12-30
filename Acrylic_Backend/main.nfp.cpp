@@ -3,6 +3,7 @@
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
 #include "UserInput.cpp"
 #include <iostream>
+#include <ths/log.hpp>
 
 static float red = 0.0f;
 static float blue = 0.0f;
@@ -58,6 +59,7 @@ UserInput::Returns scroll(double i, double j){
     return {};
 }
 int main(){
+    initLogger("A2D", severity_information, mode_all)
     Plexi::PlexiConfig plexiConfig = {};
     plexiConfig.preferredGraphicsBackend = Plexi::PLEXI_GFX_BACKENDS::PLEXI_OPENGL;
     plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
@@ -82,14 +84,15 @@ int main(){
     plexiConfig.bufferCreateInfos[0].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
 
     Plexi::initPlexi(plexiConfig);
-    ImageLoaders::Bitmaps::Image image("./textures/tst.bmp");
-
+//    ImageLoaders::Bitmaps::Image image("./textures/tst.bmp");
+    uint32_t data = 0xffffff;
     Plexi::TextureCreateInfo textureCreateInfo = {};
-    textureCreateInfo.height = 1024;
-    textureCreateInfo.width = 1024;
-    textureCreateInfo.channelCount = 4;
-    textureCreateInfo.dataSize = image.length;
-    textureCreateInfo.textureData = &image.imageData;
+    textureCreateInfo.height = 1;
+    textureCreateInfo.width = 1;
+    textureCreateInfo.channelCount = 3;
+    textureCreateInfo.dataSize = 4;
+    textureCreateInfo.textureData = &data;
+    logInformation("Texture Created")
 
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
 

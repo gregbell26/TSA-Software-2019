@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <thread>
-#include <cstdlib>
-#include <ctime>
+#include <ths/log.hpp>
+
 
 
 namespace Plexi {

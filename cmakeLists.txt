@@ -5,8 +5,8 @@ project(Acrylic2D)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCE_FILES log.cpp debugger.cpp)
-set(HEADER_FILES log.hpp)
+set(SOURCE_FILES debugger.cpp)
+set(HEADER_FILES)
 
 #Add all sub projects
 add_subdirectory(Entity_Layer)
