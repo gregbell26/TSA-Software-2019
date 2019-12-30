@@ -1,5 +1,6 @@
 #include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
+#include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
 #include "UserInput.cpp"
 #include <iostream>
 
@@ -81,14 +82,14 @@ int main(){
     plexiConfig.bufferCreateInfos[0].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
 
     Plexi::initPlexi(plexiConfig);
+    ImageLoaders::Bitmaps::Image image("./textures/tst.bmp");
 
     Plexi::TextureCreateInfo textureCreateInfo = {};
-    textureCreateInfo.height = 1;
-    textureCreateInfo.width = 1;
+    textureCreateInfo.height = 1024;
+    textureCreateInfo.width = 1024;
     textureCreateInfo.channelCount = 4;
-    textureCreateInfo.dataSize = sizeof(uint32_t);
-    uint32_t data = 0xffffffff;
-    textureCreateInfo.textureData = &data;
+    textureCreateInfo.dataSize = image.length;
+    textureCreateInfo.textureData = &image.imageData;
 
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
 
