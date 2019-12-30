@@ -7,6 +7,8 @@
 
 #include "OpenGLMain.hpp"
 
+Plexi2DTexture *texture = new OpenGL2DTexture(101);//fuck you
+
 static void glfwErrorCallBack(int errorCode, const char* description){
     if(errorCode == GLFW_NO_ERROR){
         return;
@@ -16,6 +18,16 @@ static void glfwErrorCallBack(int errorCode, const char* description){
     //todo handle errors
 }
 
+static void GLAPIENTRY openGLDebugMessageCallBack(GLenum source,
+                                                  GLenum type,
+                                                  GLuint id,
+                                                  GLenum severity,
+                                                  GLsizei length,
+                                                  const char* message,
+                                                  const void* userParam){
+    std::cout << ((type == GL_DEBUG_TYPE_ERROR) ? "openGL Error: " : "openGL Message: ") << message << std::endl;
+
+}
 
 bool OpenGL::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
     appName = requiredInformation.appName.c_str();
@@ -54,6 +66,10 @@ bool OpenGL::createWindow() {
 bool OpenGL::initCore() {
     glfwMakeContextCurrent(glfwWindow);
     bool glStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(openGLDebugMessageCallBack, nullptr);
+
     std::cout << "OpenGL status: " << (glStatus ? "SUCCESSFUL" : "FAILURE") << std::endl;
     std::cout << "\tVendor: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "\tGPU: " << glGetString(GL_RENDERER) << std::endl;
@@ -67,6 +83,7 @@ bool OpenGL::isSupported() {
     return requiredInfoSet && createWindow() && initCore();
 }
 
+
 bool OpenGL::initBackend() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -76,7 +93,6 @@ bool OpenGL::initBackend() {
 
     return true;
 }
-
 
 bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size, pipelineComponentMap& pipelineMap) {
     glGenBuffers(1, &pipelineMap[VERTEX_BUFFER]);
@@ -89,8 +105,12 @@ bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size, pipel
 
 bool OpenGL::createIndexBuffer(const uint32_t *indices, const size_t &size, pipelineComponentMap& pipelineMap) {
     glGenBuffers(1, &pipelineMap[INDEX_BUFFER]);
-    glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[INDEX_BUFFER]);
-    glBufferData(GL_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);//The cherno does it like this so I guess Ill do it?
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pipelineMap[INDEX_BUFFER]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);//The cherno does it like this so I guess Ill do it?
+    GLuint err;
+    while( (err = glGetError()) != GL_NO_ERROR ){
+        std::cout << err;
+    }
 
     return true;
 }
@@ -105,7 +125,7 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
 
     glBindVertexArray(pipelineMap[VERTEX_ARRAY]);
 
-    glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[VERTEX_ARRAY]);
+    glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[VERTEX_BUFFER]);
 
     const auto& bufferLayout = bufferCreateInfo.getLayout();
 
@@ -120,11 +140,15 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
                 bufferLayout.getStride(),
                 (const void*) element.offset
         );
+        GLuint err;
+        while( (err = glGetError()) != GL_NO_ERROR ){
+            std::cout << err;
+        }
         //todo Add error check
         vertexBufferIndex++;
     }
 
-    glBindVertexArray(pipelineMap[VERTEX_ARRAY]);
+//    glBindVertexArray(pipelineMap[VERTEX_ARRAY]);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pipelineMap[INDEX_BUFFER]);
 
@@ -171,6 +195,10 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
     std::cout << "Graphics Pipeline Created Successfully" << std::endl;
 
     glUseProgram(pipelineMap[SHADER_PROGRAM]);
+    GLuint err;
+    while( (err = glGetError()) != GL_NO_ERROR ){
+        std::cout << err;
+    }
 
     setInt(bufferCreateInfo.shaderName, "texture2D", 0);
 
@@ -187,21 +215,79 @@ void OpenGL::submitScene() {
 
 void OpenGL::onUpdate() {
     clear();
+    setMat4("plexi_default_primitive", "viewProjection", glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+    setFloat4("plexi_default_primitive", "color", {0.0f, 0.5f, 0.5f, 1.0f});
+//    try {
+//        textureMap.at(101)->bind(0);
+//    }catch(std::out_of_range& err){
+//        std::cout << "Texture id: " << 101 << "does not exist" << std::endl;
+//    }
+    texture->bind(0);
+
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), { 1.0f, 1.0f, 1.0f });
+    setMat4("plexi_default_primitive", "transform", transform);
+    glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
+//    const uint32_t fuckYou[] = {0, 1, 2, 2, 3, 0} ;
+    glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
+//    try {
+//        textureMap.at(101)->unbind();
+//    }catch(std::out_of_range& err){
+//        std::cout << "Texture id: " << 101 << "does not exist" << std::endl;
+//    }
+
+    texture->unbind();
+    glfwSwapBuffers(glfwWindow);
+
 }
 
 void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
-
-    for(auto& [key, item] : activePipelines[pipelineName]){
-
+    if(pipelineName == "all"){
+        for(auto& [pipeline, componentMap] : activePipelines){
+            std::cout << "Cleaning up graphics pipeline \'" << pipeline << "\'" << std::endl;
+            glDeleteProgram(componentMap[SHADER_PROGRAM]);
+            componentMap[SHADER_PROGRAM] = 0;
+            glDeleteBuffers(1, &componentMap[VERTEX_BUFFER]);
+            componentMap[VERTEX_BUFFER] = 0;
+            glDeleteBuffers(1, &componentMap[INDEX_BUFFER]);
+            componentMap[INDEX_BUFFER] = 0;
+            glDeleteVertexArrays(1, &componentMap[VERTEX_ARRAY]);
+            componentMap[VERTEX_ARRAY] = 0;
+            componentMap.clear();
+        }
+        activePipelines.clear();
+        return;
     }
+
+    try {
+        pipelineComponentMap &tempMap = activePipelines.at(pipelineName);
+        glDeleteProgram(tempMap[SHADER_PROGRAM]);
+        tempMap[SHADER_PROGRAM] = 0;
+        glDeleteBuffers(1, &tempMap[VERTEX_BUFFER]);
+        tempMap[VERTEX_BUFFER] = 0;
+        glDeleteBuffers(1, &tempMap[INDEX_BUFFER]);
+        tempMap[INDEX_BUFFER] = 0;
+        glDeleteVertexArrays(1, &tempMap[VERTEX_ARRAY]);
+        tempMap[VERTEX_ARRAY] = 0;
+        tempMap.clear();
+    } catch (std::out_of_range& err){
+        std::cout << "Pipeline \'" << pipelineName << "\' does not exist. Please check your spelling." << std::endl;
+        std::cout << "Error details: " << err.what() << std::endl;
+        return;
+    }
+
+
+
+
+
 }
 
+
 void OpenGL::cleanup() {
+    cleanUpGraphicsPipeline("all");
     glfwDestroyWindow(glfwWindow);
 
     glfwTerminate();
 }
-
 
 void OpenGL::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -209,11 +295,18 @@ void OpenGL::clear() {
 }
 
 void OpenGL::addTexture(Plexi2DTexture* texture) {
-
+//    uint32_t id = texture->getId();
+//    this->textureMap.insert(std::pair(id, texture));
+    //textureMap.insert(std::pair(texture->getId(), texture));
+    //whiteTextureId = texture->getId();
+//    this->whiteTextureId = id;
 }
 
 Plexi2DTexture* OpenGL::getNewTexture() {
-    return new OpenGL2DTexture();
+//    textureMap.insert({currentTextureId, new OpenGL2DTexture(currentTextureId)});
+//    currentTextureId++;
+//    return textureMap[currentTextureId-1];
+    return texture;
 }
 
 

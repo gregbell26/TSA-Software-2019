@@ -9,7 +9,6 @@
 
 #define pipelineComponentMap std::map<OPEN_GL_GFX_PIPELINE_COMPONENT_IDS, GLuint>
 
-
 class OpenGL: public PlexiGraphicsAPI {
 protected:
     //Enums and Config
@@ -96,6 +95,11 @@ private:
     uint32_t vertexBufferIndex = 0;
 
     std::map<std::string, pipelineComponentMap> activePipelines;
+    std::map<uint32_t, Plexi2DTexture*> textureMap;
+
+
+    uint32_t currentTextureId;// = 101;
+
 
 };
 

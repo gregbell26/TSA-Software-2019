@@ -138,8 +138,6 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
     for(auto &[GFXBackendName, GFXBackend] : GFXBackendMap){
         if(GFXBackendName != activeConfig.activeBackendName){
             delete GFXBackend;
-            GFXBackend = nullptr;
-
         }
     }
 
@@ -160,8 +158,6 @@ void Plexi::setClearColor(const float &r, const float &g, const float &b, const 
 void Plexi::onUpdate() {
 
     GFXBackendMap[activeConfig.activeBackendName]->onUpdate();
-    glfwSwapBuffers(Plexi::getWindowRef());
-
 }
 
 

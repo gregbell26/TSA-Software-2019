@@ -8,11 +8,12 @@ int main(){
     textureCreateInfo.height = 1;
     textureCreateInfo.width = 1;
     textureCreateInfo.channelCount = 4;
-    textureCreateInfo.dataSize = sizeof(uint32_t)*4;
+    textureCreateInfo.dataSize = sizeof(uint32_t);
     uint32_t data = 0xffffffff;
     textureCreateInfo.textureData = &data;
 
-    Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
+    uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
+    std::cout << plainWhiteTexture << std::endl;
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();

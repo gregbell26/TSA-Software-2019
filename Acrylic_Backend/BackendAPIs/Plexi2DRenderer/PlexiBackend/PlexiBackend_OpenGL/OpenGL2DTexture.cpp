@@ -21,9 +21,6 @@ void OpenGL2DTexture::createTexture(void* data, uint32_t size, uint32_t height, 
 
     glGenTextures(1, &glId);//Gen an ID
 
-
-    //Clean Up
-//    delete data; Pos resource leak. Might wanna switch to different type
 }
 
 
@@ -40,7 +37,7 @@ void OpenGL2DTexture::bind(uint32_t textureSlot) {
 }
 
 void OpenGL2DTexture::unbind() {
-
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 OpenGL2DTexture::~OpenGL2DTexture() {

@@ -31,13 +31,13 @@ class Plexi2DTexture {
 public:
     Plexi2DTexture() = default;
     virtual ~Plexi2DTexture() = default;
-    virtual void createTexture(void* data, uint32_t dataSize, uint32_t height, uint32_t width, uint32_t channelCount) = 0;//return void or id Im not sure
+    virtual void createTexture(void* data, uint32_t dataSize, uint32_t height, uint32_t width, uint32_t channelCount){};//return void or id Im not sure
 
-    virtual void bind(uint32_t textureSlot) = 0;
+    virtual void bind(uint32_t textureSlot){};
 
-    virtual void unbind() = 0;
+    virtual void unbind(){};
 
-    virtual uint32_t getId() = 0;
+    [[nodiscard]] virtual uint32_t getId() const {return 1001;};
 
 
 };

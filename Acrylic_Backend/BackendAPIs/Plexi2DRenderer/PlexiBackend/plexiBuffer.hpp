@@ -73,7 +73,7 @@ namespace Plexi::Buffer {
              0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
             -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
     };
-    const size_t SQUARE_VERTICES_WITH_TEXTURE_SIZE = 20;
+    const size_t SQUARE_VERTICES_WITH_TEXTURE_SIZE = 20 * sizeof(float);
 
     const float TRIANGLE_VERTICES_NO_TEXTURE[9] {//3X3
         -0.5f, -0.5f, 0.0f,
@@ -81,20 +81,20 @@ namespace Plexi::Buffer {
          0.5f, -0.5f, 0.0f
     };
 
-    const size_t TRIANGLE_VERTICES_NO_TEXTURE_SIZE = 9;
+    const size_t TRIANGLE_VERTICES_NO_TEXTURE_SIZE = 9 * sizeof(float);
 
     //Default index arrays
     const uint32_t SQUARE_INDICES[7] = {
             0, 1, 2, 2, 3, 0
     };
 
-    const size_t SQUARE_INDICES_SIZE = 7;
+    const size_t SQUARE_INDICES_SIZE = 7 * sizeof(uint32_t);
 
     const uint32_t TRIANGLE_INDICES[4] = {//This one might be wrong
             0, 1, 2, 0
     };
 
-    const size_t TRIANGLE_INDICES_SIZE = 4;
+    const size_t TRIANGLE_INDICES_SIZE = 4 * sizeof(uint32_t);
 
     struct BufferCreateInfo {
         std::string shaderName = "";
@@ -106,7 +106,7 @@ namespace Plexi::Buffer {
         [[nodiscard]] Buffer::BufferLayout getLayout() const { return bufferLayout; }
 
     private:
-        Buffer::BufferLayout bufferLayout;// = nullptr;
+        Buffer::BufferLayout bufferLayout;
 
     };
 

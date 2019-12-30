@@ -5,7 +5,7 @@
 namespace Plexi::Texture {
 
 
-    void create2DTexture(TextureCreateInfo& createInfo, const Plexi::PLEXI_GFX_BACKENDS& backendToUse);
+    uint32_t create2DTexture(TextureCreateInfo& createInfo, const Plexi::PLEXI_GFX_BACKENDS& backendToUse);
 
 
 
