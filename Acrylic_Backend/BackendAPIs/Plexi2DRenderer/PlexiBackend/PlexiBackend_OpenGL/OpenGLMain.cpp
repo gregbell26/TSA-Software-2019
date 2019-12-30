@@ -106,11 +106,7 @@ bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size, pipel
 bool OpenGL::createIndexBuffer(const uint32_t *indices, const size_t &size, pipelineComponentMap& pipelineMap) {
     glGenBuffers(1, &pipelineMap[INDEX_BUFFER]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pipelineMap[INDEX_BUFFER]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);//The cherno does it like this so I guess Ill do it?
-    GLuint err;
-    while( (err = glGetError()) != GL_NO_ERROR ){
-        std::cout << err;
-    }
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
 
     return true;
 }
@@ -140,10 +136,6 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
                 bufferLayout.getStride(),
                 (const void*) element.offset
         );
-        GLuint err;
-        while( (err = glGetError()) != GL_NO_ERROR ){
-            std::cout << err;
-        }
         //todo Add error check
         vertexBufferIndex++;
     }
@@ -195,10 +187,6 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
     std::cout << "Graphics Pipeline Created Successfully" << std::endl;
 
     glUseProgram(pipelineMap[SHADER_PROGRAM]);
-    GLuint err;
-    while( (err = glGetError()) != GL_NO_ERROR ){
-        std::cout << err;
-    }
 
     setInt(bufferCreateInfo.shaderName, "texture2D", 0);
 
@@ -215,27 +203,59 @@ void OpenGL::submitScene() {
 
 void OpenGL::onUpdate() {
     clear();
-    setMat4("plexi_default_primitive", "viewProjection", glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
-    setFloat4("plexi_default_primitive", "color", {0.0f, 0.5f, 0.5f, 1.0f});
-//    try {
-//        textureMap.at(101)->bind(0);
-//    }catch(std::out_of_range& err){
-//        std::cout << "Texture id: " << 101 << "does not exist" << std::endl;
-//    }
-    texture->bind(0);
+    setMat4("plexi_default_primitive", "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
+    {
+        setFloat4("plexi_default_primitive", "color", {0.0f, 0.5f, 0.75f, 1.0f});
+    //    try {
+    //        textureMap.at(101)->bind(0);
+    //    }catch(std::out_of_range& err){
+    //        std::cout << "Texture id: " << 101 << "does not exist" << std::endl;
+    //    }
+        texture->bind(0);
 
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), { 1.0f, 1.0f, 1.0f });
-    setMat4("plexi_default_primitive", "transform", transform);
-    glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
-//    const uint32_t fuckYou[] = {0, 1, 2, 2, 3, 0} ;
-    glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
-//    try {
-//        textureMap.at(101)->unbind();
-//    }catch(std::out_of_range& err){
-//        std::cout << "Texture id: " << 101 << "does not exist" << std::endl;
-//    }
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, -0.1f}) * glm::scale(glm::mat4(1.0f), { 2.0f, 2.0f, 2.0f });
+        setMat4("plexi_default_primitive", "transform", transform);
+        glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
+    //    const uint32_t fuckYou[] = {0, 1, 2, 2, 3, 0} ;
+        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
+    //    try {
+    //        textureMap.at(101)->unbind();
+    //    }catch(std::out_of_range& err){
+    //        std::cout << "Texture id: " << 101 << "does not exist" << std::endl;
+    //    }
 
-    texture->unbind();
+        texture->unbind();
+    }
+
+    {
+        setFloat4("plexi_default_primitive", "color", {0.75f, 0.0f, 0.5f, 1.0f});
+
+        texture->bind(0);
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), {-3.0f, -1.5f, 0.0f}) * glm::scale(glm::mat4(1.0f), { 0.25f, 3.0f, 0.25f });
+        setMat4("plexi_default_primitive", "transform", transform);
+        glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
+
+        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
+
+        texture->unbind();
+    }
+
+    {
+        setFloat4("plexi_default_primitive", "color", {0.0f, 0.75f, 0.5f, 1.0f});
+
+        texture->bind(0);
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), {3.0f, -1.5f, 0.0f}) * glm::scale(glm::mat4(1.0f), { 0.25f, 3.0f, 0.25f });
+        setMat4("plexi_default_primitive", "transform", transform);
+        glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
+
+        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
+
+        texture->unbind();
+    }
+
+
     glfwSwapBuffers(glfwWindow);
 
 }
@@ -291,7 +311,6 @@ void OpenGL::cleanup() {
 
 void OpenGL::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 }
 
 void OpenGL::addTexture(Plexi2DTexture* texture) {

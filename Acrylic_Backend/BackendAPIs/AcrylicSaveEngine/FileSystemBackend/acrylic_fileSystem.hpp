@@ -11,17 +11,17 @@
 namespace fs = std::filesystem;
 
 union primitiveType{
-    char;
-    short;
-    int;
-    long;
-    unsigned char;
-    unsigned short;
-    unsigned int;
-    unsigned long;
-    float;
-    double;
-    bool;
+    char ch;
+    short s;
+    int i;
+    long l;
+    unsigned char u_ch;
+    unsigned short u_s;
+    unsigned int u_i;
+    unsigned long u_l;
+    float f;
+    double d;
+    bool b;
 };
 
 fs::path gameDataPath("./GAME_DATA");
@@ -56,6 +56,8 @@ std::map<std::string, primitiveType> interpretJson(std::string stringJson){
         ;
     while(stringJson.find(",") != -1)
         ;
+
+    return std::map<std::string, primitiveType>();//TEMP FIX BY GREGORY
 }
 
 

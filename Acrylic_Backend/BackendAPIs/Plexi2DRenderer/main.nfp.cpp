@@ -13,7 +13,6 @@ int main(){
     textureCreateInfo.textureData = &data;
 
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
-    std::cout << plainWhiteTexture << std::endl;
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();

@@ -64,7 +64,7 @@ int main(){
     plexiConfig.plexiGFXRequiredInformation.appName = "Acrylic Testinator 1000";
     plexiConfig.shaderCount = 1;
     plexiConfig.shaderCreateInfos.resize(plexiConfig.shaderCount);
-    plexiConfig.shaderCreateInfos[0].shaderName = "Default Shader";
+    plexiConfig.shaderCreateInfos[0].shaderName = "plexi_default_primitive";
     plexiConfig.shaderCreateInfos[0].shaderLanguage = plexiConfig.defaultShaderLanguage;
     plexiConfig.shaderCreateInfos[0].glslVertexCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_vertex_default_primitive", plexiConfig.defaultShaderLanguage));
     plexiConfig.shaderCreateInfos[0].glslFragmentCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_fragment_default_primitive", plexiConfig.defaultShaderLanguage));
@@ -81,6 +81,17 @@ int main(){
     plexiConfig.bufferCreateInfos[0].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
 
     Plexi::initPlexi(plexiConfig);
+
+    Plexi::TextureCreateInfo textureCreateInfo = {};
+    textureCreateInfo.height = 1;
+    textureCreateInfo.width = 1;
+    textureCreateInfo.channelCount = 4;
+    textureCreateInfo.dataSize = sizeof(uint32_t);
+    uint32_t data = 0xffffffff;
+    textureCreateInfo.textureData = &data;
+
+    uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
+
     UserInput::initialize();
     UserInput::addKeyMap(GLFW_KEY_W, GLFW_PRESS, doTheThing);
     UserInput::addKeyMap(GLFW_KEY_A, GLFW_PRESS, doTheThing);

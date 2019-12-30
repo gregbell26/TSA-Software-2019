@@ -113,6 +113,9 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
     glDetachShader(program, vertexShader);
     glDetachShader(program, fragmentShader);
 
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
 
     return true;
 }
