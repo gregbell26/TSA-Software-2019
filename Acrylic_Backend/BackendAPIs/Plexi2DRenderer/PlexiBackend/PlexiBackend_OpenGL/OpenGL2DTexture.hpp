@@ -1,6 +1,11 @@
 #ifndef OPENGL_2D_TEXTURE_HPP
 #define OPENGL_2D_TEXTURE_HPP
 
+#if defined(LINUX)
+
+#include <cstring>
+
+#endif
 class OpenGL2DTexture: public Plexi2DTexture {
 public:
     explicit OpenGL2DTexture(const uint32_t& providedId) :

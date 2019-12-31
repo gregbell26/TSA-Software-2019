@@ -161,8 +161,10 @@ void Plexi::onUpdate() {
 }
 
 
-GLFWwindow* Plexi::getWindowRef(){
-    return GFXBackendMap[activeConfig.activeBackendName]->getWindowRef();
+GLFWwindow* Plexi::getWindowRef() {
+    if (activeConfig.getPlexiInit())
+        return GFXBackendMap[activeConfig.activeBackendName]->getWindowRef();
+    return nullptr;
 }
 
 void Plexi::cleanupPlexi() {

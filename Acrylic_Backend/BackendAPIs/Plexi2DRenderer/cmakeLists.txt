@@ -72,3 +72,5 @@ target_link_libraries(Plexi2DRenderer glad)
 
 #Link Tester with Plexi
 target_link_libraries(PlexiTester1000 Plexi2DRenderer)
+
+target_link_libraries(Plexi2DRenderer stdc++fs)
