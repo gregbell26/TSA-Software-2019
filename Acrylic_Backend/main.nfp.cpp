@@ -5,57 +5,85 @@
 #include <iostream>
 #include <ths/log.hpp>
 
-static float red = 0.0f;
-static float blue = 0.0f;
-static float green = 0.0f;
-static bool usingRed = true;
-UserInput::Returns doTheThing(int times){
-    float t = (float)times/10;
-    if(usingRed){
-        red += t;
-        blue -= t;
-        if(blue <= 0.0f)
-            blue = 0.0f;
-    } else {
-        blue += t;
-        red -= t;
-        if(red <= 0.0f)
-            red = 0.0f;
-    }
-    if(red >= 1.0f){
-//        red = 0.0f;
-        usingRed = false;
-    } else if(blue >= 1.0f){
-//        blue = 0.0f;
-        usingRed = true;
-    }
-    Plexi::setClearColor(red, 0.0f, blue, 1.0f);
+StandardRenderTask obj1 = {
+        "plexi_default_primitive",
+        {0.25f, 1.0f,0.0f, 1.0f},
+        {0.0f, 0.0f, 0.0f},
+        {3.0f, 3.0f},
+        1,
+        nullptr
+};
 
+StandardRenderTask obj2 = {
+        "plexi_default_primitive",
+        {1.0f, 0.0f,0.25f, 1.0f},
+        {-1.0f, -1.0f, 1.0f},
+        {2.5f, 2.5f},
+        1,
+        nullptr
+};
+
+StandardRenderTask obj3 = {
+        "plexi_default_primitive",
+        {0.25f, 0.0f,1.0f, 1.0f},
+        {1.0f, 1.0f, -0.1f},
+        {3.5f, 3.5f},
+        1,
+        nullptr
+};
+
+
+
+StandardRenderTask* selectedOBJ = &obj1;
+short selected = 0;
+
+UserInput::Returns moveUp(int times){
+    double move = (float) times / 50.0f;
+    selectedOBJ->position.y += move;
+    return {};
+}
+UserInput::Returns moveDown(int times){
+    double move = (float) times / 50.0f;
+    selectedOBJ->position.y -= move;
+    return {};
+}
+UserInput::Returns moveLeft(int times){
+    double move = (float) times / 50.0f;
+    selectedOBJ->position.x -= move;
+    return {};
+}
+UserInput::Returns moveRight(int times){
+
+    double move = (float) times / 50.0f;
+    selectedOBJ->position.x += move;
+    return {};
+}
+
+UserInput::Returns changeSelection(int times){
+    if(times == 0 ) {
+        if (selected > 2) {
+            selected = 0;
+        } else
+            selected++;
+
+        switch (selected) {
+            case 0:
+                selectedOBJ = &obj1;
+                break;
+            case 1:
+                selectedOBJ = &obj2;
+                break;
+            case 2:
+                selectedOBJ = &obj3;
+                break;
+        }
+    }
     return {};
 }
 
 UserInput::Returns scroll(double i, double j){
-    j = abs(j);
-    float t = (float)(j)/1000;
-    if(usingRed){
-        red += t;
-        blue -= t;
-        if(blue <= 0.0f)
-            blue = 0.0f;
-    } else {
-        blue += t;
-        red -= t;
-        if(red <= 0.0f)
-            red = 0.0f;
-    }
-    if(red >= 1.0f){
-//        red = 0.0f;
-        usingRed = false;
-    } else if(blue >= 1.0f){
-//        blue = 0.0f;
-        usingRed = true;
-    }
-    Plexi::setClearColor(red, 0.0f, blue, 1.0f);
+    j /=1000;
+    selectedOBJ->scale.x+= (float) j;
     return {};
 }
 int main(){
@@ -84,31 +112,34 @@ int main(){
     plexiConfig.bufferCreateInfos[0].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
 
     Plexi::initPlexi(plexiConfig);
-    ImageLoaders::Bitmaps::Image image("D:/Untitled.bmp");
-
     Plexi::TextureCreateInfo textureCreateInfo = {};
-    textureCreateInfo.height = 1024;
-    textureCreateInfo.width = 1024;
-    textureCreateInfo.channelCount = 3;
-    textureCreateInfo.dataSize = image.length * sizeof(unsigned char);
-    textureCreateInfo.textureData.dataType.image = image.imageData;
-    textureCreateInfo.textureData.usingGenericType = false;
+    textureCreateInfo.height = 1;
+    textureCreateInfo.width = 1;
+    textureCreateInfo.channelCount = 4;
+    textureCreateInfo.dataSize = sizeof(uint32_t);
+    uint32_t data = 0xFFFFFFFF;
+    textureCreateInfo.textureData.dataType.generic = &data;
+    textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     logInformation("Texture Created")
+    obj1.textureIds = &plainWhiteTexture;
+    obj2.textureIds = &plainWhiteTexture;
+    obj3.textureIds = &plainWhiteTexture;
 
     UserInput::initialize();
-    UserInput::addKeyMap(GLFW_KEY_W, GLFW_PRESS, doTheThing);
-    UserInput::addKeyMap(GLFW_KEY_A, GLFW_PRESS, doTheThing);
-    UserInput::addKeyMap(GLFW_KEY_S, GLFW_PRESS, doTheThing);
-    UserInput::addKeyMap(GLFW_KEY_D, GLFW_PRESS, doTheThing);
+    UserInput::addKeyMap(GLFW_KEY_W, GLFW_PRESS, moveUp);
+    UserInput::addKeyMap(GLFW_KEY_A, GLFW_PRESS, moveLeft);
+    UserInput::addKeyMap(GLFW_KEY_S, GLFW_PRESS, moveDown);
+    UserInput::addKeyMap(GLFW_KEY_D, GLFW_PRESS, moveRight);
     UserInput::setCursorPressedMoveFunc(scroll);
     UserInput::setScrollFunc(scroll);
-    UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, doTheThing);
+    UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, changeSelection);
 
 
 
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
+        Plexi::submitScene({obj1, obj2, obj3});
         Plexi::onUpdate();
     }
     Plexi::cleanupPlexi();

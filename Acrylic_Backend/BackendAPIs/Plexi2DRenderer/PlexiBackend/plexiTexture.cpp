@@ -17,7 +17,7 @@ uint32_t Plexi::Texture::create2DTexture(Plexi::TextureCreateInfo &createInfo, c
 
     newTexture->createTexture(createInfo.textureData, createInfo.dataSize, createInfo.height, createInfo.width, createInfo.channelCount);
 
-//    GFXBackendMap[backendToUse]->addTexture(newTexture);
+    GFXBackendMap[backendToUse]->addTexture(newTexture);
 
     return newTexture->getId();
 }

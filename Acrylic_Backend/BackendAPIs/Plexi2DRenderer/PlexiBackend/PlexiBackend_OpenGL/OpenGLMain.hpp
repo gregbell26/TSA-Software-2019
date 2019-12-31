@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
+#include <algorithm>
 #include <ths/log.hpp>
 
 #define pipelineComponentMap std::map<OPEN_GL_GFX_PIPELINE_COMPONENT_IDS, GLuint>
@@ -37,7 +38,7 @@ public:
 
     void setClearColor(const float& r, const float& g, const float& b, const float& a) override;
 
-    void submitScene() override;
+    void submitScene(const std::vector<StandardRenderTask>& standardRenderTasks) override;
 
     void addTexture(Plexi2DTexture* texture) override;
 
@@ -95,12 +96,9 @@ private:
 
     uint32_t vertexBufferIndex = 0;
 
+    uint32_t onUpdateErrorCounter = 0;
+
     std::map<std::string, pipelineComponentMap> activePipelines;
-    std::map<uint32_t, Plexi2DTexture*> textureMap;
-
-
-    uint32_t currentTextureId;// = 101;
-
 
 };
 

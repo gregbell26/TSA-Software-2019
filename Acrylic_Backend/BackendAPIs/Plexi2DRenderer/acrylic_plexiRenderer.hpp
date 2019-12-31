@@ -33,7 +33,7 @@ namespace Plexi {
 
 
 
-    void submitScene();
+    void submitScene(const std::vector<StandardRenderTask>& tasks);
 
     void setClearColor(const float &r, const float &g, const float &b, const float &a);
 

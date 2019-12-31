@@ -138,7 +138,8 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
 }
 
 
-void Plexi::submitScene() {
+void Plexi::submitScene(const std::vector<StandardRenderTask>& tasks) {
+    GFXBackendMap[activeConfig.activeBackendName]->submitScene(tasks);
 
 }
 

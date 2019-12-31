@@ -7,7 +7,13 @@
 
 #include "OpenGLMain.hpp"
 
-Plexi2DTexture *texture = new OpenGL2DTexture(101);//fuck you
+
+struct Cache {//For some reason having these elements inside of the class leads to them not holding data but putting them out here works
+            //Have no clue as to why this is -- Need to investigate further
+    std::vector<Plexi2DTexture*> textureCache;
+    std::vector<StandardRenderTask> standardRenderTaskCache;
+
+} cache;
 
 static void glfwErrorCallBack(int errorCode, const char* description){
     if(errorCode == GLFW_NO_ERROR){
@@ -228,61 +234,70 @@ void OpenGL::setClearColor(const float &r, const float &g, const float &b, const
     glClearColor(r,g,b,a);
 }
 
-void OpenGL::submitScene() {
+void OpenGL::submitScene(const std::vector<StandardRenderTask>& standardRenderTasks) {
+    //Def wanna optimize this
+    if(cache.standardRenderTaskCache.size() != standardRenderTasks.size()){
+        cache.standardRenderTaskCache.resize(standardRenderTasks.size());
+    }
+//    else if(std::equal(cache.standardRenderTaskCache.begin(), cache.standardRenderTaskCache.begin() + cache.standardRenderTaskCache.size(), standardRenderTasks.begin())){//Might need to do std::equals for this
+//        return;
+//    }
+    for(size_t i = 0; i < standardRenderTasks.size(); i++) {
+        cache.standardRenderTaskCache[i] = standardRenderTasks[i];
+    }
 
 }
 
 void OpenGL::onUpdate() {
     clear();
-    setMat4("plexi_default_primitive", "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
-    {
-        setFloat4("plexi_default_primitive", "color", {0.0f, 0.5f, 0.75f, 1.0f});
-    //    try {
-    //        textureMap.at(101)->bind(0);
-    //    }catch(std::out_of_range& err){
-    //        std::cout << "Texture id: " << 101 << "does not exist" << std::endl;
-    //    }
-        texture->bind(0);
-
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, -0.1f}) * glm::scale(glm::mat4(1.0f), { 2.0f, 2.0f, 2.0f });
-        setMat4("plexi_default_primitive", "transform", transform);
-        glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
-        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
-    //    try {
-    //        textureMap.at(101)->unbind();
-    //    }catch(std::out_of_range& err){
-    //        std::cout << "Texture id: " << 101 << "does not exist" << std::endl;
-    //    }
-
-        texture->unbind();
+    if(cache.textureCache.empty() || activePipelines.empty()) {
+        if(onUpdateErrorCounter >= 240){
+            logWarning("Unable to render. Graphics pipeline and/or texture cache is empty")//Def Wanna async this
+            onUpdateErrorCounter = 0;
+        }
+        onUpdateErrorCounter++;
+        glfwSwapBuffers(glfwWindow);
+        return;
     }
 
-    {
-        setFloat4("plexi_default_primitive", "color", {0.75f, 0.0f, 0.5f, 1.0f});
-
-        texture->bind(0);
-
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), {-3.0f, -1.5f, 0.0f}) * glm::scale(glm::mat4(1.0f), { 0.25f, 3.0f, 0.25f });
-        setMat4("plexi_default_primitive", "transform", transform);
-        glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
-
-        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
-
-        texture->unbind();
+    if(cache.standardRenderTaskCache.empty()){
+        glfwSwapBuffers(glfwWindow);
+        return;
     }
 
-    {
-        setFloat4("plexi_default_primitive", "color", {0.0f, 0.75f, 0.5f, 1.0f});
+    setMat4(cache.standardRenderTaskCache[0].graphicsPipelineName, "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
 
-        texture->bind(0);
+    for(const auto& stdRenderTask : cache.standardRenderTaskCache){
+        for(u_short i = 0; i < stdRenderTask.textureCount; i++){
+            try {
+                cache.textureCache.at(stdRenderTask.textureIds[i])->bind(i);
+            } catch(std::out_of_range& err){
+                if(onUpdateErrorCounter >= 240){
+                    logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
+                    onUpdateErrorCounter = 0;
+                }
+                continue;
+            }
+        }
 
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), {3.0f, -1.5f, 0.0f}) * glm::scale(glm::mat4(1.0f), { 0.25f, 3.0f, 0.25f });
-        setMat4("plexi_default_primitive", "transform", transform);
-        glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
+        setFloat4(stdRenderTask.graphicsPipelineName, "color", stdRenderTask.RGBAColor);
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), stdRenderTask.position) * glm::scale(glm::mat4x4(1.0f), {stdRenderTask.scale, 0.0f});
 
+        setMat4(stdRenderTask.graphicsPipelineName, "transform", transform);
+        glBindVertexArray(activePipelines[stdRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
         glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
 
-        texture->unbind();
+        for(u_short i = 0; i < stdRenderTask.textureCount; i++){
+            try {
+                cache.textureCache.at(stdRenderTask.textureIds[i])->unbind();
+            }catch(std::out_of_range& err){
+                if(onUpdateErrorCounter >= 240){
+                    logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
+                    onUpdateErrorCounter = 0;
+                }
+                continue;
+            }
+        }
     }
 
     glfwSwapBuffers(glfwWindow);
@@ -345,18 +360,13 @@ void OpenGL::clear() {
 }
 
 void OpenGL::addTexture(Plexi2DTexture* texture) {
-//    uint32_t id = texture->getId();
-//    this->textureMap.insert(std::pair(id, texture));
-    //textureMap.insert(std::pair(texture->getId(), texture));
-    //whiteTextureId = texture->getId();
-//    this->whiteTextureId = id;
+    cache.textureCache[texture->getId()] = texture;//might not be necessary
 }
 
 Plexi2DTexture* OpenGL::getNewTexture() {
-//    textureMap.insert({currentTextureId, new OpenGL2DTexture(currentTextureId)});
-//    currentTextureId++;
-//    return textureMap[currentTextureId-1];
-    return texture;
+    cache.textureCache.push_back(new OpenGL2DTexture(cache.textureCache.size()));
+
+    return cache.textureCache[cache.textureCache.size() - 1];
 }
 
 
