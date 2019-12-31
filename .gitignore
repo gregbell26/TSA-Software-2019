@@ -19,3 +19,5 @@ out/
 /out/
 build/
 /build/
+build-release/
+/build-release/

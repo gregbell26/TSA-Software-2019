@@ -9,6 +9,7 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <ths/log.hpp>
 
 namespace Plexi::Shaders {
     enum DataType {//Data types that correspond to those inside of the shader NOTE: vecs are floats

@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
+#include <ths/log.hpp>
 
 #define pipelineComponentMap std::map<OPEN_GL_GFX_PIPELINE_COMPONENT_IDS, GLuint>
 
