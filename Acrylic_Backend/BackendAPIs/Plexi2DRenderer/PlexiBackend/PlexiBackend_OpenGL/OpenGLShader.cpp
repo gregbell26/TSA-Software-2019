@@ -16,10 +16,10 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
     // Compile the vertex shader
     glCompileShader(vertexShader);
 
-    GLint isCompiled = 0;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
+    GLint compiledSuccessfully = 0;
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &compiledSuccessfully);
 
-    if(isCompiled == GL_FALSE)
+    if(!compiledSuccessfully)
     {
         GLint maxLength = 0;
         glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
@@ -31,10 +31,7 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
         // We don't need the shader anymore.
         glDeleteShader(vertexShader);
 
-        // Use the infoLog as you see fit.
-        std::cerr << "OpenGL Shader Compilation Error: " << infoLog.data() << std::endl;
-
-        // In this simple program, we'll just leave
+        logError("OpenGL Shader Compilation Error: " + std::string() + infoLog.data())
         return false;
     }
 
@@ -49,8 +46,8 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
     // Compile the fragment shader
     glCompileShader(fragmentShader);
 
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE)
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &compiledSuccessfully);
+    if (compiledSuccessfully == GL_FALSE)
     {
         GLint maxLength = 0;
         glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
@@ -64,10 +61,8 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
         // Either of them. Don't leak shaders.
         glDeleteShader(vertexShader);
 
-        // Use the infoLog as you see fit.
 
-        std::cerr << "OpenGL Shader compilation error " << infoLog.data() << std::endl;
-        // In this simple program, we'll just leave
+        logError("OpenGL Shader Compilation Error: " + std::string() + infoLog.data())
         return false;
     }
 
@@ -102,7 +97,7 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
         glDeleteShader(fragmentShader);
 
         // Use the infoLog as you see fit.
-        std::cerr << "OpenGL Shader link error: " << infoLog.data() << std::endl;
+        logError("OpenGL Shader Linking Error: " + std::string() + infoLog.data())
         // In this simple program, we'll just leave
         return false;
     }

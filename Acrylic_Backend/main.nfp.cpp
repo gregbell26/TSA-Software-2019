@@ -112,5 +112,6 @@ int main(){
         Plexi::onUpdate();
     }
     Plexi::cleanupPlexi();
+    endLogger()
 //    readJSON('a');
 }

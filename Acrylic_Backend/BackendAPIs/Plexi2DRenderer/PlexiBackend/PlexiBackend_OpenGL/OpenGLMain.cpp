@@ -167,6 +167,13 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
 
 void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) {
     logInformation("Attempting to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
+
+    if(!shaderCreateInfo.isComplete()){
+        //Error message Already displayed. We don't need to do it again
+        logWarning("Failed to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
+        return;
+    }
+
     //Create Pipeline
     pipelineComponentMap pipelineMap = {
             {SHADER_PROGRAM, 0},
@@ -174,12 +181,6 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
             {INDEX_BUFFER, 0},
             {VERTEX_ARRAY, 0}
     };
-
-    if(!shaderCreateInfo.isComplete()){
-        //Error message Already displayed. We don't need to do it again
-        logWarning("Failed to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
-        return;
-    }
 
     logInformation("Attempting to create OpenGL Shader Program \'" + shaderCreateInfo.shaderName + "\'")
     if(!createShaders(shaderCreateInfo.glslVertexCode, shaderCreateInfo.glslFragmentCode, shaderCreateInfo.shaderName, pipelineMap)){
@@ -218,7 +219,7 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
 
     glUseProgram(pipelineMap[SHADER_PROGRAM]);
 
-    setInt(bufferCreateInfo.shaderName, "texture2D", 0);//Tell openGL we have one shader
+    setInt(bufferCreateInfo.shaderName, "texture2D", 0);//Tell openGL we have will want to use this shader slot
 
 
 }
@@ -292,9 +293,9 @@ void OpenGL::onUpdate() {
 
 void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
     if(pipelineName == "all"){
-        logInformation("Cleaning up all pipelines")
+        logInformation("Cleaning up all pipelines...")
         for(auto& [pipeline, componentMap] : activePipelines){
-            logInformation("Cleaning up graphics pipeline \'" + pipeline + "\'")
+            logInformation("\tCleaning up graphics pipeline \'" + pipeline + "\'")
             glDeleteProgram(componentMap[SHADER_PROGRAM]);
             componentMap[SHADER_PROGRAM] = 0;
             glDeleteBuffers(1, &componentMap[VERTEX_BUFFER]);
