@@ -12,6 +12,7 @@
 
 
 void Plexi::initPlexi() {
+    logInformation("Using Default Plexi2D Config.")
     const std::string shaderNames[] = {
             "plexi_default_primitive",
 //            "plexi_default_text"
@@ -25,9 +26,6 @@ void Plexi::initPlexi() {
 //            "plexi_fragment_default_text"
     };
 
-
-    //TODO: CONNECT LOGGER - For now we'll be using std::out
-
     PlexiConfig plexiConfig = {};
     plexiConfig.preferredGraphicsBackend = PLEXI_DEFAULT_GFX_BACKEND;
 
@@ -39,7 +37,7 @@ void Plexi::initPlexi() {
         //Only for vulkan - Do check to see if these need to be populated in the initPlexi function - If they aren't runtime error as this is information that Vulkan needs to know
         std::vector<const char *> deviceExtensions = {
                 "VK_KHR_SWAPCHAIN_EXTENSION_NAME"
-        };//Init to blank bc we are going to assume that if the user wants to render that they will say I NEED SWAPCHAIN SUPPORT
+        };
         std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
 
         plexiConfig.plexiGFXRequiredInformation.vulkan_DEVICE_EXTENSIONS = deviceExtensions.data();
@@ -57,7 +55,6 @@ void Plexi::initPlexi() {
 
     }
 
-
     //Populate the shader create info structs
     plexiConfig.shaderCreateInfos.resize(plexiConfig.shaderCount);
     for(size_t i = 0; i < plexiConfig.shaderCount; i++){
@@ -65,14 +62,14 @@ void Plexi::initPlexi() {
         shaderCreateInfo.shaderName = shaderNames[i];
         shaderCreateInfo.shaderLanguage = plexiConfig.defaultShaderLanguage;
         if(shaderCreateInfo.shaderLanguage == Shaders::SPIRV){
-            std::cout << "Unsupported default shader. (SPIR-V is currently unavailable)" << std::endl;
+            logWarning("Unsupported default shader. (SPIR-V is currently unavailable)")
         } else if(shaderCreateInfo.shaderLanguage == Shaders::GLSL){
             shaderCreateInfo.glslVertexCode = Shaders::loadGLSLShaderFromFile(Shaders::locateShader(vertShaderFileNames[i], Shaders::GLSL));
             shaderCreateInfo.glslFragmentCode = Shaders::loadGLSLShaderFromFile(Shaders::locateShader(fragShaderFileNames[i], Shaders::GLSL));
         }
 
         if(!shaderCreateInfo.isComplete()){
-            std::cerr << "An error occurred while loading shaders" << std::endl;
+            logError("An error occurred while loading shaders")
         }
     }
     //Populate the buffer create info structs
@@ -92,20 +89,14 @@ void Plexi::initPlexi() {
     bufferCreateInfo.indexArraySize = Buffer::SQUARE_INDICES_SIZE;
 
 
-
-
-
-
-
     initPlexi(plexiConfig);
-
 
 }
 
 void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
-    logInformation("yee!")
+    initLogger("Plexi2D", log_severity_information, log_mode_all)
     if (plexiConfig.preferredGraphicsBackend == PLEXI_NULL_BACKEND) {
-        std::cerr << "No plexi renderer specified. Please specify a plexi config or change the default renderer" << std::endl;
+        logError("No plexi renderer specified. Please specify a plexi config or change the default renderer")
         return;
     } else {
 
@@ -114,7 +105,7 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
 
 
         if(!GFXBackendMap[plexiConfig.preferredGraphicsBackend]->isSupported()){
-            std::cerr << "Selected Plexi renderer is unsupported. Please specify a plexi config or change the default renderer" << std::endl;
+            logError("Selected Plexi renderer is unsupported. Please specify a plexi config or change the default renderer")
             return;
         }
 
@@ -143,8 +134,7 @@ void Plexi::initPlexi(Plexi::PlexiConfig &plexiConfig) {
     }
 
     activeConfig.setPlexiInit(GFXBackendMap[activeConfig.activeBackendName]->initBackend());
-    std::cout << "Plexi initialization complete with default parameters. Current Plexi status: " << (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ) << std::endl;
-
+    logInformation("Plexi initialization complete with default parameters. Current Plexi status: " + std::string() + (activeConfig.getPlexiInit() ?  "OK" : "FAILURE" ))
 }
 
 

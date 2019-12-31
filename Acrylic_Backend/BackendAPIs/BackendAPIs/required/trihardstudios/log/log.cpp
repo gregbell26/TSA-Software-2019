@@ -1,5 +1,3 @@
-#define IGNORE_VARS
-
 #include "../include/ths/log.hpp"
 
 #if defined(Darwin) || defined(Linux)
@@ -28,6 +26,7 @@ static std::ofstream fout;
 static const char *activeName;
 static A2D::Log::SEVERITY activeSeverity;
 static A2D::Log::MODE activeMode;
+static bool init = false;
 
 void A2D::Log::initLog(const char *name, Log::SEVERITY severity, Log::MODE mode)
 {
@@ -45,6 +44,7 @@ void A2D::Log::initLog(const char *name, Log::SEVERITY severity, Log::MODE mode)
         }
     }
     log(SEVERITY::A2D_INFORMATION, "<<< LOG STARTED >>>");
+    init = true;
 }
 
 void A2D::Log::log(Log::SEVERITY severity, const std::string &message) {
@@ -117,4 +117,9 @@ void A2D::Log::err(const std::string &message) {
 void A2D::Log::end() {
     log(SEVERITY::A2D_INFORMATION, "<<< LOG ENDED >>>");
     fout.close();
+    init = false;
+}
+
+bool A2D::Log::getInit() {
+    return init;
 }

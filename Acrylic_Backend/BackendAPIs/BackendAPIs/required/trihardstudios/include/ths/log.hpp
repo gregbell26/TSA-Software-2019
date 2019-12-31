@@ -36,6 +36,8 @@ namespace A2D {
 
         static void log(SEVERITY severity, const std::string &message);
 
+        static bool getInit();
+
         static void end();
 
     private:
@@ -49,20 +51,20 @@ namespace A2D {
 
 }
 
-#define severity_information A2D::Log::SEVERITY::A2D_INFORMATION
-#define severity_warning A2D::Log::SEVERITY::A2D_WARNING
-#define severity_error A2D::Log::SEVERITY::A2D_ERROR
+#define log_severity_information A2D::Log::SEVERITY::A2D_INFORMATION
+#define log_severity_warning A2D::Log::SEVERITY::A2D_WARNING
+#define log_severity_error A2D::Log::SEVERITY::A2D_ERROR
 
-#define mode_console A2D::Log::MODE::A2D_CONSOLE_ONLY
-#define mode_file A2D::Log::MODE::A2D_FILE_ONLY
-#define mode_all A2D::Log::MODE::A2D_ALL
+#define log_mode_console A2D::Log::MODE::A2D_CONSOLE_ONLY
+#define log_mode_file A2D::Log::MODE::A2D_FILE_ONLY
+#define log_mode_all A2D::Log::MODE::A2D_ALL
 
-#define initLogger(name, severity, mode) A2D::Log::initLog(name, severity, mode);
+#define initLogger(name, severity, mode) {if(!A2D::Log::getInit()) { A2D::Log::initLog(name, severity, mode); } }
 #define endLogger() A2D::Log::end();
 
-#define logInformation(message) A2D::Log::log(severity_information, message);
-#define logWarning(message) A2D::Log::log(severity_warning, message);
-#define logError(message) A2D::Log::log(severity_error, message);
+#define logInformation(message) {if(A2D::Log::getInit()) { A2D::Log::log(log_severity_information, message); } }
+#define logWarning(message) {if(A2D::Log::getInit()) { A2D::Log::log(log_severity_warning, message); } }
+#define logError(message) {if(A2D::Log::getInit()) { A2D::Log::log(log_severity_error, message); } }
 
 
 #endif //A2D_LOG_HPP

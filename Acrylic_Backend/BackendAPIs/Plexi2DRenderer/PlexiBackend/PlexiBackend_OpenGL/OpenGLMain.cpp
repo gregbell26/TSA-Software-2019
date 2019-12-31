@@ -14,7 +14,7 @@ static void glfwErrorCallBack(int errorCode, const char* description){
         return;
     }
 
-    std::cerr << "GLFW ERROR: " << errorCode << ": " << description << std::endl;
+    logError("GLFW Error: " + std::to_string(errorCode) + ':' + description)
     //todo handle errors
 }
 
@@ -26,7 +26,10 @@ static void GLAPIENTRY openGLDebugMessageCallBack(GLenum source,
                                                   GLsizei length,
                                                   const char* message,
                                                   const void* userParam){
-    std::cout << ((type == GL_DEBUG_TYPE_ERROR) ? "openGL Error: " : "openGL Message: ") << message << std::endl;
+    if(type == GL_DEBUG_TYPE_ERROR)
+        logError("OpenGL Error: " + std::string() + message)
+    else
+        logInformation("OpenGL Message: " + std::string() + message)
 
 }
 #endif
@@ -43,9 +46,10 @@ void OpenGL::setOptionInformation(const PlexiGFX_OptionalInformation &optionalIn
 
 bool OpenGL::createWindow() {
     if(!glfwInit()){
-        std::cerr << "Failed to initialize GLFW" <<  std::endl;
+        logError("Failed to initialize GLFW")
         return false;
     }
+    logInformation("Initialized GLFW successfully")
     //Enforces OpenGL 4.1 on mac and windows
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -57,11 +61,13 @@ bool OpenGL::createWindow() {
     glfwWindow = glfwCreateWindow(1280, 720, appName, nullptr, nullptr);
 
     if(!glfwWindow){
-        std::cerr << "Failed to create GLFW window" << std::endl;
+        logError("Failed to create GLFW window")
+        glfwTerminate();
         return false;
     }
     //Im sure that there is more that needs to be done
 
+    logInformation("Created GLFW window successfully")
     return true;
 }
 
@@ -71,13 +77,20 @@ bool OpenGL::initCore() {
 
 #if not defined(MACOS)//OpenGL debugging is not supported on macOS
     glEnable(GL_DEBUG_OUTPUT);
+    logInformation("Using OpenGL debug messages")
     glDebugMessageCallback(openGLDebugMessageCallBack, nullptr);
 #endif
 
-    std::cout << "OpenGL status: " << (glStatus ? "SUCCESSFUL" : "FAILURE") << std::endl;
-    std::cout << "\tVendor: " << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "\tGPU: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "\tVersion: " << glGetString(GL_VERSION) << std::endl;
+    if(!glStatus)
+        logError("Failed to initialized OpenGL")
+    else {
+        logInformation("Initialized OpenGL successfully")
+        logInformation("OpenGL Info: ")
+        logInformation("\tGPU Vendor: " + std::string() + (const char*) glGetString(GL_VENDOR))
+        logInformation("\tGPU Name: " + std::string() + (const char*) glGetString(GL_RENDERER))
+        logInformation("\tOpenGL Version: " + std::string() + (const char*) glGetString(GL_VERSION))
+    }
+
     //Todo version check
     return glStatus;
 }
@@ -153,7 +166,7 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
 }
 
 void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) {
-    std::cout << "Attempting to create \'" << bufferCreateInfo.shaderName << "\' graphics pipeline" << std::endl;
+    logInformation("Attempting to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
     //Create Pipeline
     pipelineComponentMap pipelineMap = {
             {SHADER_PROGRAM, 0},
@@ -164,16 +177,19 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
 
     if(!shaderCreateInfo.isComplete()){
         //Error message Already displayed. We don't need to do it again
+        logWarning("Failed to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
         return;
     }
 
-    std::cout << "Attempting to create OpenGL Shader \'" << shaderCreateInfo.shaderName << "\'" << std::endl;
+    logInformation("Attempting to create OpenGL Shader Program \'" + shaderCreateInfo.shaderName + "\'")
     if(!createShaders(shaderCreateInfo.glslVertexCode, shaderCreateInfo.glslFragmentCode, shaderCreateInfo.shaderName, pipelineMap)){
-        //Same as above
+        logWarning("Failed to create OpenGL Shader Program \'" + shaderCreateInfo.shaderName + "\'")
+        pipelineMap.clear();
+        logWarning("Failed to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
         return;
     }
 
-    std::cout << "Shader Created Successfully" << std::endl;
+    logInformation("Shader Program created successfully")
 
     createVertexBuffer(bufferCreateInfo.vertexArray, bufferCreateInfo.vertexArraySize, pipelineMap);
 
@@ -182,17 +198,27 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
     //Todo Move this vertex array stuff into a struct or something
 
     if(!createVertexArray(bufferCreateInfo, pipelineMap)){
-
+        logInformation("Failed to create OpenGL Vertex Array")
+        glDeleteProgram(pipelineMap[SHADER_PROGRAM]);
+        pipelineMap[SHADER_PROGRAM] = 0;
+        glDeleteBuffers(1, &pipelineMap[VERTEX_BUFFER]);
+        pipelineMap[VERTEX_BUFFER] = 0;
+        glDeleteBuffers(1, &pipelineMap[INDEX_BUFFER]);
+        pipelineMap[INDEX_BUFFER] = 0;
+        glDeleteVertexArrays(1, &pipelineMap[VERTEX_ARRAY]);
+        pipelineMap[VERTEX_ARRAY] = 0;
+        pipelineMap.clear();
+        logWarning("Failed to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
         return;
     }
 
     activePipelines.insert(std::pair(bufferCreateInfo.shaderName, pipelineMap));//Not passing by ref bc we need this always
 
-    std::cout << "Graphics Pipeline Created Successfully" << std::endl;
+    logInformation("Created \'" + bufferCreateInfo.shaderName + "\' Graphics Pipeline Successfully")
 
     glUseProgram(pipelineMap[SHADER_PROGRAM]);
 
-    setInt(bufferCreateInfo.shaderName, "texture2D", 0);
+    setInt(bufferCreateInfo.shaderName, "texture2D", 0);//Tell openGL we have one shader
 
 
 }
@@ -266,8 +292,9 @@ void OpenGL::onUpdate() {
 
 void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
     if(pipelineName == "all"){
+        logInformation("Cleaning up all pipelines")
         for(auto& [pipeline, componentMap] : activePipelines){
-            std::cout << "Cleaning up graphics pipeline \'" << pipeline << "\'" << std::endl;
+            logInformation("Cleaning up graphics pipeline \'" + pipeline + "\'")
             glDeleteProgram(componentMap[SHADER_PROGRAM]);
             componentMap[SHADER_PROGRAM] = 0;
             glDeleteBuffers(1, &componentMap[VERTEX_BUFFER]);
@@ -283,6 +310,7 @@ void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
     }
 
     try {
+        logInformation("Cleaning up graphics pipeline \'" + pipelineName + "\'")
         pipelineComponentMap &tempMap = activePipelines.at(pipelineName);
         glDeleteProgram(tempMap[SHADER_PROGRAM]);
         tempMap[SHADER_PROGRAM] = 0;
@@ -294,8 +322,8 @@ void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
         tempMap[VERTEX_ARRAY] = 0;
         tempMap.clear();
     } catch (std::out_of_range& err){
-        std::cout << "Pipeline \'" << pipelineName << "\' does not exist. Please check your spelling." << std::endl;
-        std::cout << "Error details: " << err.what() << std::endl;
+        logWarning("Pipeline \'" + pipelineName + "\' does not exist. Please check your spelling.")
+        logWarning("Error details: " + std::string() + err.what())
         return;
     }
 

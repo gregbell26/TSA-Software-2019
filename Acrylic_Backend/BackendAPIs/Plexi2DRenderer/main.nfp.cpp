@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 int main(){
+    initLogger("Plexi2D", log_severity_information, log_mode_all)
     Plexi::initPlexi();
     Plexi::TextureCreateInfo textureCreateInfo = {};
     textureCreateInfo.height = 1;
@@ -21,6 +22,8 @@ int main(){
 
 //    std::cin.get();
     Plexi::cleanupPlexi();
+
+    endLogger()
 
 
 

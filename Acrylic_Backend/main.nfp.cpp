@@ -59,7 +59,7 @@ UserInput::Returns scroll(double i, double j){
     return {};
 }
 int main(){
-    initLogger("A2D", severity_information, mode_all)
+    initLogger("A2D", log_severity_information, log_mode_all)
     Plexi::PlexiConfig plexiConfig = {};
     plexiConfig.preferredGraphicsBackend = Plexi::PLEXI_GFX_BACKENDS::PLEXI_OPENGL;
     plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
