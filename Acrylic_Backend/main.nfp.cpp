@@ -7,7 +7,7 @@
 
 StandardRenderTask obj1 = {
         "plexi_default_primitive",
-        {0.25f, 1.0f,0.0f, 1.0f},
+        {0.25f, 0.75f,0.1f, 1.0f},
         {0.0f, 0.0f, 0.0f},
         {3.0f, 3.0f},
         1,
@@ -16,7 +16,7 @@ StandardRenderTask obj1 = {
 
 StandardRenderTask obj2 = {
         "plexi_default_primitive",
-        {1.0f, 0.0f,0.25f, 1.0f},
+        {0.75f, 0.1f,0.25f, 1.0f},
         {-1.0f, -1.0f, 1.0f},
         {2.5f, 2.5f},
         1,
@@ -25,7 +25,7 @@ StandardRenderTask obj2 = {
 
 StandardRenderTask obj3 = {
         "plexi_default_primitive",
-        {0.25f, 0.0f,1.0f, 1.0f},
+        {0.25f, 0.1f,0.75f, 1.0f},
         {1.0f, 1.0f, -0.1f},
         {3.5f, 3.5f},
         1,

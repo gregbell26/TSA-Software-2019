@@ -9,5 +9,5 @@ uniform sampler2D texture2D;
 
 void main()
 {
-    out_color = texture(texture2D, shared_textureCoords * 10.0) * color;
+    out_color = texture(texture2D, shared_textureCoords) * color;
 }
