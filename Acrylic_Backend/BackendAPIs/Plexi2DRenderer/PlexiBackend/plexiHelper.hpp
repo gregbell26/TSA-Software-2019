@@ -27,11 +27,21 @@ struct PlexiGFX_OptionalInformation {
 
 };
 
+union TextureDataType {
+    void* generic;
+    unsigned char* image;
+};
+
+struct PlexiTextureData {
+    TextureDataType dataType;
+    bool usingGenericType = false;
+};
+
 class Plexi2DTexture {
 public:
     Plexi2DTexture() = default;
     virtual ~Plexi2DTexture() = default;
-    virtual void createTexture(void* data, uint32_t dataSize, uint32_t height, uint32_t width, uint32_t channelCount){};//return void or id Im not sure
+    virtual void createTexture(const PlexiTextureData& data, uint32_t dataSize, uint32_t height, uint32_t width, uint32_t channelCount){};//return void or id Im not sure
 
     virtual void bind(uint32_t textureSlot){};
 

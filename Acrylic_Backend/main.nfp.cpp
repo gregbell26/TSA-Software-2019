@@ -84,17 +84,17 @@ int main(){
     plexiConfig.bufferCreateInfos[0].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
 
     Plexi::initPlexi(plexiConfig);
-//    ImageLoaders::Bitmaps::Image image("./textures/tst.bmp");
-    uint32_t data = 0xffffff;
-    Plexi::TextureCreateInfo textureCreateInfo = {};
-    textureCreateInfo.height = 1;
-    textureCreateInfo.width = 1;
-    textureCreateInfo.channelCount = 3;
-    textureCreateInfo.dataSize = 4;
-    textureCreateInfo.textureData = &data;
-    logInformation("Texture Created")
+    ImageLoaders::Bitmaps::Image image("D:/Untitled.bmp");
 
+    Plexi::TextureCreateInfo textureCreateInfo = {};
+    textureCreateInfo.height = 1024;
+    textureCreateInfo.width = 1024;
+    textureCreateInfo.channelCount = 3;
+    textureCreateInfo.dataSize = image.length * sizeof(unsigned char);
+    textureCreateInfo.textureData.dataType.image = image.imageData;
+    textureCreateInfo.textureData.usingGenericType = false;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
+    logInformation("Texture Created")
 
     UserInput::initialize();
     UserInput::addKeyMap(GLFW_KEY_W, GLFW_PRESS, doTheThing);

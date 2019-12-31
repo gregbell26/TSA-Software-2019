@@ -247,7 +247,6 @@ void OpenGL::onUpdate() {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), {0.0f, 0.0f, -0.1f}) * glm::scale(glm::mat4(1.0f), { 2.0f, 2.0f, 2.0f });
         setMat4("plexi_default_primitive", "transform", transform);
         glBindVertexArray(activePipelines["plexi_default_primitive"][VERTEX_ARRAY]);
-    //    const uint32_t fuckYou[] = {0, 1, 2, 2, 3, 0} ;
         glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
     //    try {
     //        textureMap.at(101)->unbind();
@@ -285,7 +284,6 @@ void OpenGL::onUpdate() {
 
         texture->unbind();
     }
-
 
     glfwSwapBuffers(glfwWindow);
 

@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-int main(){
+int main(){ 
     initLogger("Plexi2D", log_severity_information, log_mode_all)
     Plexi::initPlexi();
     Plexi::TextureCreateInfo textureCreateInfo = {};
@@ -10,8 +10,11 @@ int main(){
     textureCreateInfo.width = 1;
     textureCreateInfo.channelCount = 4;
     textureCreateInfo.dataSize = sizeof(uint32_t);
-    uint32_t data = 0xffffffff;
-    textureCreateInfo.textureData = &data;
+    uint32_t data = 0xFFFFFFFF;
+    textureCreateInfo.textureData.dataType.generic = &data;
+    textureCreateInfo.textureData.usingGenericType = true;
+
+
 
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){

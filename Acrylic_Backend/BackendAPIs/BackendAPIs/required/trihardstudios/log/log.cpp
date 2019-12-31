@@ -12,7 +12,7 @@
 
 //#undef ERROR
 // blue
-#define A2D_COLOR_INFO SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 1) // 1325ED
+#define A2D_COLOR_INFO SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_INTENSITY) // 1325ED
 // yellow
 #define A2D_COLOR_WARNING SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 6) // EDE613
 // red

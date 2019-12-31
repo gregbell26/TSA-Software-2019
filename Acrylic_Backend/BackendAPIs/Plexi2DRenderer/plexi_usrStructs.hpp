@@ -53,7 +53,7 @@ namespace Plexi {
     };
 
     struct TextureCreateInfo {
-        void* textureData = nullptr;
+        PlexiTextureData textureData;
         uint32_t dataSize = 0;
         int height = 0;
         int width = 0;
