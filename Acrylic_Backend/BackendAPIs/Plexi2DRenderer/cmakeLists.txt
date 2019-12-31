@@ -78,4 +78,6 @@ target_link_libraries(Plexi2DRenderer A2D_log)
 #Link Tester with Plexi
 target_link_libraries(PlexiTester1000 Plexi2DRenderer)
 
-target_link_libraries(Plexi2DRenderer stdc++fs)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_libraries(Plexi2DRenderer stdc++fs)
+endif()

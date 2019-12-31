@@ -64,7 +64,8 @@ void A2D::Log::info(const std::string &message) {
 #if defined(Windows)
             std::cout << A2D_COLOR_INFO << "\b"
                 << "[" << activeName << ": INFORMATION] " << message
-                << A2D_COLOR_RESET << "\b" << std::endl;
+                << std::endl;
+            A2D_COLOR_RESET;
 #else
         std::cout << A2D_COLOR_INFO
                   << "[" << activeName << ": INFORMATION] " << message
@@ -83,7 +84,8 @@ void A2D::Log::warn(const std::string &message) {
 #if defined(Windows)
         std::cout << A2D_COLOR_WARNING << "\b"
                 << "[" << activeName << ": WARNING] " << message
-                << A2D_COLOR_RESET << "\b" << std::endl;
+                << std::endl;
+        A2D_COLOR_RESET;
 #else
         std::cout << A2D_COLOR_WARNING
                   << "[" << activeName << ": WARNING] " << message
@@ -101,7 +103,8 @@ void A2D::Log::err(const std::string &message) {
 #if defined(Windows)
         std::cout << A2D_COLOR_ERROR << "\b"
                 << "[" << activeName << ": ERROR] " << message
-                << A2D_COLOR_RESET << "\b" << std::endl;
+                << std::endl;
+        A2D_COLOR_RESET;
 #else
         std::cout << A2D_COLOR_ERROR
                   << "[" << activeName << ": ERROR] " << message

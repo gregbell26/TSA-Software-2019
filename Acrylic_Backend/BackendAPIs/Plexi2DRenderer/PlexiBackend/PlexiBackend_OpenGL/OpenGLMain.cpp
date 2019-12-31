@@ -18,7 +18,7 @@ static void glfwErrorCallBack(int errorCode, const char* description){
     //todo handle errors
 }
 
-#if not defined (MACOS)
+#if !defined(MACOS)
 static void GLAPIENTRY openGLDebugMessageCallBack(GLenum source,
                                                   GLenum type,
                                                   GLuint id,
@@ -75,7 +75,7 @@ bool OpenGL::initCore() {
     glfwMakeContextCurrent(glfwWindow);
     bool glStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-#if not defined(MACOS)//OpenGL debugging is not supported on macOS
+#if !defined(MACOS)//OpenGL debugging is not supported on macOS
     glEnable(GL_DEBUG_OUTPUT);
     logInformation("Using OpenGL debug messages")
     glDebugMessageCallback(openGLDebugMessageCallBack, nullptr);
