@@ -7,46 +7,25 @@
 
 namespace ImageLoaders::Bitmaps {
 
-
-
     struct Image
     {
-
-        struct Pixel
-        {
-            unsigned char red;
-            unsigned char green;
-            unsigned char blue;
-            unsigned char alpha;
-
-            Pixel();
-
-            Pixel(char r,char g,char b,char a);
-        };
-
         int height;
         int width;
         int length;
         int bytes;
 
         unsigned char * imageData;//Sorry, I renamed this so that it would be more clear and not confused with the main struct
-
-
+        
         explicit Image(const std::string& FileName);
-
-
-
+        
         void PrintInfo();
-
 
         void Print();
 
         char GetPixelValue(int x,int y,int P) //P 0=red 1=green 2=blue 3=alpha
         {
             return imageData[(x + (y * width)) * bytes + P ];
-
         }
-
 
         void SetPixelValue(int x, int y, int P, char v) //P 0=red 1=green 2=blue 3=alpha
         {
