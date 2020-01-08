@@ -20,13 +20,13 @@ namespace fs = std::filesystem;
 //    unsigned int u_i;
 //    unsigned long u_l;
 //    float f;
-//    double d;
+//    float d;
 //    bool b;
 //};
 
 struct jsonMaps{
     std::map<std::string, int> imap;
-    std::map<std::string, double> dmap;
+    std::map<std::string, float> fmap;
     std::map<std::string, std::string> smap;
     std::map<std::string, jsonMaps> jmap;
 };
@@ -60,12 +60,12 @@ jsonMaps interpretJson(std::string stringJson){
     jsonMaps maps;
     std::string tempJson;
     tempJson.assign(stringJson);
-    size_t loc = 0;
+    size_t loc = -1;
     size_t mid = 0;
     size_t end = 0;
     std::string key;
     int ival;
-    double dval;
+    float fval;
     std::string sval;
     int i = 0;
 
@@ -84,12 +84,16 @@ jsonMaps interpretJson(std::string stringJson){
 //    std::cout << tempJson << "\n";
 
     do{
+        loc++;
         mid = tempJson.find_first_of(":",loc);
         end = tempJson.find_first_of(",",loc);
         if(mid == -1)
             break;
         if(end == -1)
-            end = tempJson.length()-1;
+            end = tempJson.length();
+
+//        std::cout << mid << " " << end << "\n";
+//        std::cout << tempJson.find_first_of(".", mid, end - mid - 1) << "\n";
         key = tempJson.substr(loc, mid - loc - 1);
         if(key[0] == '\"')
             key.erase(0,1);
@@ -97,21 +101,22 @@ jsonMaps interpretJson(std::string stringJson){
             key.erase(key.length()-1,1);
 
         if(tempJson[mid+1] == '\"') {
-            sval = tempJson.substr(mid + 2, end - mid - 2);
-//            std::cout << key << " | " << sval << "\n";
+            sval = tempJson.substr(mid + 2, end - mid - 3);
+//            std::cout << key << " -s- " << sval << "\n";
             maps.smap.insert_or_assign(key,sval);
         }
-        else if(tempJson.find_first_of(".", mid, end - mid) != -1) {
-            dval = std::stod(tempJson.substr(mid + 1, end - mid - 1));
-//            std::cout << key << " | " << dval << "\n";
-            maps.dmap.insert_or_assign(key,dval);
+        else if(tempJson.find_first_of(".", mid) != -1 && tempJson.find_first_of(".",mid) < end) {
+            fval = std::stof(tempJson.substr(mid + 1, end - mid - 1));
+//            std::cout << key << " -d- " << fval << "\n";
+            maps.fmap.insert_or_assign(key,fval);
         }
         else {
             ival = std::stoi(tempJson.substr(mid + 1, end - mid - 1));
-//            std::cout << key << " | " << ival << "\n";
+//            std::cout << key << " -i- " << ival << "\n";
             maps.imap.insert_or_assign(key,ival);
         }
         loc = tempJson.find_first_of(",",loc);
+//        std::cout << loc << "\n\n";
     }while(loc != -1);
 
     return maps;
