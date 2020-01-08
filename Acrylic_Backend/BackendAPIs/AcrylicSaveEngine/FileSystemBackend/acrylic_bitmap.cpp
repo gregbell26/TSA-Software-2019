@@ -3,8 +3,8 @@
 //
 
 #include "acrylic_bitmap.h"
-namespace ImageLoaders::Bitmaps {
-    unsigned char bmpData[] = // All values are little-endian
+namespace A2D::Filesystem::ImageLoaders::Bitmaps {
+    const unsigned char bmpData[] = // All values are little-endian
             {
                     0x42, 0x4D,             // Signature 'BM'
                     0xaa, 0x00, 0x00, 0x00, // Size: 170 bytes
@@ -51,25 +51,6 @@ namespace ImageLoaders::Bitmaps {
                     //0xFF, 0xFF, 0xFF, 0xFF  // Top right pixel
             };
 }
-
-//---------------------------PIXEL-CONSTRUCTORS-----------------------------------
-ImageLoaders::Bitmaps::Image::Pixel::Pixel()
-{
-    red = 0x00;
-    green = 0x00;
-    blue = 0x00;
-    alpha = 0xFF;
-}
-
-ImageLoaders::Bitmaps::Image::Pixel::Pixel(char r, char g, char b, char a)
-{
-    red = r;
-    green = g;
-    blue = b;
-    alpha = a;
-}
-
-
 
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
 ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
