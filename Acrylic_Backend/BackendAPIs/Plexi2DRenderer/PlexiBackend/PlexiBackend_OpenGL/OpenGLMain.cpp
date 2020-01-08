@@ -1,20 +1,44 @@
 #define PLEXI_LIBRARY_ACTIVE
 #include  "../plexiShaders.hpp"
 #include "./../plexiBuffer.hpp"
-//#include "./../../plexi_usrStructs.hpp"
 #include "./../plexiHelper.hpp"
 
+#include "OpenGL2DTexture.hpp"
+
 #include "OpenGLMain.hpp"
+
+
+struct Cache {//For some reason having these elements inside of the class leads to them not holding data but putting them out here works
+            //Have no clue as to why this is -- Need to investigate further
+    std::vector<Plexi2DTexture*> textureCache;
+    std::vector<StandardRenderTask> standardRenderTaskCache;
+
+} cache;
 
 static void glfwErrorCallBack(int errorCode, const char* description){
     if(errorCode == GLFW_NO_ERROR){
         return;
     }
 
-    std::cerr << "GLFW ERROR: " << errorCode << ": " << description << std::endl;
+    logError("GLFW Error: " + std::to_string(errorCode) + ':' + description)
     //todo handle errors
 }
 
+#if !defined(MACOS)
+static void GLAPIENTRY openGLDebugMessageCallBack(GLenum source,
+                                                  GLenum type,
+                                                  GLuint id,
+                                                  GLenum severity,
+                                                  GLsizei length,
+                                                  const char* message,
+                                                  const void* userParam){
+    if(type == GL_DEBUG_TYPE_ERROR)
+        logError("OpenGL Error: " + std::string() + message)
+    else
+        logInformation("OpenGL Message: " + std::string() + message)
+
+}
+#endif
 
 bool OpenGL::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
     appName = requiredInformation.appName.c_str();
@@ -28,9 +52,10 @@ void OpenGL::setOptionInformation(const PlexiGFX_OptionalInformation &optionalIn
 
 bool OpenGL::createWindow() {
     if(!glfwInit()){
-        std::cerr << "Failed to initialize GLFW" <<  std::endl;
+        logError("Failed to initialize GLFW")
         return false;
     }
+    logInformation("Initialized GLFW successfully")
     //Enforces OpenGL 4.1 on mac and windows
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -42,21 +67,36 @@ bool OpenGL::createWindow() {
     glfwWindow = glfwCreateWindow(1280, 720, appName, nullptr, nullptr);
 
     if(!glfwWindow){
-        std::cerr << "Failed to create GLFW window" << std::endl;
+        logError("Failed to create GLFW window")
+        glfwTerminate();
         return false;
     }
     //Im sure that there is more that needs to be done
 
+    logInformation("Created GLFW window successfully")
     return true;
 }
 
 bool OpenGL::initCore() {
     glfwMakeContextCurrent(glfwWindow);
     bool glStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    std::cout << "OpenGL status: " << (glStatus ? "SUCCESSFUL" : "FAILURE") << std::endl;
-    std::cout << "\tVendor: " << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "\tGPU: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "\tVersion: " << glGetString(GL_VERSION) << std::endl;
+
+#if !defined(MACOS)//OpenGL debugging is not supported on macOS
+    glEnable(GL_DEBUG_OUTPUT);
+    logInformation("Using OpenGL debug messages")
+    glDebugMessageCallback(openGLDebugMessageCallBack, nullptr);
+#endif
+
+    if(!glStatus)
+        logError("Failed to initialized OpenGL")
+    else {
+        logInformation("Initialized OpenGL successfully")
+        logInformation("OpenGL Info: ")
+        logInformation("\tGPU Vendor: " + std::string() + (const char*) glGetString(GL_VENDOR))
+        logInformation("\tGPU Name: " + std::string() + (const char*) glGetString(GL_RENDERER))
+        logInformation("\tOpenGL Version: " + std::string() + (const char*) glGetString(GL_VERSION))
+    }
+
     //Todo version check
     return glStatus;
 }
@@ -66,162 +106,49 @@ bool OpenGL::isSupported() {
     return requiredInfoSet && createWindow() && initCore();
 }
 
+
 bool OpenGL::initBackend() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_DEPTH_TEST);
 
-    return true;
-}
-
-bool OpenGL::createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName) {
-    // Read our shaders into the appropriate buffers
-
-    // Create an empty vertex shader handle
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-    // Send the vertex shader source code to GL
-    // Note that std::string's .c_str is NULL character terminated.
-    auto  *source = (const GLchar *)vertexSource.c_str();
-    glShaderSource(vertexShader, 1, &source, 0);
-
-    // Compile the vertex shader
-    glCompileShader(vertexShader);
-
-    GLint isCompiled = 0;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-
-    if(isCompiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-
-        // We don't need the shader anymore.
-        glDeleteShader(vertexShader);
-
-        // Use the infoLog as you see fit.
-        std::cerr << "OpenGL Shader Compilation Error: " << infoLog.data() << std::endl;
-
-        // In this simple program, we'll just leave
-        return false;
-    }
-
-// Create an empty fragment shader handle
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-// Send the fragment shader source code to GL
-// Note that std::string's .c_str is NULL character terminated.
-    source = (const GLchar *)fragmentSource.c_str();
-    glShaderSource(fragmentShader, 1, &source, 0);
-
-// Compile the fragment shader
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-
-        // We don't need the shader anymore.
-        glDeleteShader(fragmentShader);
-        // Either of them. Don't leak shaders.
-        glDeleteShader(vertexShader);
-
-        // Use the infoLog as you see fit.
-
-        std::cerr << "OpenGL Shader compilation error " << infoLog.data() << std::endl;
-        // In this simple program, we'll just leave
-        return false;
-    }
-
-    // Vertex and fragment shaders are successfully compiled.
-    // Now time to link them together into a program.
-    // Get a program object.
-    GLuint program = glCreateProgram();
-
-    // Attach our shaders to our program
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-
-    // Link our program
-    glLinkProgram(program);
-
-    // Note the different functions here: glGetProgram* instead of glGetShader*.
-    GLint isLinked = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
-    if (isLinked == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-
-        // We don't need the program anymore.
-        glDeleteProgram(program);
-        // Don't leak shaders either.
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-
-        // Use the infoLog as you see fit.
-        std::cerr << "OpenGL Shader link error: " << infoLog.data() << std::endl;
-        // In this simple program, we'll just leave
-        return false;
-    }
-
-    activeShaderProgramIds[shaderProgramName] =program;
-
-    // Always detach shaders after a successful link.
-    glDetachShader(program, vertexShader);
-    glDetachShader(program, fragmentShader);
-
 
     return true;
 }
 
-bool OpenGL::createVertexBuffer(float *vertices, const size_t &size) {
-    glGenBuffers(1, &vertexBufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
+bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size, pipelineComponentMap& pipelineMap) {
+    glGenBuffers(1, &pipelineMap[VERTEX_BUFFER]);
+    glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[VERTEX_BUFFER]);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 
     //Todo check for errors - Pos add error Callback?
     return true;
 }
 
-bool OpenGL::createIndexBuffer(uint32_t *indices, const size_t &size) {
-    glGenBuffers(1, &indexBufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, indexBufferId);
-    glBufferData(GL_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);//The cherno does it like this so I guess Ill do it?
+bool OpenGL::createIndexBuffer(const uint32_t *indices, const size_t &size, pipelineComponentMap& pipelineMap) {
+    glGenBuffers(1, &pipelineMap[INDEX_BUFFER]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pipelineMap[INDEX_BUFFER]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
 
     return true;
 }
 
-bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCreateInfo) {
-    if(bufferCreateInfo.bufferLayout->getBufferElements().empty()){
+bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCreateInfo, pipelineComponentMap& pipelineMap) {
+    if(bufferCreateInfo.getLayout().getBufferElements().empty()){
         std::cerr << "Buffer Layout is empty" << std::endl;
         return false;
     }
 
-    glGenVertexArrays(1, &vertexArrayId);//I have no idea why its called gen and not create
+    glGenVertexArrays(1, &pipelineMap[VERTEX_ARRAY]);//I have no idea why its called gen and not create
 
-    glBindVertexArray(vertexArrayId);
+    glBindVertexArray(pipelineMap[VERTEX_ARRAY]);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
+    glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[VERTEX_BUFFER]);
 
-    const auto& bufferLayout = bufferCreateInfo.bufferLayout;
+    const auto& bufferLayout = bufferCreateInfo.getLayout();
 
-    for(const auto& element : *bufferLayout){
+    for(const auto& element : bufferLayout){
         glEnableVertexAttribArray(vertexBufferIndex);
 
         glVertexAttribPointer(
@@ -229,49 +156,76 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
                 Plexi::Shaders::getDataTypeCount(element.dataType),
                 Plexi::Shaders::convertDataTypeToGLSLBaseType(element.dataType),
                 element.normalized ? GL_TRUE : GL_FALSE,
-                bufferLayout->getStride(),
+                bufferLayout.getStride(),
                 (const void*) element.offset
         );
         //todo Add error check
         vertexBufferIndex++;
     }
 
-    glBindVertexArray(vertexArrayId);
+//    glBindVertexArray(pipelineMap[VERTEX_ARRAY]);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pipelineMap[INDEX_BUFFER]);
 
     return true;
 
 }
 
 void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) {
-    std::cout << "Attempting to create " << bufferCreateInfo.shaderName << " graphics pipeline" << std::endl;
+    logInformation("Attempting to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
 
     if(!shaderCreateInfo.isComplete()){
         //Error message Already displayed. We don't need to do it again
+        logWarning("Failed to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
         return;
     }
 
-    std::cout << "Attempting to create OpenGL Shader " << shaderCreateInfo.shaderName << std::endl;
-    if(!createShaders(shaderCreateInfo.glslVertexCode, shaderCreateInfo.glslFragmentCode, shaderCreateInfo.shaderName)){
-        //Same as above
+    //Create Pipeline
+    pipelineComponentMap pipelineMap = {
+            {SHADER_PROGRAM, 0},
+            {VERTEX_BUFFER, 0},
+            {INDEX_BUFFER, 0},
+            {VERTEX_ARRAY, 0}
+    };
+
+    logInformation("Attempting to create OpenGL Shader Program \'" + shaderCreateInfo.shaderName + "\'")
+    if(!createShaders(shaderCreateInfo.glslVertexCode, shaderCreateInfo.glslFragmentCode, shaderCreateInfo.shaderName, pipelineMap)){
+        logWarning("Failed to create OpenGL Shader Program \'" + shaderCreateInfo.shaderName + "\'")
+        pipelineMap.clear();
+        logWarning("Failed to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
         return;
     }
 
-    std::cout << "Shader created successfully" << std::endl;
+    logInformation("Shader Program created successfully")
 
-    createVertexBuffer(bufferCreateInfo.vertexArray, bufferCreateInfo.vertexArraySize);
+    createVertexBuffer(bufferCreateInfo.vertexArray, bufferCreateInfo.vertexArraySize, pipelineMap);
 
-    createIndexBuffer(bufferCreateInfo.indexArray, bufferCreateInfo.indexArraySize);
+    createIndexBuffer(bufferCreateInfo.indexArray, bufferCreateInfo.indexArraySize, pipelineMap);
 
     //Todo Move this vertex array stuff into a struct or something
 
-    if(!createVertexArray(bufferCreateInfo)){
-
+    if(!createVertexArray(bufferCreateInfo, pipelineMap)){
+        logInformation("Failed to create OpenGL Vertex Array")
+        glDeleteProgram(pipelineMap[SHADER_PROGRAM]);
+        pipelineMap[SHADER_PROGRAM] = 0;
+        glDeleteBuffers(1, &pipelineMap[VERTEX_BUFFER]);
+        pipelineMap[VERTEX_BUFFER] = 0;
+        glDeleteBuffers(1, &pipelineMap[INDEX_BUFFER]);
+        pipelineMap[INDEX_BUFFER] = 0;
+        glDeleteVertexArrays(1, &pipelineMap[VERTEX_ARRAY]);
+        pipelineMap[VERTEX_ARRAY] = 0;
+        pipelineMap.clear();
+        logWarning("Failed to create \'" + bufferCreateInfo.shaderName + "\' graphics pipeline")
         return;
     }
 
-    glUseProgram(activeShaderProgramIds[shaderCreateInfo.shaderName]);
+    activePipelines.insert(std::pair(bufferCreateInfo.shaderName, pipelineMap));//Not passing by ref bc we need this always
+
+    logInformation("Created \'" + bufferCreateInfo.shaderName + "\' Graphics Pipeline Successfully")
+
+    glUseProgram(pipelineMap[SHADER_PROGRAM]);
+
+    setInt(bufferCreateInfo.shaderName, "texture2D", 0);//Tell openGL we have will want to use this shader slot
 
 
 }
@@ -280,34 +234,142 @@ void OpenGL::setClearColor(const float &r, const float &g, const float &b, const
     glClearColor(r,g,b,a);
 }
 
-void OpenGL::submitScene() {
+void OpenGL::submitScene(const std::vector<StandardRenderTask>& standardRenderTasks) {
+    //Def wanna optimize this
+    if(cache.standardRenderTaskCache.size() != standardRenderTasks.size()){
+        cache.standardRenderTaskCache.resize(standardRenderTasks.size());
+    }
+//    else if(std::equal(cache.standardRenderTaskCache.begin(), cache.standardRenderTaskCache.begin() + cache.standardRenderTaskCache.size(), standardRenderTasks.begin())){//Might need to do std::equals for this
+//        return;
+//    }
+    for(size_t i = 0; i < standardRenderTasks.size(); i++) {
+        cache.standardRenderTaskCache[i] = standardRenderTasks[i];
+    }
 
 }
 
 void OpenGL::onUpdate() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void OpenGL::cleanUpGraphicsPipeline() {
-
-    for(auto& [key, item] : activeShaderProgramIds){
-
+    clear();
+    if(cache.textureCache.empty() || activePipelines.empty()) {
+        if(onUpdateErrorCounter >= 240){
+            logWarning("Unable to render. Graphics pipeline and/or texture cache is empty")//Def Wanna async this
+            onUpdateErrorCounter = 0;
+        }
+        onUpdateErrorCounter++;
+        glfwSwapBuffers(glfwWindow);
+        return;
     }
+
+    if(cache.standardRenderTaskCache.empty()){
+        glfwSwapBuffers(glfwWindow);
+        return;
+    }
+
+    setMat4(cache.standardRenderTaskCache[0].graphicsPipelineName, "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
+
+    for(const auto& stdRenderTask : cache.standardRenderTaskCache){
+        for(u_short i = 0; i < stdRenderTask.textureCount; i++){
+            try {
+                cache.textureCache.at(stdRenderTask.textureIds[i])->bind(i);
+            } catch(std::out_of_range& err){
+                if(onUpdateErrorCounter >= 240){
+                    logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
+                    onUpdateErrorCounter = 0;
+                }
+                continue;
+            }
+        }
+
+        setFloat4(stdRenderTask.graphicsPipelineName, "color", stdRenderTask.RGBAColor);
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), stdRenderTask.position) * glm::scale(glm::mat4x4(1.0f), {stdRenderTask.scale, 0.0f});
+
+        setMat4(stdRenderTask.graphicsPipelineName, "transform", transform);
+        glBindVertexArray(activePipelines[stdRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
+        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
+
+        for(u_short i = 0; i < stdRenderTask.textureCount; i++){
+            try {
+                cache.textureCache.at(stdRenderTask.textureIds[i])->unbind();
+            }catch(std::out_of_range& err){
+                if(onUpdateErrorCounter >= 240){
+                    logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
+                    onUpdateErrorCounter = 0;
+                }
+                continue;
+            }
+        }
+    }
+
+    glfwSwapBuffers(glfwWindow);
+
 }
+
+void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
+    if(pipelineName == "all"){
+        logInformation("Cleaning up all pipelines...")
+        for(auto& [pipeline, componentMap] : activePipelines){
+            logInformation("\tCleaning up graphics pipeline \'" + pipeline + "\'")
+            glDeleteProgram(componentMap[SHADER_PROGRAM]);
+            componentMap[SHADER_PROGRAM] = 0;
+            glDeleteBuffers(1, &componentMap[VERTEX_BUFFER]);
+            componentMap[VERTEX_BUFFER] = 0;
+            glDeleteBuffers(1, &componentMap[INDEX_BUFFER]);
+            componentMap[INDEX_BUFFER] = 0;
+            glDeleteVertexArrays(1, &componentMap[VERTEX_ARRAY]);
+            componentMap[VERTEX_ARRAY] = 0;
+            componentMap.clear();
+        }
+        activePipelines.clear();
+        return;
+    }
+
+    try {
+        logInformation("Cleaning up graphics pipeline \'" + pipelineName + "\'")
+        pipelineComponentMap &tempMap = activePipelines.at(pipelineName);
+        glDeleteProgram(tempMap[SHADER_PROGRAM]);
+        tempMap[SHADER_PROGRAM] = 0;
+        glDeleteBuffers(1, &tempMap[VERTEX_BUFFER]);
+        tempMap[VERTEX_BUFFER] = 0;
+        glDeleteBuffers(1, &tempMap[INDEX_BUFFER]);
+        tempMap[INDEX_BUFFER] = 0;
+        glDeleteVertexArrays(1, &tempMap[VERTEX_ARRAY]);
+        tempMap[VERTEX_ARRAY] = 0;
+        tempMap.clear();
+    } catch (std::out_of_range& err){
+        logWarning("Pipeline \'" + pipelineName + "\' does not exist. Please check your spelling.")
+        logWarning("Error details: " + std::string() + err.what())
+        return;
+    }
+
+
+
+
+
+}
+
 
 void OpenGL::cleanup() {
+    cleanUpGraphicsPipeline("all");
     glfwDestroyWindow(glfwWindow);
 
     glfwTerminate();
 }
 
-GLFWwindow *OpenGL::getWindowRef() {
-    return glfwWindow;
-}
-
 void OpenGL::clear() {
-
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
+
+void OpenGL::addTexture(Plexi2DTexture* texture) {
+    cache.textureCache[texture->getId()] = texture;//might not be necessary
+}
+
+Plexi2DTexture* OpenGL::getNewTexture() {
+    cache.textureCache.push_back(new OpenGL2DTexture(cache.textureCache.size()));
+
+    return cache.textureCache[cache.textureCache.size() - 1];
+}
+
+
 
 
 

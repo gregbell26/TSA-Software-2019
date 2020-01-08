@@ -1,17 +1,16 @@
 #ifndef PLEXI_RENDERER_HPP
 #define PLEXI_RENDERER_HPP
 
-#include <vulkan/vulkan.h>
-
 #include <iostream>
 #include <thread>
-#include <cstdlib>
-#include <ctime>
+#include <ths/log.hpp>
+
 
 
 namespace Plexi {
 
 #ifndef PLEXI_LIBRARY_ACTIVE
+
 
     const PLEXI_GFX_BACKENDS PLEXI_DEFAULT_GFX_BACKEND = PLEXI_OPENGL;
     //Where the config will be stored
@@ -34,13 +33,15 @@ namespace Plexi {
 
 
 
-    void submitScene();
+    void submitScene(const std::vector<StandardRenderTask>& tasks);
 
     void setClearColor(const float &r, const float &g, const float &b, const float &a);
 
     void onUpdate();
 
     void cleanupPlexi();
+
+    PLEXI_GFX_BACKENDS getActiveBackend();
 
     //Adds a render task to the active backend. Returns false if it fails
     bool addRenderTask(const RenderTask&);

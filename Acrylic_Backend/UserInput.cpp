@@ -33,6 +33,15 @@ namespace UserInput{
         }
     }
 
+    void setCursorPressedMoveFunc(Returns(*func)(double xpos, double ypos)){
+        if(func == nullptr){
+            std::cout << "Invalid input function" << std::endl;
+        } else {
+            cursorPressedMoveFunc = func;
+        }
+    }
+
+
     void setWindowEnterFunc(Returns (*func)()){
         if (func == nullptr){
             std::cout << "Invalid input function" << std::endl;
@@ -64,28 +73,34 @@ namespace UserInput{
     }
 
     static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
-        mouseButtonFunctions[button](action);
+        if(mouseButtonFunctions[button] != nullptr)
+            mouseButtonFunctions[button](action);
     }
 
     static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
-        scrollFunc(xoffset, yoffset);
+        if(scrollFunc != nullptr)
+            scrollFunc(xoffset, yoffset);
     }
 
     static void cursorEnterCallback(GLFWwindow* window, int entered){
         if (entered){
-            enterWindowFunc();
+            if(enterWindowFunc != nullptr)
+                enterWindowFunc();
         }
         else{
-            exitWindowFunc();
+            if(exitWindowFunc != nullptr)
+                exitWindowFunc();
         }
     }
 
     static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos){
         int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
         if (state == GLFW_PRESS) {
-            cursorPressedMoveFunc(xpos, ypos);
+            if(cursorPressedMoveFunc != nullptr)
+                cursorPressedMoveFunc(xpos, ypos);
         } else {
-            cursorMoveFunc(xpos, ypos);
+            if(cursorMoveFunc != nullptr)
+                cursorMoveFunc(xpos, ypos);
         }
     }
 
@@ -95,5 +110,23 @@ namespace UserInput{
         glfwSetScrollCallback(Plexi::getWindowRef(), scrollCallback);
         glfwSetCursorEnterCallback(Plexi::getWindowRef(), cursorEnterCallback);
         glfwSetCursorPosCallback(Plexi::getWindowRef(), cursorPositionCallback);
+    }
+
+    void cursorHiddenToggle(GLFWwindow* window){
+        int mode = glfwGetInputMode(window, GLFW_CURSOR);
+        if (mode == GLFW_CURSOR_HIDDEN) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        }
+    }
+
+    void cursorDisabledToggle(GLFWwindow* window){
+        int mode = glfwGetInputMode(window, GLFW_CURSOR);
+        if (mode == GLFW_CURSOR_DISABLED) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
     }
 }

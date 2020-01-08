@@ -5,21 +5,25 @@ project(Plexi2DRenderer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(VULKAN_SOURCE PlexiBackend/PlexiBackend_Vulkan/vulkanMain.cpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/Creators/GraphicsPiplines.cpp)
-set(VULKAN_HEADER PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/queueFamilies.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/swapChains.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/validationLayers.hpp)
+#set(VULKAN_SOURCE PlexiBackend/PlexiBackend_Vulkan/vulkanMain.cpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/Creators/GraphicsPiplines.cpp)
+#set(VULKAN_HEADER PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/queueFamilies.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/swapChains.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/validationLayers.hpp)
 
-set(OPENGL_SOURCE ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.cpp)
-set(OPENGL_HEADER ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.hpp)
+set(OPENGL_SOURCE ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.cpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGLShader.cpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGL2DTexture.cpp)
+set(OPENGL_HEADER ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.hpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGL2DTexture.hpp)
 
 
-set(SOURCE_FILES ${VULKAN_SOURCE} ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/plexiShaders.cpp)
-set(HEADER_FILES ${VULKAN_HEADER} ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/plexiShaders.hpp PlexiBackend/plexiBuffer.hpp)
+set(SOURCE_FILES ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/plexiShaders.cpp PlexiBackend/plexiTexture.cpp)
+set(HEADER_FILES ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/plexiShaders.hpp PlexiBackend/plexiBuffer.hpp PlexiBackend/plexiTexture.hpp)
 
 
 
 set(TST_FILES main.nfp.cpp)
 
-#Include OpenGL
+#include TriHard Studios Helper Libs
+add_subdirectory(./../BackendAPIs/required/trihardstudios thsBuild)
+include_directories(./../BackendAPIs/required/trihardstudios/include)
+
+#Include Glad (OpenGL Loader)
 include_directories(./GraphicsAPIs/required/glad/include)
 set(GLAD_SOURCE ./GraphicsAPIs/required/glad/src/glad.c)
 
@@ -33,26 +37,13 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 #Add it as a sub project to be built
-add_subdirectory(./../BackendAPIs/required/GLFW3 build)
+add_subdirectory(./../BackendAPIs/required/GLFW3 glfw3Build)
 
-#Load cmake modules for GLFW and Shaderc_Combined
-# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    # include_directories(/usr/local/include)
-
     add_compile_definitions(MACOS)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    #We have to do this because windows doesn't havea central include directory
-    #PlexiBackend_Vulkan
-    include_directories(C:/SDKS/VulkanSDK/1.1.114.0/Include)
-
-    # #GLM
-    # include_directories(C:/SDKS/GLM0.9)
-    # #GLFW
-    # include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
-
     #Disable MSVC Bullshit
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
@@ -62,7 +53,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     message(AUTHOR_WARNING "Building on Linux has not been tested. Please use macOS or Windows to build")
-    # include_directories(/usr/local/include)
 
     add_compile_definitions(LINUX)
 
@@ -73,11 +63,6 @@ endif()
 #Build Dependencies
 add_library(glad STATIC ${GLAD_SOURCE})
 
-#Find all packages for Plexi
-find_package(vulkan REQUIRED)
-# find_package(glfw3 3.3 REQUIRED)
-# find_package(shaderc_combined REQUIRED)
-
 #Disable GLFW includes
 add_compile_definitions(GLFW_INCLUDE_NONE)
 
@@ -86,12 +71,13 @@ add_executable(PlexiTester1000 ${TST_FILES})
 
 
 #Link Plexi with libs
-target_link_libraries(Plexi2DRenderer Vulkan::Vulkan)
-# target_link_libraries(Plexi2DRenderer ${SHADERC_COMBINED})
-# target_link_libraries(Plexi2DRenderer ${GLFW3_LIBRARY})
-
 target_link_libraries(Plexi2DRenderer glfw)
 target_link_libraries(Plexi2DRenderer glad)
+target_link_libraries(Plexi2DRenderer A2D_log)
 
 #Link Tester with Plexi
 target_link_libraries(PlexiTester1000 Plexi2DRenderer)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_libraries(Plexi2DRenderer stdc++fs)
+endif()
