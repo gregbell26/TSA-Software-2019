@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 
-namespace ImageLoaders::Bitmaps {
+namespace A2D::Filesystem::ImageLoaders::Bitmaps {
 
     struct Image
     {
