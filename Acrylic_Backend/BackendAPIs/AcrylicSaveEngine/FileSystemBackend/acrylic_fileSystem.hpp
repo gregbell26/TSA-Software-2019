@@ -83,21 +83,22 @@ jsonMaps interpretJson(std::string stringJson){
             break;
         if(end == -1)
             end = tempJson.length();
-        key = tempJson.substr(loc, mid);
+        key = tempJson.substr(loc, mid - loc - 1);
         if(key[0] == '\"')
             key.erase(0);
         if(key[key.length()-1] == '\"')
             key.erase(key.length()-1);
-        if(tempJson[mid] == '\"') {
-            sval = tempJson.substr(mid + 1, end - 1);
+
+        if(tempJson[mid+1] == '\"') {
+            sval = tempJson.substr(mid + 1, end - mid - 1);
             maps.smap.insert_or_assign(key,sval);
         }
-        else if(tempJson.find_first_of(".", mid, end) != -1) {
-            dval = std::stod(tempJson.substr(mid, end));
+        else if(tempJson.find_first_of(".", mid, end - mid) != -1) {
+            dval = std::stod(tempJson.substr(mid, end - mid));
             maps.dmap.insert_or_assign(key,dval);
         }
         else {
-            ival = std::stoi(tempJson.substr(mid, end));
+            ival = std::stoi(tempJson.substr(mid, end - mid));
             maps.imap.insert_or_assign(key,ival);
         }
         loc = tempJson.find_first_of(",",loc);
