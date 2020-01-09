@@ -124,7 +124,9 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
 //        std::string m = "";
 //        m = m + "File: "+FileName+" Not Found Loading default Image instead.";
         logWarning("File \'" + FileName +"\' not found. Returning default image")
-        logWarning("Default image not implemented returning null image instead.");
+        logWarning("Default image not implemented returning null image instead.")
+        imageData = nullptr;//Just so we can check this in the texture thingy
+
     }
 }
 

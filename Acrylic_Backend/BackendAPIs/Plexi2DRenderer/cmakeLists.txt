@@ -81,6 +81,15 @@ target_link_libraries(Plexi2DRenderer A2D_log)
 #Link Tester with Plexi
 target_link_libraries(PlexiTester1000 Plexi2DRenderer)
 
+#Working on Linux Support rn - Still not 100%
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    #This is the std::filesystem lib - Separate on linux clang and gcc
     target_link_libraries(Plexi2DRenderer stdc++fs)
 endif()
+
+add_custom_command(
+        TARGET PlexiTester1000 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Acrylic_Backend/BackendAPIs/Plexi2DRenderer/plexi_shaders
+        ${CMAKE_CURRENT_BINARY_DIR}/plexi_shaders
+)

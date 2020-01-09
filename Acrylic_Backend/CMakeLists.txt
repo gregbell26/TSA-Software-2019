@@ -85,3 +85,25 @@ target_link_libraries(AcrylicEngine Plexi2DRenderer)
 #target_link_libraries(AcrylicEngine A2D_log)
 
 target_link_libraries(AcrylicTestinator1000 AcrylicEngine)
+
+
+#Copy all assets - Note these are for debugging
+
+#Shaders
+add_custom_command(
+        TARGET AcrylicTestinator1000 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_SOURCE_DIR}/Acrylic_Backend/BackendAPIs/Plexi2DRenderer/plexi_shaders
+                ${CMAKE_CURRENT_BINARY_DIR}/plexi_shaders
+)
+
+#Textures
+add_custom_command(
+        TARGET AcrylicTestinator1000 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Acrylic_Backend/TestData/textures
+        ${CMAKE_CURRENT_BINARY_DIR}/textures
+)
+
+
+
