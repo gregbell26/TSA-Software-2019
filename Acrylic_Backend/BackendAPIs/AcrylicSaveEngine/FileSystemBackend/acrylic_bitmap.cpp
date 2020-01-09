@@ -64,18 +64,18 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
         is.seekg(0, is.beg);
 
         char* buffer = new char[length];
-        std::string m = "Reading " + length;//bc you can oly add strings once
-        logInformation(m + " characters... ")
+//        std::string m = "Reading " + length;//bc you can oly add strings once
+        logInformation("Reading" + std::to_string(length) + " characters... ")
             // read data as a block:
             is.read(buffer, length);
 
         if (is) {
-            logInformation("all characters read successfully.")
+            logInformation("All characters read successfully.")
         }
         else
         {
-            std::string m = "error: only " + is.gcount();//bc you can oly add strings once
-            logError(m + " could be read")
+//            std::string m = "error: only " + is.gcount();//bc you can oly add strings once
+            logError("Only "+ std::to_string(is.gcount()) + " characters could be read")
         }
         is.close();
 
@@ -98,14 +98,15 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
         bytes = bff2[28] / 8;
         }
         catch (std::out_of_range){
-            logError("File smaller then expected header length")
+//            logError("File smaller then expected header length")
+            logError("Invalid header data.")
             return;
         }
 
         length = height * width * bytes;
-        m = "";
-        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
-        logInformation(m)
+//        m = "";
+//        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
+        logInformation("Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " +std::to_string(width))
 
         imageData = new unsigned char[length]();
 
@@ -120,10 +121,12 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
     }
     else
     {
-        std::string m = "";
-        m = m + "File: "+FileName+" Not Found Loading default Image instead.";
-        logWarning(m)
-        logError("default image not implemented returnig null image instead.");
+//        std::string m = "";
+//        m = m + "File: "+FileName+" Not Found Loading default Image instead.";
+        logWarning("File \'" + FileName +"\' not found. Returning default image")
+        logWarning("Default image not implemented returning null image instead.")
+        imageData = nullptr;//Just so we can check this in the texture thingy
+
     }
 }
 
