@@ -17,6 +17,9 @@ include_directories(./BackendAPIs/Plexi2DRenderer/GraphicsAPIs/required/glm/incl
 #Include GLFW3
 include_directories(./BackendAPIs/BackendAPIs/required/GLFW3/include)
 
+#Inlcude FreeType for font loading and rastiation
+include_directories(./../BackendAPIs/required/FreeType/include)
+
 #include Nlohmann JSON
 include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
 

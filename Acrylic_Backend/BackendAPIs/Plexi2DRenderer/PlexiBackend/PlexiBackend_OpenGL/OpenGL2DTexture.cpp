@@ -6,9 +6,9 @@
 
 #include "OpenGL2DTexture.hpp"
 
-void OpenGL2DTexture::createTexture(const PlexiTextureData& data, uint32_t size, uint32_t height, uint32_t width, uint32_t channelCount) {
-    this->height = height;
-    this->width = width;
+void OpenGL2DTexture::createTexture(const PlexiTextureData& data, uint32_t size, uint32_t in_height, uint32_t in_width, uint32_t channelCount) {
+    this->height = in_height;
+    this->width = in_width;
 
     internalFormat = (channelCount == 4) ? GL_RGBA8 : GL_RGB8;
     dataFormat = (channelCount == 4) ? GL_BGRA : GL_BGR;
@@ -32,6 +32,7 @@ void OpenGL2DTexture::createTexture(const PlexiTextureData& data, uint32_t size,
 
 
 void OpenGL2DTexture::bind(uint32_t textureSlot) {
+    //todo add texture slotting
     glBindTexture(GL_TEXTURE_2D, glId);
 
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, this->width, this->height,0, dataFormat, GL_UNSIGNED_BYTE, (usingGenericType ? rawData.generic : rawData.image));
