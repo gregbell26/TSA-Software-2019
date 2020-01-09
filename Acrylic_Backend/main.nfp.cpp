@@ -124,7 +124,7 @@ int main(){
     logInformation("Texture Created")
     Plexi::TextureCreateInfo dog = {};
     std::cout << std::filesystem::current_path() << std::endl;
-    auto *dogImage = new ImageLoaders::Bitmaps::Image("dog.bmp");
+    auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("dog.bmp");
     dog.height = dogImage->height;
     dog.width = dogImage->width;
     dog.channelCount = dogImage->bytes;
