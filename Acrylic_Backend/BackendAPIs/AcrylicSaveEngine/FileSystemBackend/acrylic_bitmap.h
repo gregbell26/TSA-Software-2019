@@ -18,6 +18,8 @@ namespace A2D::Filesystem::ImageLoaders::Bitmaps {
         unsigned char * imageData;//Sorry, I renamed this so that it would be more clear and not confused with the main struct
         
         explicit Image(const std::string& FileName);
+
+		void Default();
         
         void PrintInfo();
 
