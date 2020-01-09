@@ -127,7 +127,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
             logWarning("Default image not implemented returning null image instead.")
             std::string m = std::filesystem::current_path().string();
         logWarning(m)
-        Default();
+            Default();
     }
 }
 
