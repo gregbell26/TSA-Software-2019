@@ -60,6 +60,7 @@ namespace A2D::Filesystem::Loaders::Json {
         int ival;
         float fval;
         std::string sval;
+        jsonMaps jval;
         int i = 0;
 
         while (i < tempJson.length()) {
@@ -74,40 +75,57 @@ namespace A2D::Filesystem::Loaders::Json {
         if (tempJson[tempJson.length() - 1] == '}')
             tempJson.erase(tempJson.length() - 1, 1);
 
-//    std::cout << tempJson << "\n";
+//        std::cout << tempJson << "\n";
 
         do {
             loc++;
-            mid = tempJson.find_first_of(":", loc);
-            end = tempJson.find_first_of(",", loc);
+            mid = tempJson.find_first_of(':', loc);
+            end = tempJson.find_first_of(',', loc);
             if (mid == -1)
                 break;
             if (end == -1)
                 end = tempJson.length();
 
-//        std::cout << mid << " " << end << "\n";
-//        std::cout << tempJson.find_first_of(".", mid, end - mid - 1) << "\n";
+//            std::cout << mid << " " << end << "\n";
+//            std::cout << tempJson.find_first_of(".", mid, end - mid ) << "\n";
             key = tempJson.substr(loc, mid - loc - 1);
             if (key[0] == '\"')
                 key.erase(0, 1);
             if (key[key.length() - 1] == '\"')
                 key.erase(key.length() - 1, 1);
 
-            if (tempJson[mid + 1] == '\"') {
+            if (tempJson[mid + 1] == '{') {
+                i = 0;
+                end=mid;
+                do {
+                    end = tempJson.find_first_of("{}", end + 1);
+
+                    if(tempJson[end] == '{' )
+                        i++;
+                    else
+                        i--;
+                }while(i!=0);
+//                std::cout << key << " -j- " << "{" << "\n";
+                jval = interpretJson(stringJson.substr(mid+2,end-mid));
+                end++;
+//                std::cout << "}" << "\n";
+                maps.jmap.insert_or_assign(key, jval);
+            }
+            else if (tempJson[mid + 1] == '\"') {
                 sval = tempJson.substr(mid + 2, end - mid - 3);
-//            std::cout << key << " -s- " << sval << "\n";
+//                std::cout << key << " -s- " << sval << "\n";
                 maps.smap.insert_or_assign(key, sval);
-            } else if (tempJson.find_first_of(".", mid) != -1 && tempJson.find_first_of(".", mid) < end) {
+            } else if (tempJson.find_first_of('.', mid) != -1 && tempJson.find_first_of('.', mid) < end) {
                 fval = std::stof(tempJson.substr(mid + 1, end - mid - 1));
-//            std::cout << key << " -d- " << fval << "\n";
+//                std::cout << key << " -d- " << fval << "\n";
                 maps.fmap.insert_or_assign(key, fval);
             } else {
                 ival = std::stoi(tempJson.substr(mid + 1, end - mid - 1));
-//            std::cout << key << " -i- " << ival << "\n";
+//                std::cout << key << " -i- " << ival << "\n";
                 maps.imap.insert_or_assign(key, ival);
             }
-            loc = tempJson.find_first_of(",", loc);
-//        std::cout << loc << "\n\n";
+            loc = tempJson.find_first_of(',', loc);
+//            std::cout << loc << "\n\n";
         } while (loc != -1);
 
         return maps;

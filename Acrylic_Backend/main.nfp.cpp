@@ -17,7 +17,7 @@ StandardRenderTask obj1 = {
 StandardRenderTask obj2 = {
         "plexi_default_primitive",
         {0.75f, 0.1f,0.25f, 1.0f},
-        {-1.0f, -1.0f, 1.0f},
+        {-1.0f, -1.0f, 0.1f},
         {2.5f, 2.5f},
         1,
         nullptr
@@ -122,8 +122,19 @@ int main(){
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     logInformation("Texture Created")
+    Plexi::TextureCreateInfo dog = {};
+    std::cout << std::filesystem::current_path() << std::endl;
+    auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("dog.bmp");
+    dog.height = dogImage->height;
+    dog.width = dogImage->width;
+    dog.channelCount = dogImage->bytes;
+    dog.dataSize = dogImage->length;
+    dog.textureData.usingGenericType = false;
+    dog.textureData.dataType.image = dogImage->imageData;
+    uint32_t dogTexture = Plexi::Texture::create2DTexture(dog, Plexi::getActiveBackend());
     obj1.textureIds = &plainWhiteTexture;
-    obj2.textureIds = &plainWhiteTexture;
+    obj2.textureIds = &dogTexture;
+//    obj2.textureIds = &plainWhiteTexture;
     obj3.textureIds = &plainWhiteTexture;
 
     UserInput::initialize();
@@ -139,7 +150,7 @@ int main(){
 
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
-        Plexi::submitScene({obj1, obj2, obj3});
+        Plexi::submitScene({obj1, obj3, obj2});
         Plexi::onUpdate();
     }
     Plexi::cleanupPlexi();

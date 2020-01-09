@@ -268,7 +268,7 @@ void OpenGL::onUpdate() {
     setMat4(cache.standardRenderTaskCache[0].graphicsPipelineName, "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
 
     for(const auto& stdRenderTask : cache.standardRenderTaskCache){
-        for(u_short i = 0; i < stdRenderTask.textureCount; i++){
+        for(unsigned short i = 0; i < stdRenderTask.textureCount; i++){
             try {
                 cache.textureCache.at(stdRenderTask.textureIds[i])->bind(i);
             } catch(std::out_of_range& err){
@@ -287,7 +287,7 @@ void OpenGL::onUpdate() {
         glBindVertexArray(activePipelines[stdRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
         glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
 
-        for(u_short i = 0; i < stdRenderTask.textureCount; i++){
+        for(unsigned short i = 0; i < stdRenderTask.textureCount; i++){
             try {
                 cache.textureCache.at(stdRenderTask.textureIds[i])->unbind();
             }catch(std::out_of_range& err){
