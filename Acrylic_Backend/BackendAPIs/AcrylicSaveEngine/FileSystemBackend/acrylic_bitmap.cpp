@@ -3,8 +3,8 @@
 //
 
 #include "acrylic_bitmap.h"
-namespace ImageLoaders::Bitmaps {
-    unsigned char bmpData[] = // All values are little-endian
+namespace A2D::Filesystem::ImageLoaders::Bitmaps {
+    const unsigned char bmpData[] = // All values are little-endian
             {
                     0x42, 0x4D,             // Signature 'BM'
                     0xaa, 0x00, 0x00, 0x00, // Size: 170 bytes
@@ -52,27 +52,8 @@ namespace ImageLoaders::Bitmaps {
             };
 }
 
-//---------------------------PIXEL-CONSTRUCTORS-----------------------------------
-ImageLoaders::Bitmaps::Image::Pixel::Pixel()
-{
-    red = 0x00;
-    green = 0x00;
-    blue = 0x00;
-    alpha = 0xFF;
-}
-
-ImageLoaders::Bitmaps::Image::Pixel::Pixel(char r, char g, char b, char a)
-{
-    red = r;
-    green = g;
-    blue = b;
-    alpha = a;
-}
-
-
-
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
-ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
+A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
     std::ifstream is(FileName, std::ifstream::binary);
     if (is) {
         // get length of file:
@@ -132,7 +113,7 @@ ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
     }
 }
 
-void ImageLoaders::Bitmaps::Image::PrintInfo()
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::PrintInfo()
 {
     std::cout << (
             "Height: " + std::to_string(height) + "\n" +
@@ -142,7 +123,7 @@ void ImageLoaders::Bitmaps::Image::PrintInfo()
     );
 }
 
-void ImageLoaders::Bitmaps::Image::Print()
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Print()
 {
     std::cout << "\n";
     for (int i = 0; i < length; i ++)
@@ -168,7 +149,7 @@ void ImageLoaders::Bitmaps::Image::Print()
     }
 }
 
-void ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
 {
     std::fstream fs(FileName, std::ios_base::out | std::ios_base::binary);
 

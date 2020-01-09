@@ -23,6 +23,9 @@ set(TST_FILES main.nfp.cpp)
 add_subdirectory(./../BackendAPIs/required/trihardstudios thsBuild)
 include_directories(./../BackendAPIs/required/trihardstudios/include)
 
+#Inlcude FreeType for font loading and rastiation
+include_directories(./../BackendAPIs/required/FreeType/include)
+
 #Include Glad (OpenGL Loader)
 include_directories(./GraphicsAPIs/required/glad/include)
 set(GLAD_SOURCE ./GraphicsAPIs/required/glad/src/glad.c)

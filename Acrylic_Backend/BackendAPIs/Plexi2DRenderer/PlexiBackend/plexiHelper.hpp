@@ -33,7 +33,7 @@ struct PlexiGFX_OptionalInformation {
 //Texture Structs
 union TextureDataType {
     void* generic;
-    u_char* image;
+    unsigned char* image;
 };
 
 struct PlexiTextureData {
@@ -46,10 +46,10 @@ struct StandardRenderTask {
     glm::vec4 RGBAColor;
     glm::vec3 position;
     glm::vec2 scale;
-    u_short textureCount;
+    unsigned short textureCount;
     const uint32_t* textureIds = nullptr;
 
-    StandardRenderTask(std::string pipelineName,  const glm::vec4& color, const glm::vec3& pos, const glm::vec2& in_scale, const u_short &texCount, const uint32_t* texIds) :
+    StandardRenderTask(std::string pipelineName,  const glm::vec4& color, const glm::vec3& pos, const glm::vec2& in_scale, const unsigned short &texCount, const uint32_t* texIds) :
             graphicsPipelineName(std::move(pipelineName)), position(pos), RGBAColor(color), scale(in_scale), textureCount(texCount)
     {
         textureIds = texIds;
@@ -72,7 +72,7 @@ public:
 
     virtual void unbind(){};
 
-    [[nodiscard]] virtual uint32_t getId() const {};
+    [[nodiscard]] virtual uint32_t getId() const { return 1001;};
 
 };
 

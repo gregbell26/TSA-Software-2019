@@ -13,7 +13,7 @@ public:
     {};
     ~OpenGL2DTexture() override;
 
-    void createTexture(const PlexiTextureData& data, uint32_t size, uint32_t height, uint32_t width, uint32_t channelCount) override;
+    void createTexture(const PlexiTextureData& data, uint32_t size, uint32_t in_height, uint32_t in_width, uint32_t channelCount) override;
 
     void bind(uint32_t textureSlot) override; // We can only have one texture slot in openGL 4.1 so we are ignoring this
 
