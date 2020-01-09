@@ -121,9 +121,7 @@ int main(){
     textureCreateInfo.textureData.dataType.generic = &data;
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
-    logInformation("Texture Created")
     Plexi::TextureCreateInfo dog = {};
-    std::cout << std::filesystem::current_path() << std::endl;
     auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
     dog.height = dogImage->height;
     dog.width = dogImage->width;
@@ -131,10 +129,21 @@ int main(){
     dog.dataSize = dogImage->length;
     dog.textureData.usingGenericType = false;
     dog.textureData.dataType.image = dogImage->imageData;
-    uint32_t dogTexture = Plexi::Texture::create2DTexture(dog, Plexi::getActiveBackend());
-    obj1.textureIds = &plainWhiteTexture;
+    uint32_t dogTexture = Plexi::Texture::create2DTexture(dog, Plexi::getActiveBackend());\
+    delete dogImage;
+    Plexi::TextureCreateInfo weird = {};
+    auto *weirdImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/weirdTexture.bmp");
+    weird.height = weirdImage->height;
+    weird.width = weirdImage->width;
+    weird.channelCount = weirdImage->bytes;
+    weird.dataSize = weirdImage->length;
+    weird.textureData.usingGenericType = false;
+    weird.textureData.dataType.image = weirdImage->imageData;
+    uint32_t weirdTexture = Plexi::Texture::create2DTexture(weird, Plexi::getActiveBackend());
+    delete weirdImage;
+
+    obj1.textureIds = &weirdTexture;
     obj2.textureIds = &dogTexture;
-//    obj2.textureIds = &plainWhiteTexture;
     obj3.textureIds = &plainWhiteTexture;
 
     UserInput::initialize();
