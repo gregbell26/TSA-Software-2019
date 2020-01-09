@@ -59,20 +59,24 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
     if (is) {
         // get length of file:
         is.seekg(0, is.end);
-//                int length = is.tellg();
+        //                int length = is.tellg();
         length = static_cast<int>(is.tellg());
         is.seekg(0, is.beg);
 
-        char *buffer = new char[length];
-
-        std::cout << "Reading " << length << " characters... ";
-        // read data as a block:
-        is.read(buffer, length);
+        char* buffer = new char[length];
+        std::string m = "Reading " + length;//bc you can oly add strings once
+        logInformation(m + " characters... ")
+            // read data as a block:
+            is.read(buffer, length);
 
         if (is) {
-            std::cout << "all characters read successfully.";
-        } else
-            std::cout << "error: only " << is.gcount() << " could be read";
+            logInformation("all characters read successfully.")
+        }
+        else
+        {
+            std::string m = "error: only " + is.gcount();//bc you can oly add strings once
+            logError(m + " could be read")
+        }
         is.close();
 
         int *bff2 = new int[length];
@@ -85,7 +89,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
                 bff2[i] = (int) v;
             }
         }
-        std::cout << "msg start \n";
+        logInformation("Extracting header information")
         int offset;
         try{
         offset = bff2[10];
@@ -99,19 +103,27 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
         }
 
         length = height * width * bytes;
-
-        std::cout << "Offset = " << offset << " Height = " << height << " Width = " << width << " \n";
+        m = "";
+        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
+        logInformation(m)
 
         imageData = new unsigned char[length]();
 
         for (int i = offset; i < length; i++) {
             imageData[i - offset] = bff2[i];
         }
-        std::cout << "\n end ";
         // ...buffer contains the entire file...
 
         delete[] bff2;
         delete[] buffer;
+        logInformation("Image Loaded");
+    }
+    else
+    {
+        std::string m = "";
+        m = m + "File: "+FileName+" Not Found Loading default Image instead.";
+        logWarning(m)
+        logError("default image not implemented returnig null image instead.");
     }
 }
 
