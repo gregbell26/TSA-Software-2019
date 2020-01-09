@@ -1,0 +1,28 @@
+Image struct
+
+Variables
+	height	- the height of the image
+	width	- the width of the image
+	length	- the length of the
+	bytes
+
+Constents
+	bmpData default image with no data
+
+Methods
+	PrintInfo()
+		- prints Height, Width, Length and Bytes
+	Print()
+		- Prints pixel values (R,G,B,A)
+	Write(const std::string &FileName)
+		- Writes the Image to a file
+	GetPixelValue(int x,int y,int P) P 0=red 1=green 2=blue 3=alpha
+		- returns the pixel value
+	SetPixelValue(int x, int y, int P, char v) P 0=red 1=green 2=blue 3=alpha
+		- Sets the pixel value in Image
+
+
+Constructors
+	Image(const std::string& FileName)
+
+	Loads a bitmap into the struct
