@@ -53,7 +53,7 @@ namespace A2D::Filesystem::ImageLoaders::Bitmaps {
 }
 
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
-ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
+A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
     std::ifstream is(FileName, std::ifstream::binary);
     if (is) {
         // get length of file:
@@ -113,7 +113,7 @@ ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
     }
 }
 
-void ImageLoaders::Bitmaps::Image::PrintInfo()
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::PrintInfo()
 {
     std::cout << (
             "Height: " + std::to_string(height) + "\n" +
@@ -123,7 +123,7 @@ void ImageLoaders::Bitmaps::Image::PrintInfo()
     );
 }
 
-void ImageLoaders::Bitmaps::Image::Print()
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Print()
 {
     std::cout << "\n";
     for (int i = 0; i < length; i ++)
@@ -149,7 +149,7 @@ void ImageLoaders::Bitmaps::Image::Print()
     }
 }
 
-void ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
 {
     std::fstream fs(FileName, std::ios_base::out | std::ios_base::binary);
 
