@@ -9,8 +9,12 @@
 
 uint32_t Plexi::Texture::create2DTexture(Plexi::TextureCreateInfo &createInfo, const Plexi::PLEXI_GFX_BACKENDS &backendToUse) {
     if(!GFXBackendMap[backendToUse]) {
-        std::cerr << "Texture Creation Failed: Invalid Backend" << std::endl;
+        logError("Texture Creation Failed: Invalid Backend")
         return 0;
+    }
+    if(!createInfo.textureData.dataType.generic && !createInfo.textureData.dataType.image){
+        logError("Texture Creation Failed: Invalid Data")
+         return 0;
     }
 
     Plexi2DTexture* newTexture = GFXBackendMap[backendToUse]->getNewTexture();

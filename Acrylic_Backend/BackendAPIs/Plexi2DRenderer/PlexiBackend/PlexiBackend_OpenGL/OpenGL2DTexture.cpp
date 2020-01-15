@@ -7,6 +7,10 @@
 #include "OpenGL2DTexture.hpp"
 
 void OpenGL2DTexture::createTexture(const PlexiTextureData& data, uint32_t size, uint32_t in_height, uint32_t in_width, uint32_t channelCount) {
+    if((in_width*in_height*channelCount) != size){
+        logError("Invalid Texture Size")
+        return;
+    }
     this->height = in_height;
     this->width = in_width;
 
@@ -15,14 +19,23 @@ void OpenGL2DTexture::createTexture(const PlexiTextureData& data, uint32_t size,
 
 
     if(data.usingGenericType) {
+        //Do data check first
+        if(!data.dataType.generic) {
+            logError("Invalid Texture Data")
+            return;
+        }
         rawData.generic = (void*)malloc(size);
         memcpy(rawData.generic, data.dataType.generic, size);
     }
     else {
+        //Do data check first
+        if(!data.dataType.image) {
+            logError("Invalid Texture Data")
+            return;
+        }
         rawData.image = (unsigned char*) malloc(size);
         memcpy(rawData.image, data.dataType.image, size);
     }
-//    *rawData = *data;//Copy the pointer data //This will most likely segfault
 
     usingGenericType = data.usingGenericType;
 
