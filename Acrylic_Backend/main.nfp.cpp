@@ -157,7 +157,6 @@ int main(){
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     Plexi::TextureCreateInfo dog = {};
     auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
-    dogImage->Print();
     dogImage->PrintInfo();
     dog.height = dogImage->height;
     dog.width = dogImage->width;
