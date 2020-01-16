@@ -11,7 +11,9 @@
 struct Cache {//For some reason having these elements inside of the class leads to them not holding data but putting them out here works
             //Have no clue as to why this is -- Need to investigate further
     std::vector<Plexi2DTexture*> textureCache;
+    std::map<std::string, std::map<GLchar, OpenGL::Character> > fontFaceCache;
     std::vector<StandardRenderTask> standardRenderTaskCache;
+    std::vector<TextRenderTask> textRenderTasksCache;
 
 } cache;
 
@@ -248,9 +250,22 @@ void OpenGL::submitScene(const std::vector<StandardRenderTask>& standardRenderTa
 
 }
 
+void OpenGL::submitScene(const std::vector<TextRenderTask> &textRenderTasks) {
+    //Def wanna optimize this
+    if(cache.textRenderTasksCache.size() != textRenderTasks.size()){
+        cache.textRenderTasksCache.resize(textRenderTasks.size());
+    }
+//    else if(std::equal(cache.standardRenderTaskCache.begin(), cache.standardRenderTaskCache.begin() + cache.standardRenderTaskCache.size(), textRenderTasks.begin())){//Might need to do std::equals for this
+//        return;
+//    }
+    for(size_t i = 0; i < textRenderTasks.size(); i++) {
+        cache.textRenderTasksCache[i] = textRenderTasks[i];
+    }
+}
+
 void OpenGL::onUpdate() {
     clear();
-    if(cache.textureCache.empty() || activePipelines.empty()) {
+    if((cache.textureCache.empty() && cache.fontFaceCache.empty()) || activePipelines.empty()) {
         if(onUpdateErrorCounter >= 240){
             logWarning("Unable to render. Graphics pipeline and/or texture cache is empty")//Def Wanna async this
             onUpdateErrorCounter = 0;
@@ -260,44 +275,78 @@ void OpenGL::onUpdate() {
         return;
     }
 
-    if(cache.standardRenderTaskCache.empty()){
+    if(cache.standardRenderTaskCache.empty() && cache.textRenderTasksCache.empty()){
         glfwSwapBuffers(glfwWindow);
         return;
     }
 
     setMat4(cache.standardRenderTaskCache[0].graphicsPipelineName, "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
+    if(!cache.standardRenderTaskCache.empty()){
+        for(const auto& stdRenderTask : cache.standardRenderTaskCache){
+            glUseProgram(activePipelines[stdRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
+            for(unsigned short i = 0; i < stdRenderTask.textureCount; i++){
+                try {
+                    cache.textureCache.at(stdRenderTask.textureIds[i])->bind(i);
+                } catch(std::out_of_range& err){
+                    if(onUpdateErrorCounter >= 240){
+                        logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
+                        onUpdateErrorCounter = 0;
+                    }
+                    continue;
+                }
+            }
 
-    for(const auto& stdRenderTask : cache.standardRenderTaskCache){
-        for(unsigned short i = 0; i < stdRenderTask.textureCount; i++){
-            try {
-                cache.textureCache.at(stdRenderTask.textureIds[i])->bind(i);
-            } catch(std::out_of_range& err){
+            setFloat4(stdRenderTask.graphicsPipelineName, "color", stdRenderTask.RGBAColor);
+            glm::mat4 transform = glm::translate(glm::mat4(1.0f), stdRenderTask.position) * glm::scale(glm::mat4x4(1.0f), {stdRenderTask.scale, 0.0f});
+
+            setMat4(stdRenderTask.graphicsPipelineName, "transform", transform);
+            glBindVertexArray(activePipelines[stdRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
+            glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
+
+            for(unsigned short i = 0; i < stdRenderTask.textureCount; i++){
+                try {
+                    cache.textureCache.at(stdRenderTask.textureIds[i])->unbind();
+                }catch(std::out_of_range& err){
+                    if(onUpdateErrorCounter >= 240){
+                        logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
+                        onUpdateErrorCounter = 0;
+                    }
+                    continue;
+                }
+            }
+        }
+
+        glUseProgram(0);
+        glBindVertexArray(0);
+    }
+
+    if(!cache.textRenderTasksCache.empty()){
+        for(const auto& txtRenderTask : cache.textRenderTasksCache){
+            glUseProgram(activePipelines[txtRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
+            const std::map<GLchar, OpenGL::Character> *fontFace = nullptr;
+            try{
+                fontFace = &cache.fontFaceCache.at(txtRenderTask.fontName);
+            } catch (std::out_of_range& err){
                 if(onUpdateErrorCounter >= 240){
-                    logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
+                    logWarning("Requested font \'" + txtRenderTask.fontName + "\' is not currently loaded")
                     onUpdateErrorCounter = 0;
                 }
                 continue;
             }
-        }
+            setFloat4(txtRenderTask.graphicsPipelineName, "color", txtRenderTask.RGBAColor);
+            glBindVertexArray(activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
 
-        setFloat4(stdRenderTask.graphicsPipelineName, "color", stdRenderTask.RGBAColor);
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), stdRenderTask.position) * glm::scale(glm::mat4x4(1.0f), {stdRenderTask.scale, 0.0f});
+            std::string::const_iterator i;
+            for(i = txtRenderTask.text.begin(); i != txtRenderTask.text.end(); i++){
+                auto activeChar = fontFace[*i];
 
-        setMat4(stdRenderTask.graphicsPipelineName, "transform", transform);
-        glBindVertexArray(activePipelines[stdRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
-        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
 
-        for(unsigned short i = 0; i < stdRenderTask.textureCount; i++){
-            try {
-                cache.textureCache.at(stdRenderTask.textureIds[i])->unbind();
-            }catch(std::out_of_range& err){
-                if(onUpdateErrorCounter >= 240){
-                    logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
-                    onUpdateErrorCounter = 0;
-                }
-                continue;
             }
         }
+
+        glUseProgram(0);
+        glBindVertexArray(0);
+
     }
 
     glfwSwapBuffers(glfwWindow);
@@ -369,7 +418,47 @@ Plexi2DTexture* OpenGL::getNewTexture() {
     return cache.textureCache[cache.textureCache.size() - 1];
 }
 
+void OpenGL::addFontFace(FT_Face &fontFace, uint32_t charCount) {
+    std::map<GLchar, OpenGL::Character> charMap;
+    logInformation("Loading " + std::to_string(charCount) + " font characters into openGL")
 
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+    for(GLubyte c = 0; c < charCount; c++){
+        if(FT_Load_Char(fontFace, c, FT_LOAD_RENDER) != FT_Err_Ok){
+            logError("An error occurred while loading characters")
+            continue;
+        }
+        GLuint glTextId;
+        glGenTextures(1, &glTextId);
+        glBindTexture(GL_TEXTURE_2D, glTextId);
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RED,
+            fontFace->glyph->bitmap.width,
+            fontFace->glyph->bitmap.rows,
+            0,
+            GL_RED,
+            GL_UNSIGNED_BYTE,
+            fontFace->glyph->bitmap.buffer
+        );
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+        Character character = {
+            glTextId,
+            glm::ivec2(fontFace->glyph->bitmap.width, fontFace->glyph->bitmap.rows),
+            glm::ivec2(fontFace->glyph->bitmap_left, fontFace->glyph->bitmap_top),
+            static_cast<uint32_t>(fontFace->glyph->advance.x)
+        };
+
+        charMap.insert(std::pair<GLchar, Character>(c, character));
+    }
+
+    cache.fontFaceCache.insert(std::pair<std::string, std::map<GLchar, OpenGL::Character> >(fontFace->family_name, charMap));
+
+}

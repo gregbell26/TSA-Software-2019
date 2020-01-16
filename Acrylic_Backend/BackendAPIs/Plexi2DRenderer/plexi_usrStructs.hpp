@@ -12,7 +12,7 @@ namespace Plexi {
         {}
 
         PlexiColor(float r, float g, float b) :
-                red(r), green(g), blue(b), alpha(1.0f)
+                PlexiColor(r,g,b,1.0f)
         {}
     };
 

@@ -7,6 +7,8 @@
 #include <utility>
 #include <vector>
 #include <glm/glm.hpp>
+#include <ft2build.h>
+#include <freetype/tttags.h>
 
 // All shared structs are defined here -- Might want to move into own header
 
@@ -61,6 +63,13 @@ struct StandardRenderTask {
 
 };
 
+struct TextRenderTask {
+    std::string graphicsPipelineName;
+    std::string text;
+    std::string fontName;
+    glm::vec4 RGBAColor;
+    glm::vec3 position;
+};
 
 class Plexi2DTexture {
 public:
@@ -95,9 +104,13 @@ public:
 
     virtual void addTexture(Plexi2DTexture* texture) = 0;
 
+    virtual void addFontFace(FT_Face& fontFace, uint32_t charCount) = 0;
+
     virtual Plexi2DTexture* getNewTexture() = 0;
 
     virtual void submitScene(const std::vector<StandardRenderTask>& standardRenderTasks) = 0;
+
+    virtual void submitScene(const std::vector<TextRenderTask>& textRenderTasks) = 0;
 
     virtual void setClearColor(const float& r, const float& g, const float& b, const float& a) = 0;
 

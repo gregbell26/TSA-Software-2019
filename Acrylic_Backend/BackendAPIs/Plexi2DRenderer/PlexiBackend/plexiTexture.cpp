@@ -25,3 +25,7 @@ uint32_t Plexi::Texture::create2DTexture(Plexi::TextureCreateInfo &createInfo, c
 
     return newTexture->getId();
 }
+
+void Plexi::Texture::createFontFace(FT_Face fontFace, uint32_t charCount, const Plexi::PLEXI_GFX_BACKENDS& backendToUse) {
+    GFXBackendMap[backendToUse]->addFontFace(fontFace, charCount);
+}

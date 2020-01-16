@@ -87,6 +87,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     target_link_libraries(Plexi2DRenderer stdc++fs)
 endif()
 
+#Shaders
 add_custom_command(
         TARGET PlexiTester1000 POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory

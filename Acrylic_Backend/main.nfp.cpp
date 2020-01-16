@@ -2,12 +2,13 @@
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
 #include "UserInput.cpp"
+#include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
 #include <ths/log.hpp>
 
 StandardRenderTask obj1 = {
         "plexi_default_primitive",
-        {0.25f, 0.75f,0.1f, 1.0f},
+        {1.0f, 1.0,1.0f, 1.0f},
         {0.0f, 0.0f, 0.0f},
         {3.0f, 3.0f},
         1,
@@ -28,6 +29,15 @@ StandardRenderTask obj3 = {
         {0.25f, 0.1f,0.75f, 1.0f},
         {1.0f, 1.0f, -0.1f},
         {3.5f, 3.5f},
+        1,
+        nullptr
+};
+
+StandardRenderTask obj4 = {
+        "plexi_default_primitive",
+        {0.0f,0.0f,0.0f,0.0f},
+        {0.0f, 0.0f, 0.0f},
+        {10.0f, 10.0f},
         1,
         nullptr
 };
@@ -93,12 +103,16 @@ int main(){
     plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
     plexiConfig.clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
     plexiConfig.plexiGFXRequiredInformation.appName = "Acrylic Testinator 1000";
-    plexiConfig.shaderCount = 1;
+    plexiConfig.shaderCount = 2;
     plexiConfig.shaderCreateInfos.resize(plexiConfig.shaderCount);
     plexiConfig.shaderCreateInfos[0].shaderName = "plexi_default_primitive";
     plexiConfig.shaderCreateInfos[0].shaderLanguage = plexiConfig.defaultShaderLanguage;
     plexiConfig.shaderCreateInfos[0].glslVertexCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_vertex_default_primitive", plexiConfig.defaultShaderLanguage));
     plexiConfig.shaderCreateInfos[0].glslFragmentCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_fragment_default_primitive", plexiConfig.defaultShaderLanguage));
+    plexiConfig.shaderCreateInfos[1].shaderName = "plexi_default_text";
+    plexiConfig.shaderCreateInfos[1].shaderLanguage = plexiConfig.defaultShaderLanguage;
+    plexiConfig.shaderCreateInfos[1].glslVertexCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_vertex_default_text", plexiConfig.defaultShaderLanguage));
+    plexiConfig.shaderCreateInfos[1].glslFragmentCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_fragment_default_text", plexiConfig.defaultShaderLanguage));
     plexiConfig.bufferCreateInfos.resize(plexiConfig.shaderCount);
     plexiConfig.bufferCreateInfos[0].shaderName = plexiConfig.shaderCreateInfos[0].shaderName;
     plexiConfig.bufferCreateInfos[0].setLayout({
@@ -110,6 +124,17 @@ int main(){
     plexiConfig.bufferCreateInfos[0].vertexArraySize = Plexi::Buffer::SQUARE_VERTICES_WITH_TEXTURE_SIZE;
     plexiConfig.bufferCreateInfos[0].indexArray = Plexi::Buffer::SQUARE_INDICES;
     plexiConfig.bufferCreateInfos[0].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
+
+    plexiConfig.bufferCreateInfos[1].shaderName = plexiConfig.shaderCreateInfos[1].shaderName;
+    plexiConfig.bufferCreateInfos[1].setLayout({
+           {Plexi::Shaders::Float3, "positionCoords"},
+           {Plexi::Shaders::Float2, "textureCoords"}
+    });
+
+    plexiConfig.bufferCreateInfos[1].vertexArray = Plexi::Buffer::SQUARE_VERTICES_WITH_TEXTURE;
+    plexiConfig.bufferCreateInfos[1].vertexArraySize = Plexi::Buffer::SQUARE_VERTICES_WITH_TEXTURE_SIZE;
+    plexiConfig.bufferCreateInfos[1].indexArray = Plexi::Buffer::SQUARE_INDICES;
+    plexiConfig.bufferCreateInfos[1].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
 
     Plexi::initPlexi(plexiConfig);
     Plexi::TextureCreateInfo textureCreateInfo = {};
@@ -133,6 +158,7 @@ int main(){
     dog.textureData.dataType.image = dogImage->imageData;
     uint32_t dogTexture = Plexi::Texture::create2DTexture(dog, Plexi::getActiveBackend());\
     delete dogImage;
+
     Plexi::TextureCreateInfo weird = {};
     auto *weirdImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/weirdTexture.bmp");
     weirdImage->PrintInfo();
@@ -144,6 +170,8 @@ int main(){
     weird.textureData.dataType.image = weirdImage->imageData;
     uint32_t weirdTexture = Plexi::Texture::create2DTexture(weird, Plexi::getActiveBackend());
     delete weirdImage;
+
+
 
     obj1.textureIds = &weirdTexture;
     obj2.textureIds = &dogTexture;
@@ -158,8 +186,10 @@ int main(){
     UserInput::setScrollFunc(scroll);
     UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, changeSelection);
 
-
-
+    A2D::Filesystem::Loaders::Font::Font newFont;
+    newFont.createNewFont("./fonts/OpenSans-Regular.ttf", 16);
+    Plexi::Texture::createFontFace(newFont.getLoadedFontFace(), 128, Plexi::getActiveBackend());
+//Clean up FT
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::submitScene({obj1, obj3, obj2});

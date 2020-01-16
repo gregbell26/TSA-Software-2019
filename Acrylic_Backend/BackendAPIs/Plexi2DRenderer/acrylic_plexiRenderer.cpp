@@ -143,6 +143,11 @@ void Plexi::submitScene(const std::vector<StandardRenderTask>& tasks) {
 
 }
 
+void Plexi::submitScene(const std::vector<TextRenderTask> &tasks) {
+
+}
+
+
 void Plexi::setClearColor(const float &r, const float &g, const float &b, const float &a) {
     GFXBackendMap[activeConfig.activeBackendName]->setClearColor(r,g,b,a);
 }
@@ -174,6 +179,5 @@ void Plexi::cleanupPlexi() {
 Plexi::PLEXI_GFX_BACKENDS Plexi::getActiveBackend() {
     return activeConfig.activeBackendName;
 }
-
 
 
