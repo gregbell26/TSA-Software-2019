@@ -37,14 +37,21 @@
 #include <cstdlib>
 #include <tuple>
 #include <glm/glm.hpp>
+namespace A2D::Random {
 
-class Random {
-    Random(){ }
-public:
-    static glm::vec3 ranRGB();
-    static glm::vec3 ranHSV();
-    static glm::vec3 RGBtoHSV(glm::vec3 rgb);
-    static glm::vec3 HSVtoRGB( glm::vec3 hsv);
-};
+    class Random {
+        Random() {}
 
+    public:
+        static glm::vec3 ranRGB();
+
+         glm::vec3 ranHSV();
+
+        static glm::vec3 RGBtoHSV(glm::vec3 rgb);
+
+        static glm::vec3 HSVtoRGB(glm::vec3 hsv);
+    };
+
+    glm::vec3 ranRGB();
+}
 #endif
