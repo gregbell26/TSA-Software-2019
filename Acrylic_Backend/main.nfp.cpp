@@ -11,7 +11,7 @@
 
 StandardRenderTask obj1 = {
         "plexi_default_primitive",
-        {1.0f, 1.0,1.0f, 1.0f},
+        {0.0f, 0.0,0.0f, 0.0f},
         {0.0f, 0.0f, 0.0f},
         {3.0f, 3.0f},
         1,
@@ -182,7 +182,7 @@ int main(){
 
 
 
-    obj1.textureIds = &weirdTexture;
+    obj1.textureIds = &plainWhiteTexture;
     obj2.textureIds = &dogTexture;
     obj3.textureIds = &plainWhiteTexture;
 
@@ -196,7 +196,7 @@ int main(){
     UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, changeSelection);
 
     A2D::Filesystem::Loaders::Font::Font newFont;
-    newFont.createNewFont("./fonts/OpenSans-Regular.ttf", 16);
+    newFont.createNewFont("./fonts/OpenSans-Regular.ttf", 26);
     uint32_t OpenSans = Plexi::Texture::createFontFace(newFont.getLoadedFontFace(), 128, Plexi::getActiveBackend());
     txtObj5.fontName = OpenSans;
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){

@@ -336,7 +336,7 @@ void OpenGL::onUpdate() {
     if(!cache->textRenderTasksCache.empty()){
         for(const auto& txtRenderTask : cache->textRenderTasksCache){
             glUseProgram(activePipelines[txtRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
-            setMat4(txtRenderTask.graphicsPipelineName, "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
+            setMat4(txtRenderTask.graphicsPipelineName, "viewProjection", glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, -1.0f, 1.0f));
             auto &fontFace = cache->fontFaceCache[txtRenderTask.fontName];
 
             setFloat4(txtRenderTask.graphicsPipelineName, "color", txtRenderTask.RGBAColor);
@@ -348,7 +348,7 @@ void OpenGL::onUpdate() {
             for(i = txtRenderTask.text.begin(); i != txtRenderTask.text.end(); i++){
                 auto activeChar = fontFace[*i];
                 float xPos = nextCharLoc + activeChar.bearing.x * txtRenderTask.scale;
-                float yPos =  txtRenderTask.position.y  - (activeChar.size.y - activeChar.bearing.x) * txtRenderTask.scale;
+                float yPos =  txtRenderTask.position.y  - (txtRenderTask.position.y - activeChar.bearing.x) * txtRenderTask.scale;
                 float width = activeChar.size.x * txtRenderTask.scale;
                 float height = activeChar.size.y * txtRenderTask.scale;
 
