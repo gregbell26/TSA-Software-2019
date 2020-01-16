@@ -81,7 +81,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
         }
         is.close();
         
-        logInformation("83 Length: " + length);
+        logInformation("83 Length: " + std::to_string(length))
 
         int *bff2 = new int[length];
 

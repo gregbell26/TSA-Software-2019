@@ -5,6 +5,7 @@
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
 #include <ths/log.hpp>
+#include "Random.h"
 
 StandardRenderTask obj1 = {
         "plexi_default_primitive",
@@ -158,6 +159,8 @@ int main(){
     dog.textureData.dataType.image = dogImage->imageData;
     uint32_t dogTexture = Plexi::Texture::create2DTexture(dog, Plexi::getActiveBackend());\
     delete dogImage;
+
+    Random R = new Random();
 
     Plexi::TextureCreateInfo weird = {};
     auto *weirdImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/weirdTexture.bmp");
