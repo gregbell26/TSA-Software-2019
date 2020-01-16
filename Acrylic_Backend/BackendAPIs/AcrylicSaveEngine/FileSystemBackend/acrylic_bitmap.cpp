@@ -94,7 +94,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
         logInformation("95 Extracting header information")
         int offset;
         try{
-        offset = bff2[10]+2;
+        offset = bff2[10];
         height = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
         width = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
         bytes = bff2[28] / 8;
