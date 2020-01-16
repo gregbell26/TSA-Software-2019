@@ -6,6 +6,8 @@
 #include <iostream>
 #include <ths/log.hpp>
 #include "Random.h"
+#include "glm/ext.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 StandardRenderTask obj1 = {
         "plexi_default_primitive",
@@ -160,7 +162,7 @@ int main(){
     uint32_t dogTexture = Plexi::Texture::create2DTexture(dog, Plexi::getActiveBackend());\
     delete dogImage;
 
-    Random R = new Random();
+    logInformation(glm::to_string(Random::ranRGB()))
 
     Plexi::TextureCreateInfo weird = {};
     auto *weirdImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/weirdTexture.bmp");

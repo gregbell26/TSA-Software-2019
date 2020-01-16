@@ -3,16 +3,17 @@
 //
 
 #include "Random.h"
-static glm::vec3 ranRGB()
+
+glm::vec3 Random::ranRGB()
 {
     return glm::vec3(std::rand()%257, std::rand()%257, std::rand()%257);
 }
-    static glm::vec3 ranHSV()
+    glm::vec3 Random::ranHSV()
     {
         return glm::vec3(std::rand()%360, std::rand()%100, std::rand()%100);
     }
 
-    glm::vec3 RGBtoHSV(glm::vec3 rgb) {
+glm::vec3 Random::RGBtoHSV(glm::vec3 rgb) {
         float fH;
         float fS;
         float fV;
@@ -50,7 +51,7 @@ static glm::vec3 ranRGB()
         }
         return glm::vec3(fH, fS, fV);
     }
-    glm::vec3 HSVtoRGB( glm::vec3 hsv){
+    glm::vec3 Random::HSVtoRGB( glm::vec3 hsv){
         float fH = hsv.x;
         float fS = hsv.y;
         float fV = hsv.z;

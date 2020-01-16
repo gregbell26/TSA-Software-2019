@@ -31,17 +31,16 @@
 /* Author: Jan Winkler */
 
 
+#ifndef ACRYLIC2D_RANDOM_H
+#define ACRYLIC2D_RANDOM_H
 #include <iostream>
 #include <cstdlib>
 #include <tuple>
 #include <glm/glm.hpp>
-#ifndef ACRYLIC2D_RANDOM_H
-#define ACRYLIC2D_RANDOM_H
 
 class Random {
     Random(){ }
-
-public: 
+public:
     static glm::vec3 ranRGB();
     static glm::vec3 ranHSV();
     static glm::vec3 RGBtoHSV(glm::vec3 rgb);
