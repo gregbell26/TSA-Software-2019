@@ -144,7 +144,7 @@ void Plexi::submitScene(const std::vector<StandardRenderTask>& tasks) {
 }
 
 void Plexi::submitScene(const std::vector<TextRenderTask> &tasks) {
-
+    GFXBackendMap[activeConfig.activeBackendName]->submitScene(tasks);
 }
 
 

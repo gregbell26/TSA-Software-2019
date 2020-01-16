@@ -10,12 +10,14 @@
 
 struct Cache {//For some reason having these elements inside of the class leads to them not holding data but putting them out here works
             //Have no clue as to why this is -- Need to investigate further
-    std::vector<Plexi2DTexture*> textureCache;
-    std::map<std::string, std::map<GLchar, OpenGL::Character> > fontFaceCache;
-    std::vector<StandardRenderTask> standardRenderTaskCache;
-    std::vector<TextRenderTask> textRenderTasksCache;
+    std::vector<Plexi2DTexture*> textureCache = {};
+    std::vector<std::map<GLchar, OpenGL::Character>> fontFaceCache = {};
+    std::vector<StandardRenderTask> standardRenderTaskCache = {};
+    std::vector<TextRenderTask> textRenderTasksCache = {};
 
-} cache;
+};
+
+auto *cache = new Cache;
 
 static void glfwErrorCallBack(int errorCode, const char* description){
     if(errorCode == GLFW_NO_ERROR){
@@ -119,10 +121,13 @@ bool OpenGL::initBackend() {
     return true;
 }
 
-bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size, pipelineComponentMap& pipelineMap) {
+bool OpenGL::createVertexBuffer(const float *vertices, const size_t &size, const bool& dynamicMode, pipelineComponentMap& pipelineMap) {
     glGenBuffers(1, &pipelineMap[VERTEX_BUFFER]);
     glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[VERTEX_BUFFER]);
-    glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+    if(!dynamicMode)
+        glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+    else
+        glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 
     //Todo check for errors - Pos add error Callback?
     return true;
@@ -138,7 +143,7 @@ bool OpenGL::createIndexBuffer(const uint32_t *indices, const size_t &size, pipe
 
 bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCreateInfo, pipelineComponentMap& pipelineMap) {
     if(bufferCreateInfo.getLayout().getBufferElements().empty()){
-        std::cerr << "Buffer Layout is empty" << std::endl;
+        logError("Buffer Layout is empty")
         return false;
     }
 
@@ -149,7 +154,7 @@ bool OpenGL::createVertexArray(const Plexi::Buffer::BufferCreateInfo &bufferCrea
     glBindBuffer(GL_ARRAY_BUFFER, pipelineMap[VERTEX_BUFFER]);
 
     const auto& bufferLayout = bufferCreateInfo.getLayout();
-
+    uint8_t vertexBufferIndex = 0;
     for(const auto& element : bufferLayout){
         glEnableVertexAttribArray(vertexBufferIndex);
 
@@ -200,7 +205,7 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
 
     logInformation("Shader Program created successfully")
 
-    createVertexBuffer(bufferCreateInfo.vertexArray, bufferCreateInfo.vertexArraySize, pipelineMap);
+    createVertexBuffer(bufferCreateInfo.vertexArray, bufferCreateInfo.vertexArraySize, bufferCreateInfo.dynamicBuffer, pipelineMap);
 
     createIndexBuffer(bufferCreateInfo.indexArray, bufferCreateInfo.indexArraySize, pipelineMap);
 
@@ -229,6 +234,11 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
 
     setInt(bufferCreateInfo.shaderName, "texture2D", 0);//Tell openGL we have will want to use this shader slot
 
+    glUseProgram(0);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 
 }
 
@@ -238,34 +248,34 @@ void OpenGL::setClearColor(const float &r, const float &g, const float &b, const
 
 void OpenGL::submitScene(const std::vector<StandardRenderTask>& standardRenderTasks) {
     //Def wanna optimize this
-    if(cache.standardRenderTaskCache.size() != standardRenderTasks.size()){
-        cache.standardRenderTaskCache.resize(standardRenderTasks.size());
+    if(cache->standardRenderTaskCache.size() != standardRenderTasks.size()){
+        cache->standardRenderTaskCache.resize(standardRenderTasks.size());
     }
 //    else if(std::equal(cache.standardRenderTaskCache.begin(), cache.standardRenderTaskCache.begin() + cache.standardRenderTaskCache.size(), standardRenderTasks.begin())){//Might need to do std::equals for this
 //        return;
 //    }
     for(size_t i = 0; i < standardRenderTasks.size(); i++) {
-        cache.standardRenderTaskCache[i] = standardRenderTasks[i];
+        cache->standardRenderTaskCache[i] = standardRenderTasks[i];
     }
 
 }
 
 void OpenGL::submitScene(const std::vector<TextRenderTask> &textRenderTasks) {
     //Def wanna optimize this
-    if(cache.textRenderTasksCache.size() != textRenderTasks.size()){
-        cache.textRenderTasksCache.resize(textRenderTasks.size());
+    if(cache->textRenderTasksCache.size() != textRenderTasks.size()){
+        cache->textRenderTasksCache.resize(textRenderTasks.size());
     }
 //    else if(std::equal(cache.standardRenderTaskCache.begin(), cache.standardRenderTaskCache.begin() + cache.standardRenderTaskCache.size(), textRenderTasks.begin())){//Might need to do std::equals for this
 //        return;
 //    }
     for(size_t i = 0; i < textRenderTasks.size(); i++) {
-        cache.textRenderTasksCache[i] = textRenderTasks[i];
+        cache->textRenderTasksCache[i] = textRenderTasks[i];
     }
 }
 
 void OpenGL::onUpdate() {
     clear();
-    if((cache.textureCache.empty() && cache.fontFaceCache.empty()) || activePipelines.empty()) {
+    if((cache->textureCache.empty() && cache->fontFaceCache.empty()) || activePipelines.empty()) {
         if(onUpdateErrorCounter >= 240){
             logWarning("Unable to render. Graphics pipeline and/or texture cache is empty")//Def Wanna async this
             onUpdateErrorCounter = 0;
@@ -275,18 +285,21 @@ void OpenGL::onUpdate() {
         return;
     }
 
-    if(cache.standardRenderTaskCache.empty() && cache.textRenderTasksCache.empty()){
+    if(cache->standardRenderTaskCache.empty() && cache->textRenderTasksCache.empty()){
         glfwSwapBuffers(glfwWindow);
         return;
     }
 
-    setMat4(cache.standardRenderTaskCache[0].graphicsPipelineName, "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
-    if(!cache.standardRenderTaskCache.empty()){
-        for(const auto& stdRenderTask : cache.standardRenderTaskCache){
+    if(!cache->standardRenderTaskCache.empty()){
+
+        for(const auto& stdRenderTask : cache->standardRenderTaskCache){
+
             glUseProgram(activePipelines[stdRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
+            setMat4(stdRenderTask.graphicsPipelineName, "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
+
             for(unsigned short i = 0; i < stdRenderTask.textureCount; i++){
                 try {
-                    cache.textureCache.at(stdRenderTask.textureIds[i])->bind(i);
+                    cache->textureCache.at(stdRenderTask.textureIds[i])->bind(i);
                 } catch(std::out_of_range& err){
                     if(onUpdateErrorCounter >= 240){
                         logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
@@ -305,7 +318,7 @@ void OpenGL::onUpdate() {
 
             for(unsigned short i = 0; i < stdRenderTask.textureCount; i++){
                 try {
-                    cache.textureCache.at(stdRenderTask.textureIds[i])->unbind();
+                    cache->textureCache.at(stdRenderTask.textureIds[i])->unbind();
                 }catch(std::out_of_range& err){
                     if(onUpdateErrorCounter >= 240){
                         logWarning("Texture id: " + std::to_string(stdRenderTask.textureIds[i]) + "does not exist")
@@ -320,27 +333,44 @@ void OpenGL::onUpdate() {
         glBindVertexArray(0);
     }
 
-    if(!cache.textRenderTasksCache.empty()){
-        for(const auto& txtRenderTask : cache.textRenderTasksCache){
+    if(!cache->textRenderTasksCache.empty()){
+        for(const auto& txtRenderTask : cache->textRenderTasksCache){
             glUseProgram(activePipelines[txtRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
-            const std::map<GLchar, OpenGL::Character> *fontFace = nullptr;
-            try{
-                fontFace = &cache.fontFaceCache.at(txtRenderTask.fontName);
-            } catch (std::out_of_range& err){
-                if(onUpdateErrorCounter >= 240){
-                    logWarning("Requested font \'" + txtRenderTask.fontName + "\' is not currently loaded")
-                    onUpdateErrorCounter = 0;
-                }
-                continue;
-            }
+            setMat4(txtRenderTask.graphicsPipelineName, "viewProjection", glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f));
+            auto &fontFace = cache->fontFaceCache[txtRenderTask.fontName];
+
             setFloat4(txtRenderTask.graphicsPipelineName, "color", txtRenderTask.RGBAColor);
             glBindVertexArray(activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
 
             std::string::const_iterator i;
+            float nextCharLoc = txtRenderTask.position.x;
+
             for(i = txtRenderTask.text.begin(); i != txtRenderTask.text.end(); i++){
                 auto activeChar = fontFace[*i];
+                float xPos = nextCharLoc + activeChar.bearing.x * txtRenderTask.scale;
+                float yPos =  txtRenderTask.position.y  - (activeChar.size.y - activeChar.bearing.x) * txtRenderTask.scale;
+                float width = activeChar.size.x * txtRenderTask.scale;
+                float height = activeChar.size.y * txtRenderTask.scale;
+
+                float newVertexBuffer[6][4] {
+                        {xPos, yPos+height,         0.0f, 0.0f},
+                        {xPos, yPos,                0.0f, 1.0f},
+                        {xPos+width, yPos,          1.0f, 1.0f},
+                        {xPos, yPos+height,         0.0f, 0.0f},
+                        {xPos+width, yPos,          1.0f, 1.0f},
+                        {xPos+width, yPos+height,   1.0f, 0.0f},
 
 
+                };
+
+                glBindTexture(GL_TEXTURE_2D, activeChar.glTextureId);
+                glBindBuffer(GL_ARRAY_BUFFER, activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_BUFFER]);
+                glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newVertexBuffer), newVertexBuffer);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+
+                nextCharLoc += (activeChar.glAdvance >> 6) * txtRenderTask.scale;
             }
         }
 
@@ -409,16 +439,16 @@ void OpenGL::clear() {
 }
 
 void OpenGL::addTexture(Plexi2DTexture* texture) {
-    cache.textureCache[texture->getId()] = texture;//might not be necessary
+    cache->textureCache[texture->getId()] = texture;//might not be necessary
 }
 
 Plexi2DTexture* OpenGL::getNewTexture() {
-    cache.textureCache.push_back(new OpenGL2DTexture(cache.textureCache.size()));
+    cache->textureCache.push_back(new OpenGL2DTexture(cache->textureCache.size()));
 
-    return cache.textureCache[cache.textureCache.size() - 1];
+    return cache->textureCache[cache->textureCache.size() - 1];
 }
 
-void OpenGL::addFontFace(FT_Face &fontFace, uint32_t charCount) {
+uint32_t OpenGL::addFontFace(FT_Face &fontFace, uint32_t charCount) {
     std::map<GLchar, OpenGL::Character> charMap;
     logInformation("Loading " + std::to_string(charCount) + " font characters into openGL")
 
@@ -459,6 +489,13 @@ void OpenGL::addFontFace(FT_Face &fontFace, uint32_t charCount) {
         charMap.insert(std::pair<GLchar, Character>(c, character));
     }
 
-    cache.fontFaceCache.insert(std::pair<std::string, std::map<GLchar, OpenGL::Character> >(fontFace->family_name, charMap));
+//    std::cout << fontFace->family_name << std::endl;
+
+    cache->fontFaceCache.resize(cache->fontFaceCache.size()+1);
+    cache->fontFaceCache[cache->fontFaceCache.size()-1] = charMap;
+
+//    cache->fontFaceCache.insert(std::pair<std::string, std::map<GLchar, OpenGL::Character> >(fontFace->family_name, charMap));
+
+    return static_cast<uint32_t>(cache->fontFaceCache.size()-1);
 
 }

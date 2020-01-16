@@ -42,6 +42,15 @@ StandardRenderTask obj4 = {
         nullptr
 };
 
+TextRenderTask txtObj5 = {
+        "plexi_default_text",
+        "Hello World",
+        0,
+        {1.0f,1.0f,1.0f,1.0f},
+        {0.0f, 0.0f},
+        0.025f
+};
+
 
 
 StandardRenderTask* selectedOBJ = &obj1;
@@ -116,8 +125,8 @@ int main(){
     plexiConfig.bufferCreateInfos.resize(plexiConfig.shaderCount);
     plexiConfig.bufferCreateInfos[0].shaderName = plexiConfig.shaderCreateInfos[0].shaderName;
     plexiConfig.bufferCreateInfos[0].setLayout({
-       {Plexi::Shaders::Float3, "positionCoords"},
-       {Plexi::Shaders::Float2, "textureCoords"}
+       {Plexi::Shaders::Float3, "in_positionCoords"},
+       {Plexi::Shaders::Float2, "in_textureCoords"}
     });
 
     plexiConfig.bufferCreateInfos[0].vertexArray = Plexi::Buffer::SQUARE_VERTICES_WITH_TEXTURE;
@@ -127,14 +136,11 @@ int main(){
 
     plexiConfig.bufferCreateInfos[1].shaderName = plexiConfig.shaderCreateInfos[1].shaderName;
     plexiConfig.bufferCreateInfos[1].setLayout({
-           {Plexi::Shaders::Float3, "positionCoords"},
-           {Plexi::Shaders::Float2, "textureCoords"}
+           {Plexi::Shaders::Float4, "in_allCoords"},
     });
 
-    plexiConfig.bufferCreateInfos[1].vertexArray = Plexi::Buffer::SQUARE_VERTICES_WITH_TEXTURE;
-    plexiConfig.bufferCreateInfos[1].vertexArraySize = Plexi::Buffer::SQUARE_VERTICES_WITH_TEXTURE_SIZE;
-    plexiConfig.bufferCreateInfos[1].indexArray = Plexi::Buffer::SQUARE_INDICES;
-    plexiConfig.bufferCreateInfos[1].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
+    plexiConfig.bufferCreateInfos[1].vertexArraySize = Plexi::Buffer::TEXT_VERTICES_SIZE;
+
 
     Plexi::initPlexi(plexiConfig);
     Plexi::TextureCreateInfo textureCreateInfo = {};
@@ -185,13 +191,15 @@ int main(){
 
     A2D::Filesystem::Loaders::Font::Font newFont;
     newFont.createNewFont("./fonts/OpenSans-Regular.ttf", 16);
-    Plexi::Texture::createFontFace(newFont.getLoadedFontFace(), 128, Plexi::getActiveBackend());
-//Clean up FT
+    uint32_t OpenSans = Plexi::Texture::createFontFace(newFont.getLoadedFontFace(), 128, Plexi::getActiveBackend());
+    txtObj5.fontName = OpenSans;
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::submitScene({obj1, obj3, obj2});
+        Plexi::submitScene({txtObj5});
         Plexi::onUpdate();
     }
+
     Plexi::cleanupPlexi();
     endLogger()
 //    readJSON('a');

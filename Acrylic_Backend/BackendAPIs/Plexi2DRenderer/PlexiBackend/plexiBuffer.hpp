@@ -83,6 +83,9 @@ namespace Plexi::Buffer {
 
     const size_t TRIANGLE_VERTICES_NO_TEXTURE_SIZE = 9 * sizeof(float);
 
+    //Fonts don't have a default VBO
+    const size_t TEXT_VERTICES_SIZE =  24 * sizeof(float);
+
     //Default index arrays
     const uint32_t SQUARE_INDICES[7] = {
             0, 1, 2, 2, 3, 0
