@@ -1,8 +1,7 @@
+#include "acrylic_bitmap.h"
 //
 // Created by coolh on 11/6/2019.
 //
-
-#include "acrylic_bitmap.h"
 namespace A2D::Filesystem::ImageLoaders::Bitmaps {
     const unsigned char bmpData[] = // All values are little-endian
             {
@@ -52,9 +51,10 @@ namespace A2D::Filesystem::ImageLoaders::Bitmaps {
             };
 }
 
+
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
 A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
-    logInformation("Image Start Loading")
+    logInformation("58 Image Start Loading")
     std::ifstream is(FileName, std::ifstream::binary);
     if (is) {
         // get length of file:
@@ -65,19 +65,21 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
 
         char* buffer = new char[length];
 //        std::string m = "Reading " + length;//bc you can oly add strings once
-        logInformation("Reading" + std::to_string(length) + " characters... ")
+        logInformation("69 Reading" + std::to_string(length) + " characters... ")
             // read data as a block:
             is.read(buffer, length);
 
         if (is) {
-            logInformation("All characters read successfully.")
+            logInformation("74 All characters read successfully.")
         }
         else
         {
 //            std::string m = "error: only " + is.gcount();//bc you can oly add strings once
-            logError("Only "+ std::to_string(is.gcount()) + " characters could be read")
+            logError("79 Only "+ std::to_string(is.gcount()) + " characters could be read")
         }
         is.close();
+        
+        logInformation("83 Length: " + std::to_string(length))
 
         int *bff2 = new int[length];
 
@@ -89,24 +91,24 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
                 bff2[i] = (int) v;
             }
         }
-        logInformation("Extracting header information")
+        logInformation("95 Extracting header information")
         int offset;
         try{
-        offset = bff2[10];
+        offset = bff2[10]+2;
         height = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
         width = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
         bytes = bff2[28] / 8;
         }
         catch (std::out_of_range){
 //            logError("File smaller then expected header length")
-            logError("Invalid header data.")
+            logError("105 Invalid header data.")
             return;
         }
 
         length = height * width * bytes;
 //        m = "";
 //        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
-        logInformation("Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " +std::to_string(width))
+        logInformation("112 Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " +std::to_string(width))
 
         imageData = new unsigned char[length]();
 
@@ -117,17 +119,44 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
 
         delete[] bff2;
         delete[] buffer;
-        logInformation("Image Loaded");
+        logInformation("123 Image Loaded");
+        return;
     }
     else
     {
-//        std::string m = "";
-//        m = m + "File: "+FileName+" Not Found Loading default Image instead.";
-        logWarning("File \'" + FileName +"\' not found. Returning default image")
-        logWarning("Default image not implemented returning null image instead.")
-        imageData = nullptr;//Just so we can check this in the texture thingy
-
+        logWarning("128 File \'" + FileName + "\' not found. Returning default image")
+            logWarning("129 Default image not implemented returning null image instead.")
+        logWarning("130 "+std::filesystem::current_path().string())
+            Default();
     }
+}
+
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Default() 
+{
+    height = 4;
+    width = 4;
+    bytes = 4;
+    length = height * width * bytes;
+    unsigned char data[] =
+    {
+        0x00, 0xFF, 0xFF, 0xFF,
+        0x00, 0xFF, 0xFF, 0xFF,
+        0x00, 0xFF, 0xFF, 0xFF,
+        0x00, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF
+    };
+    imageData = data;
 }
 
 void A2D::Filesystem::ImageLoaders::Bitmaps::Image::PrintInfo()

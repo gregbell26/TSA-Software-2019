@@ -7,6 +7,10 @@
 #include "OpenGL2DTexture.hpp"
 
 void OpenGL2DTexture::createTexture(const PlexiTextureData& data, uint32_t size, uint32_t in_height, uint32_t in_width, uint32_t channelCount) {
+    if((in_width*in_height*channelCount) != size){
+        logError("Invalid Texture Size")
+        return;
+    }
     this->height = in_height;
     this->width = in_width;
 
@@ -15,14 +19,23 @@ void OpenGL2DTexture::createTexture(const PlexiTextureData& data, uint32_t size,
 
 
     if(data.usingGenericType) {
+        //Do data check first
+        if(!data.dataType.generic) {
+            logError("Invalid Texture Data")
+            return;
+        }
         rawData.generic = (void*)malloc(size);
         memcpy(rawData.generic, data.dataType.generic, size);
     }
     else {
+        //Do data check first
+        if(!data.dataType.image) {
+            logError("Invalid Texture Data")
+            return;
+        }
         rawData.image = (unsigned char*) malloc(size);
         memcpy(rawData.image, data.dataType.image, size);
     }
-//    *rawData = *data;//Copy the pointer data //This will most likely segfault
 
     usingGenericType = data.usingGenericType;
 
@@ -35,10 +48,20 @@ void OpenGL2DTexture::bind(uint32_t textureSlot) {
     //todo add texture slotting
     glBindTexture(GL_TEXTURE_2D, glId);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, this->width, this->height,0, dataFormat, GL_UNSIGNED_BYTE, (usingGenericType ? rawData.generic : rawData.image));
+    glTexImage2D(GL_TEXTURE_2D,
+            0,
+            internalFormat,
+            this->width,
+            this->height,
+            0,
+            dataFormat,
+            GL_UNSIGNED_BYTE,
+            (usingGenericType ? rawData.generic : rawData.image)
+    );
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 

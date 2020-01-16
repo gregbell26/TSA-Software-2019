@@ -105,5 +105,13 @@ add_custom_command(
         ${CMAKE_CURRENT_BINARY_DIR}/textures
 )
 
+#Fonts
+add_custom_command(
+        TARGET AcrylicTestinator1000 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Acrylic_Backend/TestData/fonts
+        ${CMAKE_CURRENT_BINARY_DIR}/fonts
+)
+
 
 

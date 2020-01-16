@@ -40,7 +40,11 @@ public:
 
     void submitScene(const std::vector<StandardRenderTask>& standardRenderTasks) override;
 
+    void submitScene(const std::vector<TextRenderTask>& textRenderTasks) override;
+
     void addTexture(Plexi2DTexture* texture) override;
+
+    uint32_t addFontFace(FT_Face& fontFace, uint32_t charCount) override;
 
     Plexi2DTexture* getNewTexture() override;
 
@@ -62,7 +66,7 @@ private:
     //Pipeline Helper Functions
     bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName, pipelineComponentMap& pipelineMap);
 
-    bool createVertexBuffer(const float* vertices, const size_t& size, pipelineComponentMap& pipelineMap);
+    bool createVertexBuffer(const float* vertices, const size_t& size, const bool& dynamicMode, pipelineComponentMap& pipelineMap);
 
     bool createIndexBuffer(const uint32_t* indices, const size_t& size, pipelineComponentMap& pipelineMap);
 
@@ -87,14 +91,18 @@ private:
 
 
 public:
+    struct Character {
+        GLuint glTextureId;
+        glm::vec2 size;
+        glm::vec2 bearing;
+        uint32_t glAdvance;
+    };
 
 private:
     const char* appName;
     bool requiredInfoSet = false;
 
     GLFWwindow* glfwWindow;
-
-    uint32_t vertexBufferIndex = 0;
 
     uint32_t onUpdateErrorCounter = 0;
 
