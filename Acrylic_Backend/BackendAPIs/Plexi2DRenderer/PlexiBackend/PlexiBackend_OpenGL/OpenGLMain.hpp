@@ -40,7 +40,11 @@ public:
 
     void submitScene(const std::vector<StandardRenderTask>& standardRenderTasks) override;
 
+    void submitScene(const std::vector<TextRenderTask>& textRenderTasks) override;
+
     void addTexture(Plexi2DTexture* texture) override;
+
+    void addFontFace(FT_Face& fontFace, uint32_t charCount) override;
 
     Plexi2DTexture* getNewTexture() override;
 
@@ -87,6 +91,12 @@ private:
 
 
 public:
+    struct Character {
+        GLuint glTextureId;
+        glm::vec2 size;
+        glm::vec2 bearing;
+        uint32_t glAdvance;
+    };
 
 private:
     const char* appName;

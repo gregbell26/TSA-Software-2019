@@ -35,6 +35,8 @@ namespace Plexi {
 
     void submitScene(const std::vector<StandardRenderTask>& tasks);
 
+    void submitScene(const std::vector<TextRenderTask>& tasks);
+
     void setClearColor(const float &r, const float &g, const float &b, const float &a);
 
     void onUpdate();
@@ -44,7 +46,6 @@ namespace Plexi {
     PLEXI_GFX_BACKENDS getActiveBackend();
 
     //Adds a render task to the active backend. Returns false if it fails
-    bool addRenderTask(const RenderTask&);
 
 
 

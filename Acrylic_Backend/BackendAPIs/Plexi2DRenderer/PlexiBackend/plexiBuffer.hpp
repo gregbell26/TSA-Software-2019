@@ -104,6 +104,7 @@ namespace Plexi::Buffer {
         const uint32_t *indexArray = nullptr;
         void setLayout(const BufferLayout& layout){ bufferLayout = layout; }
         [[nodiscard]] Buffer::BufferLayout getLayout() const { return bufferLayout; }
+        bool dynamicBuffer = false;
 
     private:
         Buffer::BufferLayout bufferLayout;
