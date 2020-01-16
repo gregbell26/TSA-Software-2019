@@ -147,7 +147,9 @@ int main(){
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     Plexi::TextureCreateInfo dog = {};
-    auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
+    auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/Broken.bmp");
+    dogImage->Print();
+    dogImage->PrintInfo();
     dog.height = dogImage->height;
     dog.width = dogImage->width;
     dog.channelCount = dogImage->bytes;
@@ -159,6 +161,7 @@ int main(){
 
     Plexi::TextureCreateInfo weird = {};
     auto *weirdImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/weirdTexture.bmp");
+    weirdImage->PrintInfo();
     weird.height = weirdImage->height;
     weird.width = weirdImage->width;
     weird.channelCount = weirdImage->bytes;
