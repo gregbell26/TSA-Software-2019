@@ -41,7 +41,7 @@ void A2D::Filesystem::Loaders::Font::Font::createNewFont(const std::filesystem::
         return;
     }
 
-    if(FT_New_Face(ftLibrary, fontPath.c_str(), 0, &ftFontFace) != FT_Err_Ok){
+    if(FT_New_Face(ftLibrary, fontPath.string().c_str(), 0, &ftFontFace) != FT_Err_Ok){
         logError("An error occurred while loading the font face \'" + fontPath.filename().string() + "\'")
         return;
     }

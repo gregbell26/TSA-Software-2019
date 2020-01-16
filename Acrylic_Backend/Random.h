@@ -38,6 +38,8 @@
 
 
 class Random {
+    double r = std::rand()%257;
+    float s = r;
 
     static glm::vec3 ranRGB()
     {
