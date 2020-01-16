@@ -41,6 +41,10 @@
 class Random {
     double r = std::rand()%257;
     float s = r;
+    Random()
+    {
+
+    }
     static glm::vec3 ranRGB();
     static glm::vec3 ranHSV();
     glm::vec3 RGBtoHSV(glm::vec3 rgb);
