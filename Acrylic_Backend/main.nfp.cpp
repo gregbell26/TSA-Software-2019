@@ -5,6 +5,9 @@
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
 #include <ths/log.hpp>
+#include "Random.h"
+#include "glm/ext.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 StandardRenderTask obj1 = {
         "plexi_default_primitive",
@@ -154,6 +157,8 @@ int main(){
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     Plexi::TextureCreateInfo dog = {};
     auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
+    dogImage->Print();
+    dogImage->PrintInfo();
     dog.height = dogImage->height;
     dog.width = dogImage->width;
     dog.channelCount = dogImage->bytes;
@@ -165,6 +170,7 @@ int main(){
 
     Plexi::TextureCreateInfo weird = {};
     auto *weirdImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/weirdTexture.bmp");
+    weirdImage->PrintInfo();
     weird.height = weirdImage->height;
     weird.width = weirdImage->width;
     weird.channelCount = weirdImage->bytes;
