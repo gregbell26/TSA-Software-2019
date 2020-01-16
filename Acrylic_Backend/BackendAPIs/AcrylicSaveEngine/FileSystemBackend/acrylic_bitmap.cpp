@@ -1,3 +1,4 @@
+#include "acrylic_bitmap.h"
 //
 // Created by coolh on 11/6/2019.
 //
@@ -118,16 +119,44 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
         delete[] bff2;
         delete[] buffer;
         logInformation("Image Loaded");
+        return;
     }
     else
     {
-//        std::string m = "";
-//        m = m + "File: "+FileName+" Not Found Loading default Image instead.";
-        logWarning("File \'" + FileName +"\' not found. Returning default image")
-        logWarning("Default image not implemented returning null image instead.")
-        imageData = nullptr;//Just so we can check this in the texture thingy
-
+        logWarning("File \'" + FileName + "\' not found. Returning default image")
+            logWarning("Default image not implemented returning null image instead.")
+            std::string m = std::filesystem::current_path().string();
+        logWarning(m)
+            Default();
     }
+}
+
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Default() 
+{
+    height = 4;
+    width = 4;
+    bytes = 4;
+    length = height * width * bytes;
+    unsigned char data[] =
+    {
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF
+    };
+    imageData = data;
 }
 
 void A2D::Filesystem::ImageLoaders::Bitmaps::Image::PrintInfo()
