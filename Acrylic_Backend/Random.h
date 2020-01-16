@@ -39,8 +39,6 @@
 #define ACRYLIC2D_RANDOM_H
 
 class Random {
-    double r = std::rand()%257;
-    float s = r;
     Random()
     {
 
