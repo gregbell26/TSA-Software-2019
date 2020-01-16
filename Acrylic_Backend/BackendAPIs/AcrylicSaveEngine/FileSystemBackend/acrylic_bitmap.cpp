@@ -53,6 +53,7 @@ namespace A2D::Filesystem::ImageLoaders::Bitmaps {
             };
 }
 
+
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
 A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
     logInformation("Image Start Loading")

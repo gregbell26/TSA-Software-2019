@@ -30,8 +30,7 @@
 
 /* Author: Jan Winkler */
 
-#ifndef ACRYLIC2D_RANDOM_H
-#define ACRYLIC2D_RANDOM_H
+
 #include <iostream>
 #include <cstdlib>
 #include <tuple>
@@ -39,6 +38,7 @@
 
 
 class Random {
+
     static glm::vec3 ranRGB()
     {
         return glm::vec3(std::rand()%257, std::rand()%257, std::rand()%257);
