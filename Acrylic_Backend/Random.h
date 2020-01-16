@@ -47,8 +47,8 @@ class Random {
     }
     static glm::vec3 ranRGB();
     static glm::vec3 ranHSV();
-    glm::vec3 RGBtoHSV(glm::vec3 rgb);
-    glm::vec3 HSVtoRGB( glm::vec3 hsv);
+    static glm::vec3 RGBtoHSV(glm::vec3 rgb);
+    static glm::vec3 HSVtoRGB( glm::vec3 hsv);
 };
 
 #endif
