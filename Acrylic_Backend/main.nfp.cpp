@@ -6,6 +6,8 @@
 #include <iostream>
 #include <ths/log.hpp>
 #include "Random.h"
+#include "glm/ext.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 StandardRenderTask obj1 = {
         "plexi_default_primitive",
@@ -148,7 +150,7 @@ int main(){
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     Plexi::TextureCreateInfo dog = {};
-    auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/Broken.bmp");
+    auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
     dogImage->Print();
     dogImage->PrintInfo();
     dog.height = dogImage->height;
@@ -159,8 +161,6 @@ int main(){
     dog.textureData.dataType.image = dogImage->imageData;
     uint32_t dogTexture = Plexi::Texture::create2DTexture(dog, Plexi::getActiveBackend());\
     delete dogImage;
-
-    Random R = new Random();
 
     Plexi::TextureCreateInfo weird = {};
     auto *weirdImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/weirdTexture.bmp");

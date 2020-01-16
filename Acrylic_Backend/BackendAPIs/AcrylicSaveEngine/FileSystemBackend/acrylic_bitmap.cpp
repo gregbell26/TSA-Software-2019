@@ -2,8 +2,6 @@
 //
 // Created by coolh on 11/6/2019.
 //
-
-#include "acrylic_bitmap.h"
 namespace A2D::Filesystem::ImageLoaders::Bitmaps {
     const unsigned char bmpData[] = // All values are little-endian
             {
