@@ -4,15 +4,16 @@
 
 #include "Random.h"
 
+    std::default_random_engine generator;
 
     glm::vec3 A2D::Random::Random::ranRGB()
     {
-        return glm::vec3(std::rand()%257, std::rand()%257, std::rand()%257);
+        return glm::vec3(std::uniform_int_distribution(0,256), std::uniform_int_distribution(0,256), std::uniform_int_distribution(0,256));
     }
 
     glm::vec3 A2D::Random::Random::ranHSV()
     {
-        return glm::vec3(std::rand()%360, std::rand()%100, std::rand()%100);
+        return glm::vec3(std::uniform_int_distribution(0,359), std::uniform_int_distribution(0,99), std::uniform_int_distribution(0,99));
     }
 
 glm::vec3 A2D::Random::Random::RGBtoHSV(glm::vec3 rgb) {
