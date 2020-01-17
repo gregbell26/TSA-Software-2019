@@ -47,13 +47,21 @@ void A2D::Filesystem::Loaders::Font::Font::createNewFont(const std::filesystem::
     }
 
     //set font size in points - not pixels
-    if(FT_Set_Char_Size(ftFontFace, 0, fontSize*64, 300, 300) != FT_Err_Ok){
+//    if(FT_Set_Char_Size(ftFontFace, 0, fontSize*64, 300, 300) != FT_Err_Ok){
+//        logError("An error occurred while setting the font size")
+//    }
+    if(FT_Set_Pixel_Sizes(ftFontFace, 0, 48) != FT_Err_Ok){
         logError("An error occurred while setting the font size")
     }
 
 }
 
 A2D::Filesystem::Loaders::Font::Font::~Font() {
+    FT_Done_Face(ftFontFace);
+    FT_Done_FreeType(ftLibrary);
+}
+
+void A2D::Filesystem::Loaders::Font::Font::cleanUp() {
     FT_Done_Face(ftFontFace);
     FT_Done_FreeType(ftLibrary);
 }
