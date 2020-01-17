@@ -1,16 +1,27 @@
 #Acrylic Save Engine
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.12)
 
 project(AcrylicSaveEngine)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(BITMAP_HEADER FileSystemBackend/acrylic_bitmap.h)
+set(BITMAP_SOURCE FileSystemBackend/acrylic_bitmap.cpp)
 
-set(SOURCE_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp)
-set(HEADER_FILES acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp FileSystemBackend/acrylic_bitmap.cpp FileSystemBackend/acrylic_bitmap.h)
+set(FONT_HEADER FileSystemBackend/acrylic_font.hpp)
+set(FONT_SOURCE FileSystemBackend/acrylic_font.cpp)
+
+
+set(SOURCE_FILES ${BITMAP_SOURCE} ${FONT_SOURCE} acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp)
+set(HEADER_FILES ${BITMAP_HEADER} ${FONT_HEADER} acrylic_saveEngine.cpp ./FileSystemBackend/acrylic_fileSystem.cpp)
+
 
 #include Nlohmann JSON
 include_directories(./../BackendAPIs/required/nlohmannJSON/include)
+
+#Inlcude FreeType for font loading and rastiation
+add_subdirectory(./../BackendAPIs/required/FreeType freeTypeBuild)
+include_directories(./../BackendAPIs/required/FreeType/include)
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -42,4 +53,5 @@ endif()
 
 
 add_library(AcrylicSaveEngine STATIC ${SOURCE_FILES} ${HEADER_FILES})
+target_link_libraries(AcrylicSaveEngine freetype)
 #add_executable(AcrylicSaveEngine ${SOURCE_FILES} ${HEADER_FILES})

@@ -1,10 +1,9 @@
+#include "acrylic_bitmap.h"
 //
 // Created by coolh on 11/6/2019.
 //
-
-#include "acrylic_bitmap.h"
-namespace ImageLoaders::Bitmaps {
-    unsigned char bmpData[] = // All values are little-endian
+namespace A2D::Filesystem::ImageLoaders::Bitmaps {
+    const unsigned char bmpData[] = // All values are little-endian
             {
                     0x42, 0x4D,             // Signature 'BM'
                     0xaa, 0x00, 0x00, 0x00, // Size: 170 bytes
@@ -52,46 +51,35 @@ namespace ImageLoaders::Bitmaps {
             };
 }
 
-//---------------------------PIXEL-CONSTRUCTORS-----------------------------------
-ImageLoaders::Bitmaps::Image::Pixel::Pixel()
-{
-    red = 0x00;
-    green = 0x00;
-    blue = 0x00;
-    alpha = 0xFF;
-}
-
-ImageLoaders::Bitmaps::Image::Pixel::Pixel(char r, char g, char b, char a)
-{
-    red = r;
-    green = g;
-    blue = b;
-    alpha = a;
-}
-
-
 
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
-ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
+A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
+    logInformation("58 Image Start Loading")
     std::ifstream is(FileName, std::ifstream::binary);
     if (is) {
         // get length of file:
         is.seekg(0, is.end);
-//                int length = is.tellg();
+        //                int length = is.tellg();
         length = static_cast<int>(is.tellg());
         is.seekg(0, is.beg);
 
-        char *buffer = new char[length];
-
-        std::cout << "Reading " << length << " characters... ";
-        // read data as a block:
-        is.read(buffer, length);
+        char* buffer = new char[length];
+//        std::string m = "Reading " + length;//bc you can oly add strings once
+        logInformation("69 Reading" + std::to_string(length) + " characters... ")
+            // read data as a block:
+            is.read(buffer, length);
 
         if (is) {
-            std::cout << "all characters read successfully.";
-        } else
-            std::cout << "error: only " << is.gcount() << " could be read";
+            logInformation("74 All characters read successfully.")
+        }
+        else
+        {
+//            std::string m = "error: only " + is.gcount();//bc you can oly add strings once
+            logError("79 Only "+ std::to_string(is.gcount()) + " characters could be read")
+        }
         is.close();
+        
+        logInformation("83 Length: " + std::to_string(length))
 
         int *bff2 = new int[length];
 
@@ -103,30 +91,75 @@ ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
                 bff2[i] = (int) v;
             }
         }
-        std::cout << "msg start \n";
-        int offset = bff2[10];
-        height = bff2[18];
-        width = bff2[22];
+        logInformation("95 Extracting header information")
+        int offset;
+        try{
+        offset = bff2[10];
+        height = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
+        width = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
         bytes = bff2[28] / 8;
+        }
+        catch (std::out_of_range){
+//            logError("File smaller then expected header length")
+            logError("105 Invalid header data.")
+            return;
+        }
 
         length = height * width * bytes;
-
-        std::cout << "Offset = " << offset << " Hight = " << height << " Width = " << width << " \n";
+//        m = "";
+//        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
+        logInformation("112 Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " +std::to_string(width))
 
         imageData = new unsigned char[length]();
 
         for (int i = offset; i < length; i++) {
             imageData[i - offset] = bff2[i];
         }
-        std::cout << "\n end ";
         // ...buffer contains the entire file...
 
         delete[] bff2;
         delete[] buffer;
+        logInformation("123 Image Loaded");
+        return;
+    }
+    else
+    {
+        logWarning("128 File \'" + FileName + "\' not found. Returning default image")
+            logWarning("129 Default image not implemented returning null image instead.")
+        logWarning("130 "+std::filesystem::current_path().string())
+            Default();
     }
 }
 
-void ImageLoaders::Bitmaps::Image::PrintInfo()
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Default() 
+{
+    height = 4;
+    width = 4;
+    bytes = 4;
+    length = height * width * bytes;
+    unsigned char data[] =
+    {
+        0x00, 0xFF, 0xFF, 0xFF,
+        0x00, 0xFF, 0xFF, 0xFF,
+        0x00, 0xFF, 0xFF, 0xFF,
+        0x00, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF
+    };
+    imageData = data;
+}
+
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::PrintInfo()
 {
     std::cout << (
             "Height: " + std::to_string(height) + "\n" +
@@ -136,7 +169,7 @@ void ImageLoaders::Bitmaps::Image::PrintInfo()
     );
 }
 
-void ImageLoaders::Bitmaps::Image::Print()
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Print()
 {
     std::cout << "\n";
     for (int i = 0; i < length; i ++)
@@ -162,7 +195,7 @@ void ImageLoaders::Bitmaps::Image::Print()
     }
 }
 
-void ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
+void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
 {
     std::fstream fs(FileName, std::ios_base::out | std::ios_base::binary);
 
@@ -183,11 +216,11 @@ void ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
         Data[i + Offset] = imageData[i];
         std::cout << "Data[" << i << "] = " << (int)Data[i + Offset] << "\n";
     }
-
     Data[10] = (unsigned char)Offset;
     Data[18] = (unsigned char)height;
     Data[22] = (unsigned char)width;
     Data[28] = (unsigned char)(bytes * 8);
+
 
     fs.write((const char *)Data, length + Offset);
 

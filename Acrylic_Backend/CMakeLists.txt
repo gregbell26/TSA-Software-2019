@@ -1,5 +1,5 @@
 #AcrylicEngine
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -16,6 +16,9 @@ include_directories(./BackendAPIs/Plexi2DRenderer/GraphicsAPIs/required/glm/incl
 
 #Include GLFW3
 include_directories(./BackendAPIs/BackendAPIs/required/GLFW3/include)
+
+#Inlcude FreeType for font loading and rastiation
+include_directories(./../BackendAPIs/required/FreeType/include)
 
 #include Nlohmann JSON
 include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
@@ -34,6 +37,7 @@ set(DYNAMIC_MEMORY BackendAPIs/Dynamic memory/Hash_Table.cpp)
 set(DYNAMIC_MEMORY BackendAPIs/Dynamic memory/Hash_Table.h)
 set(SOURCE_FILES ${CPU_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp)
 set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp Input.cpp Input.hpp KeyInput.cpp KeyInput.hpp MouseInput.cpp MouseInput.hpp InputMap.cpp InputMap.hpp)
+set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp UserInput.hpp UserInputMap.cpp UserInputMap.hpp Random.cpp Random.h)
 
 set(TEST_CODE main.nfp.cpp)
 
@@ -82,3 +86,33 @@ target_link_libraries(AcrylicEngine Plexi2DRenderer)
 #target_link_libraries(AcrylicEngine A2D_log)
 
 target_link_libraries(AcrylicTestinator1000 AcrylicEngine)
+
+
+#Copy all assets - Note these are for debugging
+
+#Shaders
+add_custom_command(
+        TARGET AcrylicTestinator1000 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_SOURCE_DIR}/Acrylic_Backend/BackendAPIs/Plexi2DRenderer/plexi_shaders
+                ${CMAKE_CURRENT_BINARY_DIR}/plexi_shaders
+)
+
+#Textures
+add_custom_command(
+        TARGET AcrylicTestinator1000 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Acrylic_Backend/TestData/textures
+        ${CMAKE_CURRENT_BINARY_DIR}/textures
+)
+
+#Fonts
+add_custom_command(
+        TARGET AcrylicTestinator1000 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Acrylic_Backend/TestData/fonts
+        ${CMAKE_CURRENT_BINARY_DIR}/fonts
+)
+
+
+

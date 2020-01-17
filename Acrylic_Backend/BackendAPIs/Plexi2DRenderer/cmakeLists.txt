@@ -1,5 +1,5 @@
 #Plexi2DRenderer
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.12)
 
 project(Plexi2DRenderer)
 
@@ -22,6 +22,9 @@ set(TST_FILES main.nfp.cpp)
 #include TriHard Studios Helper Libs
 add_subdirectory(./../BackendAPIs/required/trihardstudios thsBuild)
 include_directories(./../BackendAPIs/required/trihardstudios/include)
+
+#Inlcude FreeType for font loading and rastiation
+include_directories(./../BackendAPIs/required/FreeType/include)
 
 #Include Glad (OpenGL Loader)
 include_directories(./GraphicsAPIs/required/glad/include)
@@ -78,6 +81,16 @@ target_link_libraries(Plexi2DRenderer A2D_log)
 #Link Tester with Plexi
 target_link_libraries(PlexiTester1000 Plexi2DRenderer)
 
+#Working on Linux Support rn - Still not 100%
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    #This is the std::filesystem lib - Separate on linux clang and gcc
     target_link_libraries(Plexi2DRenderer stdc++fs)
 endif()
+
+#Shaders
+add_custom_command(
+        TARGET PlexiTester1000 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Acrylic_Backend/BackendAPIs/Plexi2DRenderer/plexi_shaders
+        ${CMAKE_CURRENT_BINARY_DIR}/plexi_shaders
+)
