@@ -5,15 +5,18 @@
 #include "Random.h"
 
     std::default_random_engine generator;
+    std::uniform_int_distribution <int> distribution(0,256);
+    std::uniform_int_distribution <int> distribute(0,99);
+
 
     glm::vec3 A2D::Random::Random::ranRGB()
     {
-        return glm::vec3(std::uniform_int_distribution(0,256), std::uniform_int_distribution(0,256), std::uniform_int_distribution(0,256));
+        return glm::vec3(distribution(generator), distribution(generator), distribution(generator));
     }
 
     glm::vec3 A2D::Random::Random::ranHSV()
     {
-        return glm::vec3(std::uniform_int_distribution(0,359), std::uniform_int_distribution(0,99), std::uniform_int_distribution(0,99));
+        return glm::vec3(distribute(generator), distribute(generator), distribute(generator));
     }
 
 glm::vec3 A2D::Random::Random::RGBtoHSV(glm::vec3 rgb) {
