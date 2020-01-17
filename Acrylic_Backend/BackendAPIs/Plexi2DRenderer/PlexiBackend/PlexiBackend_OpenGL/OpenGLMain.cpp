@@ -65,7 +65,7 @@ bool OpenGL::createWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_SAMPLES, 16);
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     glfwSetErrorCallback(glfwErrorCallBack);
 
@@ -118,7 +118,7 @@ bool OpenGL::initBackend() {
     glEnable(GL_BLEND);
 
     glEnable(GL_DEPTH_TEST);
-//    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_MULTISAMPLE);
 
 
     return true;
@@ -350,9 +350,9 @@ void OpenGL::onUpdate() {
 
             for(i = txtRenderTask.text.begin(); i != txtRenderTask.text.end(); i++){
                 auto activeChar = fontFace[*i];
-                float xPos = nextCharLoc + activeChar.bearing.x * txtRenderTask.scale;
-                float yPos =  txtRenderTask.position.y  - (txtRenderTask.position.y - activeChar.bearing.x) * txtRenderTask.scale;
-                float width = activeChar.size.x * txtRenderTask.scale;
+                float xPos = (nextCharLoc + activeChar.bearing.x * txtRenderTask.scale)/1.5f;
+                float yPos =  (txtRenderTask.position.y - (txtRenderTask.position.y - activeChar.bearing.x)) * txtRenderTask.scale;
+                float width = (activeChar.size.x/1.5f) * txtRenderTask.scale;
                 float height = activeChar.size.y * txtRenderTask.scale;
 
                 float newVertexBuffer[6][4] {

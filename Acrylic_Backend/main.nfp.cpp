@@ -10,11 +10,11 @@
 
 TextRenderTask txtObj5 = {
         "plexi_default_text",
-        "Hello World",
+        "The Quick Brown Fox Jumped Over The Lazy Dog",
         0,
-        {1.0f,1.0f,1.0f,1.0f},
-        {0.0f, 0.0f},
-        0.025f
+        {0.75f,0.0f,0.5f,1.0f},
+        {-50.0f, 0.0f},
+        0.1f
 };
 
 
@@ -92,16 +92,17 @@ int main(){
 
 
     A2D::Filesystem::Loaders::Font::Font newFont;
-    newFont.createNewFont("./fonts/OpenSans-Regular.ttf", 26);
+    newFont.createNewFont("./fonts/OpenSans-Light.ttf", 48);
     uint32_t OpenSans = Plexi::Texture::createFontFace(newFont.getLoadedFontFace(), 128, Plexi::getActiveBackend());
     txtObj5.fontName = OpenSans;
+    newFont.cleanUp();
+
+    Plexi::submitScene({txtObj5});
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
-        Plexi::submitScene({txtObj5});
         Plexi::onUpdate();
     }
 
     Plexi::cleanupPlexi();
     endLogger()
-//    readJSON('a');
 }
