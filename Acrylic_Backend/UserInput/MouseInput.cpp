@@ -2,6 +2,8 @@
 // Created by Corbin Estes on 1/14/20.
 //
 
+#include "Input.cpp"
+
 #include "MouseInput.hpp"
 namespace InputSpace::Mouse{
     template <typename R, typename P>

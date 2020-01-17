@@ -1,6 +1,9 @@
 //
 // Created by Corbin Estes on 1/16/20.
 //
+#include "Input.hpp"
+#include "KeyInput.hpp"
+#include "MouseInput.hpp"
 
 #include "InputMap.hpp"
 namespace InputSpace{
@@ -36,7 +39,7 @@ namespace InputSpace{
     InputMap::InputMap(){
         std::vector<InputMap *> map;
         map.push_back(this);
-        newKeyInput<void, std::vector<InputMap *>>(GLFW_KEY_N, 3, false, false, newInput(map))
+        newKeyInput<void, std::vector<InputMap *>>(GLFW_KEY_N, 3, false, false, newInput(map));
         inputList.push_back(newKeyInput<>(GLFW_KEY_N, 3, false, false, newInput(map)))
     }
     InputMap::InputMap(std::vector<Input> *list){

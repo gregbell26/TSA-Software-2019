@@ -4,7 +4,6 @@
 
 #ifndef ACRYLIC2D_MOUSEINPUT_HPP
 #define ACRYLIC2D_MOUSEINPUT_HPP
-#include "Input.cpp"
 
 namespace InputSpace::Mouse {
     template<typename R, typename P>

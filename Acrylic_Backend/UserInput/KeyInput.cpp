@@ -2,6 +2,8 @@
 // Created by Corbin Estes on 1/14/20.
 //
 
+#include "Input.cpp"
+
 #include "KeyInput.hpp"
 namespace InputSpace::Key {
     template <typename R, typename P>

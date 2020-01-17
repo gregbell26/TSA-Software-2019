@@ -4,9 +4,10 @@
 
 #ifndef ACRYLIC2D_INPUT_HPP
 #define ACRYLIC2D_INPUT_HPP
+
 #include <iostream>
 #include <GLFW/glfw3.h>
-#include "BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
+#include "../BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 
 namespace InputSpace {
     union Returns {
@@ -16,9 +17,9 @@ namespace InputSpace {
         double Double;
         char character;
 
-        Returns(int i);
-        Returns(double d);
-        Returns(bool b);
+        explicit Returns(int i);
+        explicit Returns(double d);
+        explicit Returns(bool b);
     };
 
     enum InputType {
@@ -43,7 +44,6 @@ namespace InputSpace {
         Input();
         Input(int key, int modifiers, bool hold, bool toggle, Returns (*func)(GLFWwindow *));
         Input(int key, int modifiers, bool toggle, Returns (*func)(GLFWwindow *));
-        Input(int key, int modifiers, Returns (*func)(GLFWwindow *), bool hold);
         Input(int key, int modifiers, Returns (*func)(GLFWwindow *));
     };
 }

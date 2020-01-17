@@ -33,30 +33,19 @@ add_subdirectory(./BackendAPIs/Plexi2DRenderer)
 
 set(CPU_SOURCE BackendAPIs/CPU/TaskScheduler.cpp)
 set(CPU_HEADER BackendAPIs/CPU/TaskScheduler.hpp)
-set(DYNAMIC_MEMORY BackendAPIs/Dynamic memory/Hash_Table.cpp)
-set(DYNAMIC_MEMORY BackendAPIs/Dynamic memory/Hash_Table.h)
-set(SOURCE_FILES ${CPU_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp)
-set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp Input.cpp Input.hpp KeyInput.cpp KeyInput.hpp MouseInput.cpp MouseInput.hpp InputMap.cpp InputMap.hpp)
-set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp UserInput.hpp UserInputMap.cpp UserInputMap.hpp Random.cpp Random.h)
+
+set(USER_INPUT_HEADER UserInput/Input.hpp UserInput/KeyInput.hpp UserInput/MouseInput.hpp UserInput/InputMap.hpp)
+set(USER_INPUT_SOURCE UserInput/Input.cpp UserInput/KeyInput.cpp UserInput/MouseInput.cpp UserInput/InputMap.cpp)
+
+set(SOURCE_FILES ${CPU_SOURCE} ${USER_INPUT_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp)
+set(HEADER_FILES ${CPU_HEADER} ${USER_INPUT_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp Random.cpp Random.h)
 
 set(TEST_CODE main.nfp.cpp)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-#    include_directories(/usr/local/include)
-
     add_compile_definitions(MACOS)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    #We have to do this because windows doesn't havea central include directory
-    #PlexiBackend_Vulkan
-#    include_directories(C:/SDKS/VulkanSDK/1.1.114.0/Include)
-    #GLM
-#    include_directories(C:/SDKS/GLM0.9)
-    #JOSN BOI
-#    include_directories(C:/SDKS/NlohmannJSON/include)
-    #GLFW
-#    include_directories(C:/SDKS/GLFW3.3/glfw-3.3.bin.WIN64/include)
-
     #Disable MSVC Bullshit
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:LIBCMT" )
     SET( CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS} "/NODEFAULTLIBS:MSVCRT" )
@@ -66,7 +55,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     message(AUTHOR_WARNING "Building on Linux has not been tested. Please use macOS or Windows to build")
-#    include_directories(/usr/local/include)
 
     add_compile_definitions(LINUX)
 

@@ -4,7 +4,6 @@
 
 #ifndef ACRYLIC2D_KEYINPUT_HPP
 #define ACRYLIC2D_KEYINPUT_HPP
-#include "Input.cpp"
 namespace InputSpace::Key{
     template <typename R, typename P>
     class KeyInput : public Input {

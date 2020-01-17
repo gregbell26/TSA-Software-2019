@@ -6,9 +6,7 @@
 #define ACRYLIC2D_INPUTMAP_HPP
 
 #include <iostream>
-#include "Input.hpp"
-#include "KeyInput.hpp"
-#include "MouseInput.hpp"
+
 
 
 namespace InputSpace{
