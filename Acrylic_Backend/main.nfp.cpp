@@ -8,14 +8,33 @@
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
 
-TextRenderTask txtObj5 = {
+TextRenderTask txtObj1 = {
         "plexi_default_text",
-        "Hello World",
+        "the quick brown fox jumped over the lazy dog",
         0,
-        {1.0f,1.0f,1.0f,1.0f},
-        {0.0f, 0.0f},
-        0.025f
+        {0.75f,0.0f,0.5f,1.0f},
+        {-50.0f, 15.0f},
+        0.1f
 };
+
+TextRenderTask txtObj2 {
+        "plexi_default_text",
+        "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG",
+        0,
+        {0.0f,0.5f,0.75f,1.0f},
+        {-60.0f, -15.0f},
+        0.1f
+};
+
+TextRenderTask txtObj3 {
+        "plexi_default_text",
+        "1234567890!@#$%^&*()~`:;\"\'/?\\|_+{_}+][]<><,.,?:",
+        0,
+        {0.0f, 0.75f, 0.5f,1.0f},
+        {-50.0f, 0.0f},
+        0.1f
+};
+
 
 
 
@@ -66,42 +85,22 @@ int main(){
     textureCreateInfo.textureData.dataType.generic = &data;
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
-    Plexi::TextureCreateInfo dog = {};
-    auto *dogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
-    dogImage->PrintInfo();
-    dog.height = dogImage->height;
-    dog.width = dogImage->width;
-    dog.channelCount = dogImage->bytes;
-    dog.dataSize = dogImage->length;
-    dog.textureData.usingGenericType = false;
-    dog.textureData.dataType.image = dogImage->imageData;
-    uint32_t dogTexture = Plexi::Texture::create2DTexture(dog, Plexi::getActiveBackend());\
-    delete dogImage;
-
-    Plexi::TextureCreateInfo weird = {};
-    auto *weirdImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/weirdTexture.bmp");
-    weirdImage->PrintInfo();
-    weird.height = weirdImage->height;
-    weird.width = weirdImage->width;
-    weird.channelCount = weirdImage->bytes;
-    weird.dataSize = weirdImage->length;
-    weird.textureData.usingGenericType = false;
-    weird.textureData.dataType.image = weirdImage->imageData;
-    uint32_t weirdTexture = Plexi::Texture::create2DTexture(weird, Plexi::getActiveBackend());
-    delete weirdImage;
 
 
     A2D::Filesystem::Loaders::Font::Font newFont;
-    newFont.createNewFont("./fonts/OpenSans-Regular.ttf", 26);
+    newFont.createNewFont("./fonts/OpenSans-Light.ttf", 48);
     uint32_t OpenSans = Plexi::Texture::createFontFace(newFont.getLoadedFontFace(), 128, Plexi::getActiveBackend());
-    txtObj5.fontName = OpenSans;
+    txtObj1.fontName = OpenSans;
+    txtObj2.fontName = OpenSans;
+    txtObj3.fontName = OpenSans;
+    newFont.cleanUp();
+
+    Plexi::submitScene({txtObj1, txtObj2, txtObj3});
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
-        Plexi::submitScene({txtObj5});
         Plexi::onUpdate();
     }
 
     Plexi::cleanupPlexi();
     endLogger()
-//    readJSON('a');
 }
