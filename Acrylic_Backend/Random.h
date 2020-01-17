@@ -37,10 +37,14 @@
 #include <cstdlib>
 #include <tuple>
 #include <glm/glm.hpp>
+#include <ctime>
+
 namespace A2D::Random {
 
     class Random {
         Random() {}
+
+        std::rand(time(NULL));
 
     public:
         static glm::vec3 ranRGB();
