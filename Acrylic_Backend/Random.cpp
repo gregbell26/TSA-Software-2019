@@ -4,10 +4,12 @@
 
 #include "Random.h"
 
-glm::vec3 A2D::Random::Random::ranRGB()
-{
-    return glm::vec3(std::rand()%257, std::rand()%257, std::rand()%257);
-}
+
+    glm::vec3 A2D::Random::Random::ranRGB()
+    {
+        return glm::vec3(std::rand()%257, std::rand()%257, std::rand()%257);
+    }
+
     glm::vec3 A2D::Random::Random::ranHSV()
     {
         return glm::vec3(std::rand()%360, std::rand()%100, std::rand()%100);
