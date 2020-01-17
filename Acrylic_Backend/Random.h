@@ -44,7 +44,7 @@ namespace A2D::Random {
     class Random {
         Random() {}
 
-        std::rand(time(NULL));
+        std::srand(time(0));
 
     public:
         static glm::vec3 ranRGB();
