@@ -21,6 +21,8 @@ namespace A2D::Filesystem::Loaders::Font {
         FT_Library getFreeTypeLib() { return ftLibrary; }
         FT_Face getLoadedFontFace() { return ftFontFace; }
 
+        void cleanUp();
+
         ~Font();
 
 

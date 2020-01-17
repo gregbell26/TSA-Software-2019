@@ -65,6 +65,7 @@ bool OpenGL::createWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 16);
 
     glfwSetErrorCallback(glfwErrorCallBack);
 
@@ -112,10 +113,12 @@ bool OpenGL::isSupported() {
 
 
 bool OpenGL::initBackend() {
-    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_BLEND);
+
     glEnable(GL_DEPTH_TEST);
+//    glEnable(GL_MULTISAMPLE);
 
 
     return true;
