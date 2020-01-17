@@ -1,50 +1,12 @@
 #include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
-#include "UserInput/Input.cpp"
-#include "UserInput.cpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
 #include <ths/log.hpp>
 #include "Random.h"
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
-
-StandardRenderTask obj1 = {
-        "plexi_default_primitive",
-        {0.0f, 0.0,0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f},
-        {3.0f, 3.0f},
-        1,
-        nullptr
-};
-
-StandardRenderTask obj2 = {
-        "plexi_default_primitive",
-        {0.75f, 0.1f,0.25f, 1.0f},
-        {-1.0f, -1.0f, 0.1f},
-        {2.5f, 2.5f},
-        1,
-        nullptr
-};
-
-StandardRenderTask obj3 = {
-        "plexi_default_primitive",
-        {0.25f, 0.1f,0.75f, 1.0f},
-        {1.0f, 1.0f, -0.1f},
-        {3.5f, 3.5f},
-        1,
-        nullptr
-};
-
-StandardRenderTask obj4 = {
-        "plexi_default_primitive",
-        {0.0f,0.0f,0.0f,0.0f},
-        {0.0f, 0.0f, 0.0f},
-        {10.0f, 10.0f},
-        1,
-        nullptr
-};
 
 TextRenderTask txtObj5 = {
         "plexi_default_text",
@@ -57,58 +19,6 @@ TextRenderTask txtObj5 = {
 
 
 
-StandardRenderTask* selectedOBJ = &obj1;
-short selected = 0;
-
-UserInput::Returns moveUp(int times){
-    double move = (float) times / 50.0f;
-    selectedOBJ->position.y += move;
-    return {};
-}
-UserInput::Returns moveDown(int times){
-    double move = (float) times / 50.0f;
-    selectedOBJ->position.y -= move;
-    return {};
-}
-UserInput::Returns moveLeft(int times){
-    double move = (float) times / 50.0f;
-    selectedOBJ->position.x -= move;
-    return {};
-}
-UserInput::Returns moveRight(int times){
-
-    double move = (float) times / 50.0f;
-    selectedOBJ->position.x += move;
-    return {};
-}
-
-UserInput::Returns changeSelection(int times){
-    if(times == 0 ) {
-        if (selected > 2) {
-            selected = 0;
-        } else
-            selected++;
-
-        switch (selected) {
-            case 0:
-                selectedOBJ = &obj1;
-                break;
-            case 1:
-                selectedOBJ = &obj2;
-                break;
-            case 2:
-                selectedOBJ = &obj3;
-                break;
-        }
-    }
-    return {};
-}
-
-UserInput::Returns scroll(double i, double j){
-    j /=1000;
-    selectedOBJ->scale.x+= (float) j;
-    return {};
-}
 int main(){
     initLogger("A2D", log_severity_information, log_mode_all)
     Plexi::PlexiConfig plexiConfig = {};
@@ -181,27 +91,12 @@ int main(){
     delete weirdImage;
 
 
-
-    obj1.textureIds = &plainWhiteTexture;
-    obj2.textureIds = &dogTexture;
-    obj3.textureIds = &plainWhiteTexture;
-
-    UserInput::initialize();
-    UserInput::addKeyMap(GLFW_KEY_W, GLFW_PRESS, moveUp);
-    UserInput::addKeyMap(GLFW_KEY_A, GLFW_PRESS, moveLeft);
-    UserInput::addKeyMap(GLFW_KEY_S, GLFW_PRESS, moveDown);
-    UserInput::addKeyMap(GLFW_KEY_D, GLFW_PRESS, moveRight);
-    UserInput::setCursorPressedMoveFunc(scroll);
-    UserInput::setScrollFunc(scroll);
-    UserInput::setMouseRightFunc(GLFW_MOUSE_BUTTON_LEFT, changeSelection);
-
     A2D::Filesystem::Loaders::Font::Font newFont;
     newFont.createNewFont("./fonts/OpenSans-Regular.ttf", 26);
     uint32_t OpenSans = Plexi::Texture::createFontFace(newFont.getLoadedFontFace(), 128, Plexi::getActiveBackend());
     txtObj5.fontName = OpenSans;
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
-        Plexi::submitScene({obj1, obj3, obj2});
         Plexi::submitScene({txtObj5});
         Plexi::onUpdate();
     }

@@ -44,8 +44,6 @@ namespace A2D::Random {
     class Random {
         Random() {}
 
-
-
     public:
         static glm::vec3 ranRGB();
 
