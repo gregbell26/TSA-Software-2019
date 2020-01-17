@@ -59,7 +59,7 @@ namespace A2D::Filesystem::Loaders::Json {
 
     void interpretArray(std::string toArr, std::string key, jsonMaps* where) {
         try {
-            std::cout << toArr << "\n";
+//            std::cout << toArr << "\n";
             if (!toArr[0])
                 return;
             int elem = 0;
@@ -90,7 +90,7 @@ namespace A2D::Filesystem::Loaders::Json {
 
             } while (true);
             size++;
-            std::cout << "size:" << size << "\n";
+//            std::cout << "size:" << size << "\n";
 
             next = toArr.find_first_of(',', loc);
 
@@ -116,11 +116,11 @@ namespace A2D::Filesystem::Loaders::Json {
                             notInQuotes = !notInQuotes;
 
                     } while (i != 0);
-                    std::cout << loc << " " << next << "\n";
-                    std::cout << toArr.substr(loc, next - loc + 1) << "\n";
-                    std::cout << key << " -j- " << "{" << "\n";
+//                    std::cout << loc << " " << next << "\n";
+//                    std::cout << toArr.substr(loc, next - loc + 1) << "\n";
+//                    std::cout << key << " -j- " << "{" << "\n";
                     javal[elem] = interpretJson(toArr.substr(loc, next - loc + 1));
-                    std::cout << "}" << "\n";
+//                    std::cout << "}" << "\n";
 
                     elem++;
                     loc = toArr.find_first_of(",", next);
@@ -131,9 +131,9 @@ namespace A2D::Filesystem::Loaders::Json {
                 saval = new std::string[size];
                 elem = 0;
                 while (elem < size) {
-                    std::cout << loc << "\n";
+//                    std::cout << loc << "\n";
                     saval[elem] = toArr.substr(loc + 1, next - loc - 2);
-                    std::cout << key << " -s- " << saval[elem] << "\n";
+//                    std::cout << key << " -s- " << saval[elem] << "\n";
                     loc = next + 1;
                     next = toArr.find_first_of(",", next + 1);
                     if (next == -1)
@@ -146,9 +146,9 @@ namespace A2D::Filesystem::Loaders::Json {
                 faval = new float[size];
                 elem = 0;
                 while (elem < size) {
-                    std::cout << loc << "\n";
+//                    std::cout << loc << "\n";
                     faval[elem] = std::stof(toArr.substr(loc, next - loc));
-                    std::cout << key << " -d- " << faval[elem] << "\n";
+//                    std::cout << key << " -d- " << faval[elem] << "\n";
                     loc = next + 1;
                     next = toArr.find_first_of(",", next + 1);
                     elem++;
@@ -158,9 +158,9 @@ namespace A2D::Filesystem::Loaders::Json {
                 iaval = new int[size];
                 elem = 0;
                 while (elem < size) {
-                    std::cout << loc << "\n";
+//                    std::cout << loc << "\n";
                     iaval[elem] = std::stoi(toArr.substr(loc, next - loc));
-                    std::cout << key << " -i- " << iaval[elem] << "\n";
+//                    std::cout << key << " -i- " << iaval[elem] << "\n";
                     loc = next + 1;
                     next = toArr.find_first_of(",", loc);
                     elem++;
@@ -170,16 +170,23 @@ namespace A2D::Filesystem::Loaders::Json {
         }catch(const std::out_of_range){
             std::cerr << "Invalid Json" << std::endl;
             return;
+        }catch(const std::invalid_argument) {
+            std::cerr << "Could not determine data type" << std::endl;
+            return;
         }catch(...){
             std::cerr << "Unknown Error" << std::endl;
             return;
         }
     }
 
-        jsonMaps interpretJson(std::string stringJson) {
-            try {
-
-//        std::cout << stringJson << "\n";
+    jsonMaps interpretJson(std::string stringJson) {
+        try {
+            if(stringJson.empty()) {
+                std::cerr << "Input is empty" << std::endl;
+                jsonMaps errorJson;
+                return errorJson;
+            }
+    //        std::cout << stringJson << "\n";
             jsonMaps maps;
             std::string tempJson;
             tempJson.assign(stringJson);
@@ -206,7 +213,7 @@ namespace A2D::Filesystem::Loaders::Json {
             if (tempJson[tempJson.length() - 1] == '}')
                 tempJson.erase(tempJson.length() - 1, 1);
 
-            std::cout << tempJson << "\n";
+    //            std::cout << tempJson << "\n";
 
             do {
                 loc++;
@@ -217,9 +224,9 @@ namespace A2D::Filesystem::Loaders::Json {
                 if (end == -1)
                     end = tempJson.length();
 
-                std::cout << mid << " " << end << "\n";
+    //                std::cout << mid << " " << end << "\n";
                 //std::cout << tempJson[mid] << " " << tempJson[end] << "\n";
-                std::cout << tempJson.find_first_of(",", mid, end - mid) << "\n";
+    //                std::cout << tempJson.find_first_of(",", mid, end - mid) << "\n";
                 key = tempJson.substr(loc, mid - loc - 1);
                 if (key[0] == '\"')
                     key.erase(0, 1);
@@ -241,10 +248,10 @@ namespace A2D::Filesystem::Loaders::Json {
                             notInQuotes = !notInQuotes;
 
                     } while (i != 0);
-                    std::cout << key << " -j- " << "{" << "\n";
+    //                    std::cout << key << " -j- " << "{" << "\n";
                     jval = interpretJson(stringJson.substr(mid + 2, end - mid));
                     end++;
-                    std::cout << "}" << "\n";
+    //                    std::cout << "}" << "\n";
                     maps.jmap.insert_or_assign(key, jval);
                 } else if (tempJson[mid + 1] == '[') {
                     i = 0;
@@ -256,32 +263,35 @@ namespace A2D::Filesystem::Loaders::Json {
                         else
                             i--;
                     } while (i != 0);
-                    std::cout << key << " -a- " << "[" << "\n";
+    //                    std::cout << key << " -a- " << "[" << "\n";
                     interpretArray(tempJson.substr(mid + 2, end - mid - 2), key, &maps);
                     end++;
-                    std::cout << "]" << "\n";
+    //                    std::cout << "]" << "\n";
                 } else if (tempJson[mid + 1] == '\"') {
                     sval = tempJson.substr(mid + 2, end - mid - 3);
-                    std::cout << key << " -s- " << sval << "\n";
+    //                    std::cout << key << " -s- " << sval << "\n";
                     maps.smap.insert_or_assign(key, sval);
                 } else if (tempJson.find_first_of('.', mid) != -1 && tempJson.find_first_of('.', mid) < end) {
                     fval = std::stof(tempJson.substr(mid + 1, end - mid - 1));
-                    std::cout << key << " -d- " << fval << "\n";
+    //                    std::cout << key << " -d- " << fval << "\n";
                     maps.fmap.insert_or_assign(key, fval);
                 } else {
                     ival = std::stoi(tempJson.substr(mid + 1, end - mid - 1));
-                    std::cout << key << " -i- " << ival << "\n";
+    //                    std::cout << key << " -i- " << ival << "\n";
                     maps.imap.insert_or_assign(key, ival);
                 }
                 loc = end;
-                std::cout << loc << "\n\n";
+    //                std::cout << loc << "\n\n";
             } while (loc != -1);
-
             return maps;
         }catch(const std::out_of_range) {
             std::cerr << "Invalid Json" << std::endl;
             jsonMaps errorJson;
             return errorJson;
+        }catch(const std::invalid_argument) {
+                std::cerr << "Could not determine data type" << std::endl;
+                jsonMaps errorJson;
+                return errorJson;
         }catch(...){
             std::cerr << "Unknown Error" << std::endl;
             jsonMaps errorJson;
