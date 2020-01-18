@@ -9,7 +9,7 @@ struct Task {
     Task();
 
 // Teh pointer to the function
-    void *function;
+    void (*function)();
     // Stores the cycles of the processor that the function will run for
     int cycles;
     // Optional, for set start times of the function
@@ -21,21 +21,23 @@ class TaskScheduler {
 private:
     int Cycles;
     int Start;
-    void *Function;
+    void (*Function)();
     double CPU_GHz = 0;
     int taskNumber = 0;
     bool Run = true;
 public:
     // Gets the function pointer, elapse time and start time if applicable
-    void addTask(int, int, void*);
+    void addTask(int, int, void(*)());
 
     // Stops a thread
     void terminateThread();
+
+    // Runs the threads with an infinite loop checking the queue and executing threads
+    void threadRun();
 private:
     // Makes a structure from the passed information
     int createTask();
-    // Runs the threads with an infinite loop checking the queue and executing threads
-    void threadRun();
+
     // Checks queue to see if there is space for any threads
     int assesQueue(Task);
 };

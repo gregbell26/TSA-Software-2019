@@ -71,6 +71,8 @@ private:
 
     void clear();
 
+    void cacheText();
+
     //Pipeline Helper Functions
     bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName, pipelineComponentMap& pipelineMap);
 
@@ -115,6 +117,8 @@ private:
     uint32_t onUpdateErrorCounter = 0;
 
     std::map<std::string, pipelineComponentMap> activePipelines;
+
+    GLuint renderedTextCache = 0;
 
 };
 
