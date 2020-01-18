@@ -1,4 +1,4 @@
-#include "plexiShaders.hpp"
+#include "plexi_shaders.hpp"
 
 namespace Plexi::Shaders {
     std::map<Plexi::Shaders::ShaderLanguage, std::vector<std::string>> RECOGNISED_EXTENSIONS = {

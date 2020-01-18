@@ -12,8 +12,8 @@ set(OPENGL_SOURCE ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.cpp ./PlexiBacke
 set(OPENGL_HEADER ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.hpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGL2DTexture.hpp)
 
 
-set(SOURCE_FILES ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/plexiShaders.cpp PlexiBackend/plexiTexture.cpp)
-set(HEADER_FILES ${OPENGL_HEADER} ./PlexiBackend/acrylic_plexiBackend.hpp ./PlexiBackend/plexiHelper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/plexiShaders.hpp PlexiBackend/plexiBuffer.hpp PlexiBackend/plexiTexture.hpp)
+set(SOURCE_FILES ${OPENGL_SOURCE} acrylic_plexiRenderer.cpp PlexiBackend/plexi_shaders.cpp PlexiBackend/plexi_texture.cpp)
+set(HEADER_FILES ${OPENGL_HEADER} PlexiBackend/plexi_backend.hpp PlexiBackend/plexi_helper.hpp acrylic_plexiRenderer.hpp plexi_usrStructs.hpp acrylic_plexiRenderer_core.hpp PlexiBackend/plexi_shaders.hpp PlexiBackend/plexi_buffer.hpp PlexiBackend/plexi_texture.hpp)
 
 
 

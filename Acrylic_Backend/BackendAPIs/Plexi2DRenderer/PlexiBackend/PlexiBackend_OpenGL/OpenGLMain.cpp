@@ -1,7 +1,7 @@
 #define PLEXI_LIBRARY_ACTIVE
-#include  "../plexiShaders.hpp"
-#include "./../plexiBuffer.hpp"
-#include "./../plexiHelper.hpp"
+#include  "../plexi_shaders.hpp"
+#include "../plexi_buffer.hpp"
+#include "../plexi_helper.hpp"
 
 #include "OpenGL2DTexture.hpp"
 
