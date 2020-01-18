@@ -1,32 +1,46 @@
 //
-// Created by Corbin Estes on 1/14/20.
+// Created by Corbin Estes on 1/17/20.
 //
 
 #ifndef ACRYLIC2D_MOUSEINPUT_HPP
 #define ACRYLIC2D_MOUSEINPUT_HPP
 
-namespace InputSpace::Mouse {
-    template<typename R, typename P>
-    class MouseButtonInput : public Input {
+#include "Input.hpp"
+namespace Inputs::Mouse{
+    GLFWwindow* getWindowRef(GLFWwindow*, int);
+    template <class R>
+    class MouseInput: public Input<R> { //Mouse button functions
     public:
-        MouseButtonInput(int key, bool hold, bool toggle, R (*func)(std::vector<P>));
+        R (*action)(GLFWwindow*, int);
+        trigger key = {};
+        explicit MouseInput(std::vector<MouseInput<GLFWwindow *>> *list);
+        MouseInput(int key, std::vector<MouseInput<GLFWwindow *>> *list);
+        MouseInput(int key, int modifiers, std::vector<MouseInput<GLFWwindow *>> *list);
+        MouseInput(int key, R (*action)(GLFWwindow *, int), std::vector<MouseInput<R>> *list);
+        MouseInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<MouseInput<R>> *list);
 
-        MouseButtonInput(int key, bool toggle, R (*func)(std::vector<P>));
+        void setAction(R (*action)(GLFWwindow *, int));
 
-        MouseButtonInput(int key, R (*func)(std::vector<P>), bool hold);
+//        std::function<R(GLFWwindow*, int)> getAction() const;
 
-        MouseButtonInput(int key, R (*func)(std::vector<P>));
+        InputType getType();
     };
 
-    template<typename R, typename P>
-    class CursorInput : public Input {
+    void logPosition(GLFWwindow* window, double xOff, double yOff);
+    template <class R>
+    class CursorInput: public Input<R> { //Scroll and Cursor move functions
     public:
-        bool mouseButtonHeld;
+        R (*action)(GLFWwindow*, double xOff, double yOff);
+        explicit CursorInput(std::vector<CursorInput<void>> *list);
+        CursorInput(R (*action)(GLFWwindow *, double, double), std::vector<CursorInput<R>> *list);
 
-        explicit CursorInput(R (*func)(std::vector<P>));
+        void setAction(R (*action)(GLFWwindow *, double, double));
 
-        CursorInput(bool mouseButtonHeld, R (*func)(std::vector<P>));
+//        std::function<R(GLFWwindow*, double, double)> getAction() const;
+
+        InputType getType();
     };
 }
+
 
 #endif //ACRYLIC2D_MOUSEINPUT_HPP

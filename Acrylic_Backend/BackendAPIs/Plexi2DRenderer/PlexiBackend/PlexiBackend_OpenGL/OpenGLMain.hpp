@@ -51,6 +51,14 @@ public:
 
     void onUpdate() override;
 
+    void removeTexture() override;
+
+    void removeTexture(uint32_t textureId) override;
+
+    void removeFont() override;
+
+    void removeFont(uint32_t fontId) override;
+
     void cleanup() override;
 
 

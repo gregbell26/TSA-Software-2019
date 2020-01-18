@@ -1,45 +1,54 @@
 //
-// Created by Corbin Estes on 1/14/20.
+// Created by Corbin Estes on 1/17/20.
 //
 
 #include "Input.cpp"
 
 #include "KeyInput.hpp"
-namespace InputSpace::Key {
-    template <typename R, typename P>
-    KeyInput<R, P>::KeyInput(int key, int modifiers, bool hold, bool toggle, R (*func)(std::vector<P>)) {
-        trigger.key = key;
-        trigger.modifiers = modifiers;
-        repeatOnHold = hold;
-        toggle_action = toggle;
-        inputType = InputType::keyIn;
-        action = func;
+namespace Inputs::Key{
+    GLFWwindow* getWindowRef(GLFWwindow* window, int act){
+        return window;
     }
-    template <typename R, typename P>
-    KeyInput<R, P>::KeyInput(int key, int modifiers, R (*func)(std::vector<P>), bool hold) {
-        trigger.key = key;
-        trigger.modifiers = modifiers;
-        repeatOnHold = hold;
-        toggle_action = false;
-        inputType = InputType::keyIn;
-        action = func;
+    template<> KeyInput<GLFWwindow*>::KeyInput(std::vector<KeyInput<GLFWwindow *>> *list){
+        key = {0, 0};
+        action = getWindowRef;
+        list->push_back(*this);
     }
-    template <typename R, typename P>
-    KeyInput<R, P>::KeyInput(int key, int modifiers, bool toggle, R (*func)(std::vector<P>)) {
-        trigger.key = key;
-        trigger.modifiers = modifiers;
-        repeatOnHold = false;
-        toggle_action = toggle;
-        inputType = InputType::keyIn;
-        action = func;
+    template<> KeyInput<GLFWwindow*>::KeyInput(int key, std::vector<KeyInput<GLFWwindow *>> *list){
+        KeyInput::key = {key, 0};
+        action = getWindowRef;
+        list->push_back(*this);
     }
-    template <typename R, typename P>
-    KeyInput<R, P>::KeyInput(int key, int modifiers, R (*func)(std::vector<P>)) {
-        trigger.key = key;
-        trigger.modifiers = modifiers;
-        repeatOnHold = false;
-        toggle_action = false;
-        inputType = InputType::keyIn;
-        action = func;
+    template<> KeyInput<GLFWwindow*>::KeyInput(int key, int modifiers, std::vector<KeyInput<GLFWwindow *>> *list){
+        KeyInput::key = {key, modifiers};
+        action = getWindowRef;
+        list->push_back(*this);
+    }
+    template <class R>
+    KeyInput<R>::KeyInput(int key, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *list){
+        KeyInput::key = {key, 0};
+        KeyInput::action = action;
+        list->push_back(*this);
+    }
+    template <class R>
+    KeyInput<R>::KeyInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *list){
+        KeyInput::key = {key, modifiers};
+        KeyInput::action = action;
+        list->push_back(*this);
+    }
+
+//    template<class R>
+//    std::function<R(GLFWwindow *, int)> KeyInput<R>::getAction() const {
+//        return action;
+//    }
+
+    template<class R>
+    void KeyInput<R>::setAction(R (*func)(GLFWwindow *, int)) {
+        KeyInput::action = func;
+    }
+
+    template<class R>
+    InputType KeyInput<R>::getType(){
+        return InputType::keyPress;
     }
 }

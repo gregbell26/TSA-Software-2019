@@ -37,6 +37,15 @@ namespace Plexi {
 
     void submitScene(const std::vector<TextRenderTask>& tasks);
 
+    void removeTexture (uint32_t textureId);
+
+    void removeTexture();
+
+    void removeFont(uint32_t fontId);
+
+    void removeFont();
+
+
     void setClearColor(const float &r, const float &g, const float &b, const float &a);
 
     void onUpdate();

@@ -1,7 +1,7 @@
 #define PLEXI_LIBRARY_ACTIVE
-#include  "../plexiShaders.hpp"
-#include "./../plexiBuffer.hpp"
-#include "./../plexiHelper.hpp"
+#include  "../plexi_shaders.hpp"
+#include "../plexi_buffer.hpp"
+#include "../plexi_helper.hpp"
 
 #include "OpenGL2DTexture.hpp"
 
@@ -386,56 +386,6 @@ void OpenGL::onUpdate() {
 
 }
 
-void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
-    if(pipelineName == "all"){
-        logInformation("Cleaning up all pipelines...")
-        for(auto& [pipeline, componentMap] : activePipelines){
-            logInformation("\tCleaning up graphics pipeline \'" + pipeline + "\'")
-            glDeleteProgram(componentMap[SHADER_PROGRAM]);
-            componentMap[SHADER_PROGRAM] = 0;
-            glDeleteBuffers(1, &componentMap[VERTEX_BUFFER]);
-            componentMap[VERTEX_BUFFER] = 0;
-            glDeleteBuffers(1, &componentMap[INDEX_BUFFER]);
-            componentMap[INDEX_BUFFER] = 0;
-            glDeleteVertexArrays(1, &componentMap[VERTEX_ARRAY]);
-            componentMap[VERTEX_ARRAY] = 0;
-            componentMap.clear();
-        }
-        activePipelines.clear();
-        return;
-    }
-
-    try {
-        logInformation("Cleaning up graphics pipeline \'" + pipelineName + "\'")
-        pipelineComponentMap &tempMap = activePipelines.at(pipelineName);
-        glDeleteProgram(tempMap[SHADER_PROGRAM]);
-        tempMap[SHADER_PROGRAM] = 0;
-        glDeleteBuffers(1, &tempMap[VERTEX_BUFFER]);
-        tempMap[VERTEX_BUFFER] = 0;
-        glDeleteBuffers(1, &tempMap[INDEX_BUFFER]);
-        tempMap[INDEX_BUFFER] = 0;
-        glDeleteVertexArrays(1, &tempMap[VERTEX_ARRAY]);
-        tempMap[VERTEX_ARRAY] = 0;
-        tempMap.clear();
-    } catch (std::out_of_range& err){
-        logWarning("Pipeline \'" + pipelineName + "\' does not exist. Please check your spelling.")
-        logWarning("Error details: " + std::string() + err.what())
-        return;
-    }
-
-
-
-
-
-}
-
-
-void OpenGL::cleanup() {
-    cleanUpGraphicsPipeline("all");
-    glfwDestroyWindow(glfwWindow);
-
-    glfwTerminate();
-}
 
 void OpenGL::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -500,5 +450,104 @@ uint32_t OpenGL::addFontFace(FT_Face &fontFace, uint32_t charCount) {
 //    cache->fontFaceCache.insert(std::pair<std::string, std::map<GLchar, OpenGL::Character> >(fontFace->family_name, charMap));
 
     return static_cast<uint32_t>(cache->fontFaceCache.size()-1);
+}
+
+
+void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
+    if(pipelineName == "all"){
+        logInformation("Cleaning up all pipelines...")
+        for(auto& [pipeline, componentMap] : activePipelines){
+            logInformation("\tCleaning up graphics pipeline \'" + pipeline + "\'")
+            glDeleteProgram(componentMap[SHADER_PROGRAM]);
+            componentMap[SHADER_PROGRAM] = 0;
+            glDeleteBuffers(1, &componentMap[VERTEX_BUFFER]);
+            componentMap[VERTEX_BUFFER] = 0;
+            glDeleteBuffers(1, &componentMap[INDEX_BUFFER]);
+            componentMap[INDEX_BUFFER] = 0;
+            glDeleteVertexArrays(1, &componentMap[VERTEX_ARRAY]);
+            componentMap[VERTEX_ARRAY] = 0;
+            componentMap.clear();
+        }
+        activePipelines.clear();
+        return;
+    }
+
+    try {
+        logInformation("Cleaning up graphics pipeline \'" + pipelineName + "\'")
+        pipelineComponentMap &tempMap = activePipelines.at(pipelineName);
+        glDeleteProgram(tempMap[SHADER_PROGRAM]);
+        tempMap[SHADER_PROGRAM] = 0;
+        glDeleteBuffers(1, &tempMap[VERTEX_BUFFER]);
+        tempMap[VERTEX_BUFFER] = 0;
+        glDeleteBuffers(1, &tempMap[INDEX_BUFFER]);
+        tempMap[INDEX_BUFFER] = 0;
+        glDeleteVertexArrays(1, &tempMap[VERTEX_ARRAY]);
+        tempMap[VERTEX_ARRAY] = 0;
+        tempMap.clear();
+    } catch (std::out_of_range& err){
+        logWarning("Pipeline \'" + pipelineName + "\' does not exist. Please check your spelling.")
+        logWarning("Error details: " + std::string() + err.what())
+        return;
+    }
 
 }
+
+void OpenGL::removeTexture() {
+
+    for(auto &text : cache->textureCache){
+        delete text;
+    }
+
+    cache->textureCache.clear();
+}
+
+void OpenGL::removeTexture(uint32_t textureId) {
+    try{
+        delete cache->textureCache[textureId];
+
+    } catch (std::out_of_range &err){
+        logWarning("Texture id: " + std::to_string(textureId) + " does not exist")
+    }
+}
+
+void OpenGL::removeFont() {
+    for(auto &fontFace : cache->fontFaceCache) {
+        std::vector<GLuint> chars(fontFace.size());
+        size_t i  = 0;
+        for(auto &[key, item] : fontFace){
+            chars[i] = item.glTextureId;
+        }
+
+        glDeleteTextures(i, chars.data());
+    }
+    cache->fontFaceCache.clear();
+}
+
+void OpenGL::removeFont(uint32_t fontId) {
+    try{
+        std::vector<GLuint> chars(cache->fontFaceCache.at(fontId).size());
+        size_t i  = 0;
+        for(auto &[key, item] : cache->fontFaceCache.at(fontId)){
+            chars[i] = item.glTextureId;
+        }
+
+        glDeleteTextures(i, chars.data());
+
+    } catch (std::out_of_range &err){
+
+        logWarning("Font id: " + std::to_string(fontId) + " does not exist!")
+    }
+}
+
+
+void OpenGL::cleanup() {
+    removeFont();
+    removeTexture();
+
+    cleanUpGraphicsPipeline("all");
+    glfwDestroyWindow(glfwWindow);
+
+    glfwTerminate();
+}
+
+

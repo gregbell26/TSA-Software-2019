@@ -34,11 +34,16 @@ add_subdirectory(./BackendAPIs/Plexi2DRenderer)
 set(CPU_SOURCE BackendAPIs/CPU/TaskScheduler.cpp)
 set(CPU_HEADER BackendAPIs/CPU/TaskScheduler.hpp)
 
-set(USER_INPUT_HEADER UserInput/Input.hpp UserInput/KeyInput.hpp UserInput/MouseInput.hpp UserInput/InputMap.hpp)
-set(USER_INPUT_SOURCE UserInput/Input.cpp UserInput/KeyInput.cpp UserInput/MouseInput.cpp UserInput/InputMap.cpp)
+set(USER_INPUT_HEADER UserInput/Input.hpp UserInput/KeyInput.hpp UserInput/MouseInput.hpp)
+set(USER_INPUT_SOURCE UserInput/Input.cpp UserInput/Inputs.cpp UserInput/KeyInput.cpp UserInput/MouseInput.cpp)
 
+<<<<<<< HEAD
 set(SOURCE_FILES ${CPU_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp frameTimer.cpp)
 set(HEADER_FILES ${CPU_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp Random.cpp Random.h frameTimer.h)
+=======
+set(SOURCE_FILES ${CPU_SOURCE} ${USER_INPUT_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp Random.cpp)
+set(HEADER_FILES ${CPU_HEADER} ${USER_INPUT_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp Random.h)
+>>>>>>> fbe9ad40bde584d68d736b87ccefd77b31b87369
 
 set(TEST_CODE main.nfp.cpp)
 

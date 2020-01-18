@@ -1,9 +1,9 @@
-#include "PlexiBackend/plexiShaders.hpp"
-#include "./PlexiBackend/plexiBuffer.hpp"
-#include "./PlexiBackend/plexiHelper.hpp"
-#include "./PlexiBackend/acrylic_plexiBackend.hpp"
+#include "PlexiBackend/plexi_shaders.hpp"
+#include "PlexiBackend/plexi_buffer.hpp"
+#include "PlexiBackend/plexi_helper.hpp"
+#include "PlexiBackend/plexi_backend.hpp"
 #include "plexi_usrStructs.hpp"
-#include "./PlexiBackend/plexiTexture.hpp"
+#include "PlexiBackend/plexi_texture.hpp"
 
 
 #include "acrylic_plexiRenderer.hpp"
@@ -178,6 +178,22 @@ void Plexi::cleanupPlexi() {
 
 Plexi::PLEXI_GFX_BACKENDS Plexi::getActiveBackend() {
     return activeConfig.activeBackendName;
+}
+
+void Plexi::removeTexture(uint32_t textureId) {
+
+}
+
+void Plexi::removeTexture() {
+
+}
+
+void Plexi::removeFont(uint32_t fontId) {
+
+}
+
+void Plexi::removeFont() {
+
 }
 
 
