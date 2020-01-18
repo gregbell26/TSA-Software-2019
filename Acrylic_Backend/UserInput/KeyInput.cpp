@@ -9,29 +9,29 @@ namespace Inputs::Key{
     GLFWwindow* getWindowRef(GLFWwindow* window, int act){
         return window;
     }
-    template<> KeyInput<GLFWwindow*>::KeyInput(std::vector<Input<GLFWwindow *>> *list){
+    template<> KeyInput<GLFWwindow*>::KeyInput(std::vector<KeyInput<GLFWwindow *>> *list){
         key = {0, 0};
         action = getWindowRef;
         list->push_back(*this);
     }
-    template<> KeyInput<GLFWwindow*>::KeyInput(int key, std::vector<Input<GLFWwindow *>> *list){
+    template<> KeyInput<GLFWwindow*>::KeyInput(int key, std::vector<KeyInput<GLFWwindow *>> *list){
         KeyInput::key = {key, 0};
         action = getWindowRef;
         list->push_back(*this);
     }
-    template<> KeyInput<GLFWwindow*>::KeyInput(int key, int modifiers, std::vector<Input<GLFWwindow *>> *list){
+    template<> KeyInput<GLFWwindow*>::KeyInput(int key, int modifiers, std::vector<KeyInput<GLFWwindow *>> *list){
         KeyInput::key = {key, modifiers};
         action = getWindowRef;
         list->push_back(*this);
     }
     template <class R>
-    KeyInput<R>::KeyInput(int key, R (*action)(GLFWwindow *, int), std::vector<Input<R>> *list){
+    KeyInput<R>::KeyInput(int key, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *list){
         KeyInput::key = {key, 0};
         KeyInput::action = action;
         list->push_back(*this);
     }
     template <class R>
-    KeyInput<R>::KeyInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<Input<R>> *list){
+    KeyInput<R>::KeyInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *list){
         KeyInput::key = {key, modifiers};
         KeyInput::action = action;
         list->push_back(*this);

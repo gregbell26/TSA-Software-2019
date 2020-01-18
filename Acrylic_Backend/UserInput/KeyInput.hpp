@@ -14,11 +14,11 @@ namespace Inputs::Key{
     public:
         R (*action)(GLFWwindow*, int act);
         trigger key = {};
-        explicit KeyInput(std::vector<Input<GLFWwindow *>> *);
-        KeyInput(int key, std::vector<Input<GLFWwindow *>> *);
-        KeyInput(int key, int modifiers, std::vector<Input<GLFWwindow *>> *);
-        KeyInput(int key, R (*action)(GLFWwindow *, int), std::vector<Input<R>> *);
-        KeyInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<Input<R>> *);
+        explicit KeyInput(std::vector<KeyInput<GLFWwindow *>> *);
+        KeyInput(int key, std::vector<KeyInput<GLFWwindow *>> *);
+        KeyInput(int key, int modifiers, std::vector<KeyInput<GLFWwindow *>> *);
+        KeyInput(int key, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *);
+        KeyInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *);
 
         void setAction(R (*action)(GLFWwindow *, int));
 
