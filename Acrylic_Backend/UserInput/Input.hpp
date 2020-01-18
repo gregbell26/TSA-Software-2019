@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include <functional>
 #include "../BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 
 namespace Inputs{
