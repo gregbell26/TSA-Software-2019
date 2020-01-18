@@ -1,5 +1,6 @@
 #include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
+#include "./frameTimer.h"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
@@ -47,7 +48,24 @@ TextRenderTask txtObj3 {
 
 
 
+//using namespace A2D::Filesystem::Loaders::Json;
+//using namespace A2D::Filesystem::Loaders;
+
 int main(){
+//    auto j = interpretJson(readFile("test1.json"));
+//    auto j2 = interpretJson("");
+//    std::cout << j.smap.at("str") << std::endl;
+//    std::cout << j.imap.at("int") << std::endl;
+//    std::cout << j.fmap.at("flo") << std::endl;
+//    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
+//    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
+
+//    return 0;
+
+    Timer::frameTimer timer;
+    timer.startTimer();
+    unsigned frames = 0;
+
     initLogger("A2D", log_severity_information, log_mode_all)
     Plexi::PlexiConfig plexiConfig = {};
     plexiConfig.preferredGraphicsBackend = Plexi::PLEXI_GFX_BACKENDS::PLEXI_OPENGL;
@@ -119,8 +137,13 @@ int main(){
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();
+        frames++;
     }
 
     Plexi::cleanupPlexi();
+
+    logInformation(std::to_string(timer.getTime())+"s have elapsed")
+    logInformation("average FPS: " + std::to_string(timer.getFPS(frames)))
+
     endLogger()
 }
