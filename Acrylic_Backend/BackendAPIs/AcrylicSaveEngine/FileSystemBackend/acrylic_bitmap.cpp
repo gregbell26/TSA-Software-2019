@@ -1,4 +1,6 @@
 #include "acrylic_bitmap.h"
+#include "../../Plexi2DRenderer/plexi_usrStructs.hpp"
+#include "../../Plexi2DRenderer/PlexiBackend/plexi_texture.cpp"
 //
 // Created by coolh on 11/6/2019.
 //
@@ -55,7 +57,7 @@ namespace A2D::Filesystem::ImageLoaders::Bitmaps {
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
 A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
     logInformation("58 Image Start Loading")
-    std::ifstream is(FileName, std::ifstream::binary);
+        std::ifstream is(FileName, std::ifstream::binary);
     if (is) {
         // get length of file:
         is.seekg(0, is.end);
@@ -64,7 +66,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
         is.seekg(0, is.beg);
 
         char* buffer = new char[length];
-//        std::string m = "Reading " + length;//bc you can oly add strings once
+        //        std::string m = "Reading " + length;//bc you can oly add strings once
         logInformation("69 Reading" + std::to_string(length) + " characters... ")
             // read data as a block:
             is.read(buffer, length);
@@ -74,43 +76,44 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
         }
         else
         {
-//            std::string m = "error: only " + is.gcount();//bc you can oly add strings once
-            logError("79 Only "+ std::to_string(is.gcount()) + " characters could be read")
+            //            std::string m = "error: only " + is.gcount();//bc you can oly add strings once
+            logError("79 Only " + std::to_string(is.gcount()) + " characters could be read")
         }
         is.close();
-        
+
         logInformation("83 Length: " + std::to_string(length))
 
-        int *bff2 = new int[length];
+            int* bff2 = new int[length];
 
         for (int i = 0; i < length; i++) {
             unsigned char v = buffer[i];
             if (v == '\0') {
                 bff2[i] = 0;
-            } else {
-                bff2[i] = (int) v;
+            }
+            else {
+                bff2[i] = (int)v;
             }
         }
         logInformation("95 Extracting header information")
-        int offset;
-        try{
-        offset = bff2[10];
-        height = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
-        width = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
-        bytes = bff2[28] / 8;
+            int offset;
+        try {
+            offset = bff2[10];
+            height = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
+            width = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
+            bytes = bff2[28] / 8;
         }
-        catch (std::out_of_range){
-//            logError("File smaller then expected header length")
+        catch (std::out_of_range) {
+            //            logError("File smaller then expected header length")
             logError("105 Invalid header data.")
-            return;
+                return;
         }
 
         length = height * width * bytes;
-//        m = "";
-//        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
-        logInformation("112 Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " +std::to_string(width))
+        //        m = "";
+        //        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
+        logInformation("112 Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " + std::to_string(width))
 
-        imageData = new unsigned char[length]();
+            imageData = new unsigned char[length]();
 
         for (int i = offset; i < length; i++) {
             imageData[i - offset] = bff2[i];
@@ -126,9 +129,83 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
     {
         logWarning("128 File \'" + FileName + "\' not found. Returning default image")
             logWarning("129 Default image not implemented returning null image instead.")
-        logWarning("130 "+std::filesystem::current_path().string())
+            logWarning("130 " + std::filesystem::current_path().string())
             Default();
     }
+}
+
+A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(std::string DirectFile) {
+    logInformation("58 Image Start Loading")
+        // get length of file:
+        //                int length = is.tellg();
+        length = DirectFile.length;
+
+        char* buffer = new char[length];
+        //        std::string m = "Reading " + length;//bc you can oly add strings once
+        logInformation("69 Reading" + std::to_string(length) + " characters... ")
+            // read data as a block:
+            buffer = const_cast<char*>(DirectFile.c_str());
+
+        logInformation("83 Length: " + std::to_string(length))
+
+            int* bff2 = new int[length];
+
+        for (int i = 0; i < length; i++) {
+            unsigned char v = buffer[i];
+            if (v == '\0') {
+                bff2[i] = 0;
+            }
+            else {
+                bff2[i] = (int)v;
+            }
+        }
+        logInformation("95 Extracting header information")
+            int offset;
+        try {
+            offset = bff2[10];
+            height = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
+            width = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
+            bytes = bff2[28] / 8;
+        }
+        catch (std::out_of_range) {
+            //            logError("File smaller then expected header length")
+            logError("105 Invalid header data.")
+                return;
+        }
+
+        length = height * width * bytes;
+        //        m = "";
+        //        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
+        logInformation("112 Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " + std::to_string(width))
+
+            imageData = new unsigned char[length]();
+
+        for (int i = offset; i < length; i++) {
+            imageData[i - offset] = bff2[i];
+        }
+        // ...buffer contains the entire file...
+
+        delete[] bff2;
+        delete[] buffer;
+        logInformation("123 Image Loaded");
+        return;
+        //logWarning("128 File \'" + FileName + "\' not found. Returning default image")
+        //    logWarning("129 Default image not implemented returning null image instead.")
+        //    logWarning("130 " + std::filesystem::current_path().string())
+        //    Default();
+    
+}
+
+uint32_t A2D::Filesystem::ImageLoaders::Bitmaps::Image::Convert() 
+{
+    Plexi::TextureCreateInfo doginfo = {};
+    doginfo.height = height;
+    doginfo.width = width;
+    doginfo.channelCount = bytes;
+    doginfo.dataSize = length;
+    doginfo.textureData.usingGenericType = false;
+    doginfo.textureData.dataType.image = imageData;
+    uint32_t dogtexture = Plexi::Texture::create2DTexture(doginfo, Plexi::getActiveBackend());
 }
 
 void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Default() 

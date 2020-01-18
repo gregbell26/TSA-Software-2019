@@ -112,7 +112,7 @@ int main(){
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
 
-    auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
+    auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image(A2D::Filesystem::Loaders::readFile("./textures/dog.bmp"));
     Plexi::TextureCreateInfo doginfo = {};
     doginfo.height = DogImage->height;
     doginfo.width = DogImage->width;
