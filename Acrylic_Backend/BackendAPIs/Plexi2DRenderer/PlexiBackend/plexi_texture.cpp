@@ -1,10 +1,10 @@
-#include "plexiShaders.hpp"
-#include "plexiBuffer.hpp"
-#include "plexiHelper.hpp"
-#include "acrylic_plexiBackend.hpp"
+#include "plexi_shaders.hpp"
+#include "plexi_buffer.hpp"
+#include "plexi_helper.hpp"
+#include "plexi_backend.hpp"
 #include "./../plexi_usrStructs.hpp"
 
-#include "plexiTexture.hpp"
+#include "plexi_texture.hpp"
 
 
 uint32_t Plexi::Texture::create2DTexture(Plexi::TextureCreateInfo &createInfo, const Plexi::PLEXI_GFX_BACKENDS &backendToUse) {

@@ -1,8 +1,8 @@
 //Dependencies
 //#include "./../../plexi_usrStructs.hpp"
-#include "../plexiShaders.hpp"
-#include "../plexiBuffer.hpp"
-#include "../plexiHelper.hpp"
+#include "../plexi_shaders.hpp"
+#include "../plexi_buffer.hpp"
+#include "../plexi_helper.hpp"
 
 #include "vulkanMain.hpp"
 

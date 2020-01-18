@@ -11,6 +11,9 @@ namespace Inputs::Key{
 
     template <class R>
     class KeyInput: public Input<R> {
+namespace InputSpace::Key{
+    template <typename R, typename P>
+    class KeyInput : public Input {
     public:
         R (*action)(GLFWwindow*, int act);
         trigger key = {};

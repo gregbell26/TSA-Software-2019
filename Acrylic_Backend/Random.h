@@ -37,6 +37,8 @@
 #include <cstdlib>
 #include <tuple>
 #include <glm/glm.hpp>
+#include <random>
+
 namespace A2D::Random {
 
     class Random {
@@ -52,6 +54,6 @@ namespace A2D::Random {
         static glm::vec3 HSVtoRGB(glm::vec3 hsv);
     };
 
-    glm::vec3 ranRGB();
+//    glm::vec3 ranRGB();
 }
 #endif

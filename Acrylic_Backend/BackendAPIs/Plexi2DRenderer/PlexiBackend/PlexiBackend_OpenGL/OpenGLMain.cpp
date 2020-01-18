@@ -1,7 +1,7 @@
 #define PLEXI_LIBRARY_ACTIVE
-#include  "../plexiShaders.hpp"
-#include "./../plexiBuffer.hpp"
-#include "./../plexiHelper.hpp"
+#include  "../plexi_shaders.hpp"
+#include "../plexi_buffer.hpp"
+#include "../plexi_helper.hpp"
 
 #include "OpenGL2DTexture.hpp"
 
@@ -65,6 +65,7 @@ bool OpenGL::createWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     glfwSetErrorCallback(glfwErrorCallBack);
 
@@ -112,10 +113,12 @@ bool OpenGL::isSupported() {
 
 
 bool OpenGL::initBackend() {
-    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_BLEND);
+
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
 
 
     return true;
@@ -336,7 +339,7 @@ void OpenGL::onUpdate() {
     if(!cache->textRenderTasksCache.empty()){
         for(const auto& txtRenderTask : cache->textRenderTasksCache){
             glUseProgram(activePipelines[txtRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
-            setMat4(txtRenderTask.graphicsPipelineName, "viewProjection", glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, -1.0f, 1.0f));
+            setMat4(txtRenderTask.graphicsPipelineName, "viewProjection", glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -1.0f, 1.0f));
             auto &fontFace = cache->fontFaceCache[txtRenderTask.fontName];
 
             setFloat4(txtRenderTask.graphicsPipelineName, "color", txtRenderTask.RGBAColor);
@@ -347,9 +350,9 @@ void OpenGL::onUpdate() {
 
             for(i = txtRenderTask.text.begin(); i != txtRenderTask.text.end(); i++){
                 auto activeChar = fontFace[*i];
-                float xPos = nextCharLoc + activeChar.bearing.x * txtRenderTask.scale;
-                float yPos =  txtRenderTask.position.y  - (txtRenderTask.position.y - activeChar.bearing.x) * txtRenderTask.scale;
-                float width = activeChar.size.x * txtRenderTask.scale;
+                float xPos = (nextCharLoc + activeChar.bearing.x * txtRenderTask.scale)/1.5f;
+                float yPos =  txtRenderTask.position.y - (activeChar.size.y - activeChar.bearing.y) * txtRenderTask.scale;
+                float width = (activeChar.size.x/1.5f) * txtRenderTask.scale;
                 float height = activeChar.size.y * txtRenderTask.scale;
 
                 float newVertexBuffer[6][4] {

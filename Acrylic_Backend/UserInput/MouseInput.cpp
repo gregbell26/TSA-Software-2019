@@ -2,6 +2,8 @@
 // Created by Corbin Estes on 1/17/20.
 //
 
+#include "Input.cpp"
+
 #include "MouseInput.hpp"
 namespace Inputs::Mouse{
     GLFWwindow* getWindowRef(GLFWwindow* window, int act){
