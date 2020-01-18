@@ -8,6 +8,15 @@
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
 
+StandardRenderTask Obj7 = {
+        "plexi_default_primative",
+        {1.f,1.f,1.f,1.f},
+        {0.f,.0f,-.1f},
+        {5.0f,5.00f},
+        1,
+        nullptr
+};
+
 TextRenderTask txtObj1 = {
         "plexi_default_text",
         "the quick brown fox jumped over the lazy dog",
@@ -86,6 +95,16 @@ int main(){
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
 
+    auto DogImage = A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
+    Plexi::TextureCreateInfo doginfo = {};
+    doginfo.channelCount = DogImage.bytes;
+    doginfo.height = DogImage.height;
+    doginfo.width = DogImage.width;
+    doginfo.dataSize = DogImage.length;
+    doginfo.textureData.usingGenericType = false;
+    doginfo.textureData.dataType.image = DogImage.imageData;
+    uint32_t dogtexture = Plexi::Texture::create2DTexture(doginfo,Plexi::getActiveBackend());
+    Obj7.textureIds = &dogtexture;
 
     A2D::Filesystem::Loaders::Font::Font newFont;
     newFont.createNewFont("./fonts/OpenSans-Light.ttf", 48);
@@ -96,6 +115,7 @@ int main(){
     newFont.cleanUp();
 
     Plexi::submitScene({txtObj1, txtObj2, txtObj3});
+    Plexi::submitScene({Obj7});
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();
