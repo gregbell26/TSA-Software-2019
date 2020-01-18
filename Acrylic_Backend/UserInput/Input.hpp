@@ -7,13 +7,13 @@
 
 #include <iostream>
 #include <GLFW/glfw3.h>
-#include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
+#include "../BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 
 namespace Inputs{
     struct trigger {
         int key;
         int modifiers;
-    }
+    };
     enum InputType {
         none,
         cursorMove,

@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 #set(VULKAN_SOURCE PlexiBackend/PlexiBackend_Vulkan/vulkanMain.cpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/Creators/GraphicsPiplines.cpp)
 #set(VULKAN_HEADER PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/queueFamilies.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/swapChains.hpp PlexiBackend/PlexiBackend_Vulkan/VulkanHelpers/validationLayers.hpp)
 
-set(OPENGL_SOURCE ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.cpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGLShader.cpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGL2DTexture.cpp)
+set(OPENGL_SOURCE ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.cpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGLShader.cpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGL2DTexture.cpp ./PlexiBackend/PlexiBackend_OpenGL/openGL_cleaners.cpp)
 set(OPENGL_HEADER ./PlexiBackend/PlexiBackend_OpenGL/OpenGLMain.hpp ./PlexiBackend/PlexiBackend_OpenGL/OpenGL2DTexture.hpp)
 
 

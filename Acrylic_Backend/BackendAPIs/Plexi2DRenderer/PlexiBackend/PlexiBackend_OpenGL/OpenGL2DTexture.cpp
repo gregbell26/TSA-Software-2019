@@ -46,6 +46,8 @@ void OpenGL2DTexture::createTexture(const PlexiTextureData& data, uint32_t size,
 
 void OpenGL2DTexture::bind(uint32_t textureSlot) {
     //todo add texture slotting
+
+    glActiveTexture(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, glId);
 
     glTexImage2D(GL_TEXTURE_2D,

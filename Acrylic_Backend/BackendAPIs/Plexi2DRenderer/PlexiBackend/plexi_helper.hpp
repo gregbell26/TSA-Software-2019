@@ -127,16 +127,20 @@ public:
 
     }
 
+    virtual void removeTexture() = 0;
+
+    virtual void removeTexture(uint32_t textureId) = 0;
+
+    virtual void removeFont() = 0;
+
+    virtual void removeFont(uint32_t fontId) = 0;
+
     virtual void cleanup() = 0;
 
 
     virtual GLFWwindow* getWindowRef(){
         return nullptr;
     }
-
-};
-
-class PlexiBuffer {
 
 };
 

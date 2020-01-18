@@ -180,4 +180,20 @@ Plexi::PLEXI_GFX_BACKENDS Plexi::getActiveBackend() {
     return activeConfig.activeBackendName;
 }
 
+void Plexi::removeTexture(uint32_t textureId) {
+
+}
+
+void Plexi::removeTexture() {
+
+}
+
+void Plexi::removeFont(uint32_t fontId) {
+
+}
+
+void Plexi::removeFont() {
+
+}
+
 

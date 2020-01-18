@@ -10,9 +10,9 @@ namespace Inputs {
     std::vector<Input<T>> inputList;
     template <typename T>
     T runKey(GLFWwindow* window, int key, int scancode, int action, int mods){
-        for (int i = 0; i<inputList.size(); i++){
-            if (inputList.at(i).getType() == keyPress){
-                Key::KeyInput<T> element = inputList.at(i);
+        for (int i = 0; i< inputList<T>.size(); i++){
+            if (inputList<T>.at(i).getType() == keyPress){
+                Key::KeyInput<T> element = inputList<T>.at(i);
                 if (element.key.key == key){
                     if (element.key.modifiers == mods){
                         return element.action(Plexi::getWindowRef(), action);
