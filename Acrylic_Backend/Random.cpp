@@ -7,7 +7,7 @@
     std::default_random_engine generator;
     std::uniform_int_distribution <int> distribution(0,256);
     std::uniform_int_distribution <int> distribute(0,99);
-
+    std::uniform_int_distribution <int> distrib(0,359);
 
     glm::vec3 A2D::Random::Random::ranRGB()
     {
@@ -16,7 +16,7 @@
 
     glm::vec3 A2D::Random::Random::ranHSV()
     {
-        return glm::vec3(distribute(generator), distribute(generator), distribute(generator));
+        return glm::vec3(distrib(generator), distribute(generator), distribute(generator));
     }
 
 glm::vec3 A2D::Random::Random::RGBtoHSV(glm::vec3 rgb) {
