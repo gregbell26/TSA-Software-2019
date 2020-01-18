@@ -37,10 +37,10 @@ namespace Inputs::Key{
         list->push_back(*this);
     }
 
-    template<class R>
-    std::function<R(GLFWwindow *, int)> KeyInput<R>::getAction() const {
-        return action;
-    }
+//    template<class R>
+//    std::function<R(GLFWwindow *, int)> KeyInput<R>::getAction() const {
+//        return action;
+//    }
 
     template<class R>
     void KeyInput<R>::setAction(R (*func)(GLFWwindow *, int)) {

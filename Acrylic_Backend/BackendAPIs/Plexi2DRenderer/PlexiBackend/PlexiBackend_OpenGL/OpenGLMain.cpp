@@ -532,7 +532,7 @@ void OpenGL::removeFont(uint32_t fontId) {
         }
 
         glDeleteTextures(i, chars.data());
-        
+
     } catch (std::out_of_range &err){
 
         logWarning("Font id: " + std::to_string(fontId) + " does not exist!")

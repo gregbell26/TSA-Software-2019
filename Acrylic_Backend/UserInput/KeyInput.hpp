@@ -22,7 +22,7 @@ namespace Inputs::Key{
 
         void setAction(R (*action)(GLFWwindow *, int));
 
-        std::function<R(GLFWwindow*, int)> getAction() const;
+//        std::function<R(GLFWwindow*, int)> getAction() const;
 
         InputType getType();
     };
