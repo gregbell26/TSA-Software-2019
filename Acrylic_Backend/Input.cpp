@@ -1,58 +1,71 @@
 //
-// Created by Corbin Estes on 12/11/19.
+// Created by Corbin Estes on 1/17/20.
 //
-
 #include "Input.hpp"
-#include "InputMap.hpp"
+namespace Inputs{
 
-namespace InputSpace {
-
-    Input::Input() {
-        trigger.key = 0;
-        trigger.modifiers = 0;
-        repeatOnHold = false;
-        toggle_action = false;
+    GLFWwindow* getWindowRef(GLFWwindow* window){
+        return window;
     }
-    Input::Input(int key, int modifiers, bool hold, bool toggle, Returns (*func)(GLFWwindow *)){
-        trigger.key = key;
-        for (int i = 0; i < 3; ++i) {
-            trigger.modifiers = modifiers;
-        }
-        repeatOnHold = hold;
-        toggle_action = toggle;
-        action = func;
+    template <>Input<GLFWwindow *>::Input(){
+        Input::key = {0, 0};
+        Input::action = getWindowRef;
+        type = none;
     }
-
-
-    Input::Input(int key, int modifiers, Returns (*func)(GLFWwindow *), bool hold){
-        trigger.key = key;
-        for (int i = 0; i < 3; ++i) {
-            trigger.modifiers = modifiers;
-        }
-        repeatOnHold = hold;
-        toggle_action = false;
-        action = func;
+    template <>Input<GLFWwindow *>::Input(std::vector<Input<GLFWwindow *>> *list, InputType type){
+        Input::key = {0, 0};
+        Input::action = getWindowRef;
+        list->push_back(*this);
+        Input::type = type;
     }
-    Input::Input(int key, int modifiers, bool toggle, Returns (*func)(GLFWwindow *)){
-        trigger.key = key;
-        for (int i = 0; i < 3; ++i) {
-            trigger.modifiers = modifiers;
-        }
-        repeatOnHold = false;
-        toggle_action = toggle;
-        action = func;
+    template <>Input<GLFWwindow *>::Input(int key, std::vector<Input<GLFWwindow *>> *list, InputType type){
+        Input::key = {key, 0};
+        Input::action = getWindowRef;
+        list->push_back(*this);
+        Input::type = type;
     }
-
-
-    Input::Input(int key, int modifiers, Returns (*func)(GLFWwindow *)){
-        trigger.key = key;
-        for (int i = 0; i < 3; ++i) {
-            trigger.modifiers = modifiers;
-        }
-        repeatOnHold = false;
-        toggle_action = false;
-        action = func;
+    template <class R>
+    Input<R>::Input(int key, int modifiers, std::vector<Input<R>> *list, InputType type){
+        Input::key = {key, modifiers};
+        Input::action = getWindowRef;
+        list->push_back(*this);
+        Input::type = type;
+    }
+    template <class R>
+    Input<R>::Input(int key, R (*action)(GLFWwindow *), std::vector<Input<R>> *list, InputType type){
+        Input::key = {key, 0};
+        Input::action = action;
+        list->push_back(*this);
+        Input::type = type;
+    }
+    template <class R>
+    Input<R>::Input(int key, int modifiers, R (*action)(GLFWwindow *), std::vector<Input<R>> *list, InputType type){
+        Input::key = {key, modifiers};
+        Input::action = action;
+        list->push_back(*this);
+        Input::type = type;
     }
 
+    template<class R>
+    void Input<R>::setKey(const trigger &key) {
+        Input::key = key;
+    }
+    template<class R>
+    void Input<R>::setAction(R (*func)(GLFWwindow *)) {
+        Input::action = func;
+    }
 
+    template<class R>
+    const trigger &Input<R>::getKey() const {
+        return key;
+    }
+    template<class R>
+    std::function<R(GLFWwindow *)> Input<R>::getAction() const {
+        return action;
+    }
+
+    template<class R>
+    InputType Input<R>::getType(){
+        return type;
+    }
 }

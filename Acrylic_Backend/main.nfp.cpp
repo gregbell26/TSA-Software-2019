@@ -1,8 +1,6 @@
 #include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
-#include "Input.cpp"
-#include "UserInput.cpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
 #include <ths/log.hpp>
