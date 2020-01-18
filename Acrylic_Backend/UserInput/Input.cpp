@@ -24,8 +24,7 @@ namespace Inputs{
         list->push_back(*this);
         Input::type = type;
     }
-    template <class R>
-    Input<R>::Input(int key, int modifiers, std::vector<Input<R>> *list, InputType type){
+    template <>Input<GLFWwindow*>::Input(int key, int modifiers, std::vector<Input<GLFWwindow*>> *list, InputType type){
         Input::key = {key, modifiers};
         Input::action = getWindowRef;
         list->push_back(*this);
