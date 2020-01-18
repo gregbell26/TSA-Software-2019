@@ -37,10 +37,10 @@ namespace Inputs::Mouse{
         list->push_back(*this);
     }
 
-    template <class R>
-    std::function<R(GLFWwindow *, int)> MouseInput<R>::getAction() const {
-        return action;
-    }
+//    template <class R>
+//    std::function<R(GLFWwindow *, int)> MouseInput<R>::getAction() const {
+//        return action;
+//    }
 
     template<class R>
     void MouseInput<R>::setAction(R (*func)(GLFWwindow *, int)) {
@@ -72,10 +72,10 @@ namespace Inputs::Mouse{
         list->push_back(*this);
     }
 
-    template <class R>
-    std::function<R(GLFWwindow *, double, double)> CursorInput<R>::getAction() const {
-        return action;
-    }
+//    template <class R>
+//    std::function<R(GLFWwindow *, double, double)> CursorInput<R>::getAction() const {
+//        return action;
+//    }
 
     template<class R>
     void CursorInput<R>::setAction(R (*func)(GLFWwindow *, double, double)) {

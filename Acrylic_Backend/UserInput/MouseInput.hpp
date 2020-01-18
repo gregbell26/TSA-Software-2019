@@ -21,7 +21,7 @@ namespace Inputs::Mouse{
 
         void setAction(R (*action)(GLFWwindow *, int));
 
-        std::function<R(GLFWwindow*, int)> getAction() const;
+//        std::function<R(GLFWwindow*, int)> getAction() const;
 
         InputType getType();
     };
@@ -36,7 +36,7 @@ namespace Inputs::Mouse{
 
         void setAction(R (*action)(GLFWwindow *, double, double));
 
-        std::function<R(GLFWwindow*, double, double)> getAction() const;
+//        std::function<R(GLFWwindow*, double, double)> getAction() const;
 
         InputType getType();
     };
