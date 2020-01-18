@@ -9,29 +9,29 @@ namespace Inputs::Mouse{
     GLFWwindow* getWindowRef(GLFWwindow* window, int act){
         return window;
     }
-    template<> MouseInput<GLFWwindow *>::MouseInput(std::vector<Input<GLFWwindow *>> *list){
+    template<> MouseInput<GLFWwindow *>::MouseInput(std::vector<MouseInput<GLFWwindow *>> *list){
         key = {0, 0};
         action = getWindowRef;
         list->push_back(*this);
     }
-    template<> MouseInput<GLFWwindow*>::MouseInput(int key, std::vector<Input<GLFWwindow *>> *list){
+    template<> MouseInput<GLFWwindow*>::MouseInput(int key, std::vector<MouseInput<GLFWwindow *>> *list){
         MouseInput::key = {key, 0};
         action = getWindowRef;
         list->push_back(*this);
     }
-    template<> MouseInput<GLFWwindow*>::MouseInput(int key, int modifiers, std::vector<Input<GLFWwindow *>> *list){
+    template<> MouseInput<GLFWwindow*>::MouseInput(int key, int modifiers, std::vector<MouseInput<GLFWwindow *>> *list){
         MouseInput::key = {key, modifiers};
         action = getWindowRef;
         list->push_back(*this);
     }
     template <class R>
-    MouseInput<R>::MouseInput(int key, R (*action)(GLFWwindow *, int), std::vector<Input<R>> *list){
+    MouseInput<R>::MouseInput(int key, R (*action)(GLFWwindow *, int), std::vector<MouseInput<R>> *list){
         MouseInput::key = {key, 0};
         MouseInput::action = action;
         list->push_back(*this);
     }
     template <class R>
-    MouseInput<R>::MouseInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<Input<R>> *list){
+    MouseInput<R>::MouseInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<MouseInput<R>> *list){
         MouseInput::key = {key, modifiers};
         MouseInput::action = action;
         list->push_back(*this);
@@ -62,12 +62,12 @@ namespace Inputs::Mouse{
         logInformation(x)
         logInformation(y)
     }
-    template<> CursorInput<void>::CursorInput(std::vector<Input<void>> *list){
+    template<> CursorInput<void>::CursorInput(std::vector<CursorInput<void>> *list){
         action = logPosition;
         list->push_back(*this);
     }
     template <class R>
-    CursorInput<R>::CursorInput(R (*action)(GLFWwindow *, double, double), std::vector<Input<R>> *list){
+    CursorInput<R>::CursorInput(R (*action)(GLFWwindow *, double, double), std::vector<CursorInput<R>> *list){
         CursorInput::action = action;
         list->push_back(*this);
     }
