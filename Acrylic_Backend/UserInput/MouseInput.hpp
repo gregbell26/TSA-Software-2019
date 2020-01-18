@@ -5,7 +5,7 @@
 #ifndef ACRYLIC2D_MOUSEINPUT_HPP
 #define ACRYLIC2D_MOUSEINPUT_HPP
 
-#include "Input.cpp"
+#include "Input.hpp"
 namespace Inputs::Mouse{
     GLFWwindow* getWindowRef(GLFWwindow*, int);
     template <class R>

@@ -5,15 +5,12 @@
 #ifndef ACRYLIC2D_KEYINPUT_HPP
 #define ACRYLIC2D_KEYINPUT_HPP
 
-#include "Input.cpp"
+#include "Input.hpp"
 namespace Inputs::Key{
     GLFWwindow* getWindowRef(GLFWwindow*, int);
 
     template <class R>
     class KeyInput: public Input<R> {
-namespace InputSpace::Key{
-    template <typename R, typename P>
-    class KeyInput : public Input {
     public:
         R (*action)(GLFWwindow*, int act);
         trigger key = {};

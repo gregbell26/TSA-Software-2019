@@ -14,19 +14,6 @@ namespace Inputs{
         int key;
         int modifiers;
     }
-namespace InputSpace {
-    union Returns {
-        char str[100]{};
-        int integer;
-        float decimal;
-        double Double;
-        char character;
-
-        explicit Returns(int i);
-        explicit Returns(double d);
-        explicit Returns(bool b);
-    };
-
     enum InputType {
         none,
         cursorMove,
@@ -56,9 +43,6 @@ namespace InputSpace {
         virtual std::function<R(GLFWwindow*)> getAction() const;
 
         virtual InputType getType();
-        Input(int key, int modifiers, bool hold, bool toggle, Returns (*func)(GLFWwindow *));
-        Input(int key, int modifiers, bool toggle, Returns (*func)(GLFWwindow *));
-        Input(int key, int modifiers, Returns (*func)(GLFWwindow *));
     };
 }
 
