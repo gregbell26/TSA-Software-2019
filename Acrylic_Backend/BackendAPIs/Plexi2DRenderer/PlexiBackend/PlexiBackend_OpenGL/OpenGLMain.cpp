@@ -268,7 +268,7 @@ void OpenGL::submitScene(const std::vector<StandardRenderTask>& standardRenderTa
 void OpenGL::cacheText() {
     GLuint textFrameBuffer = 0;
     glGenFramebuffers(1, &textFrameBuffer);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, textFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER_EXT, textFrameBuffer);
     GLenum fuckyou;
     while ((fuckyou = glGetError()) != GL_NO_ERROR){
         std::cout << fuckyou << std::endl;
@@ -283,7 +283,7 @@ void OpenGL::cacheText() {
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTextCache, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTextCache, 0);
 
     while ((fuckyou = glGetError()) != GL_NO_ERROR){
         std::cout << fuckyou << std::endl;
@@ -298,25 +298,25 @@ void OpenGL::cacheText() {
         std::cout << fuckyou << std::endl;
     }
     ;
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glBindRenderbuffer(GL_RENDERBUFFER_EXT, 0);
 
     while ((fuckyou = glGetError()) != GL_NO_ERROR){
         std::cout << fuckyou << std::endl;
     }
 
-    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 
     while ((fuckyou = glGetError()) != GL_NO_ERROR){
         std::cout << fuckyou << std::endl;
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
 
     if(glCheckFramebufferStatus(textFrameBuffer) != GL_FRAMEBUFFER_COMPLETE){
         while ((fuckyou = glGetError()) != GL_NO_ERROR){
             std::cout << fuckyou << std::endl;
         }
         logWarning("Failed to create frame buffer for text caching")
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
         glDeleteFramebuffers(1, &textFrameBuffer);
         glDeleteRenderbuffers(1, &depthRenderBuffer);
         glDeleteTextures(1, &renderedTextCache);
