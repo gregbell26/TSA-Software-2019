@@ -31,11 +31,13 @@ public:
 
     // Stops a thread
     void terminateThread();
+
+    // Runs the threads with an infinite loop checking the queue and executing threads
+    void threadRun();
 private:
     // Makes a structure from the passed information
     int createTask();
-    // Runs the threads with an infinite loop checking the queue and executing threads
-    void threadRun();
+
     // Checks queue to see if there is space for any threads
     int assesQueue(Task);
 };
