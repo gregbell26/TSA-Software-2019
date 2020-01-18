@@ -10,10 +10,10 @@
 #include "glm/gtx/string_cast.hpp"
 
 StandardRenderTask Obj7 = {
-        "plexi_default_primative",
-        {1.f,1.f,1.f,1.f},
-        {0.f,.0f,-.1f},
-        {5.0f,5.00f},
+        "plexi_default_primitive",
+        {1.0f,1.0f,1.0f,1.0f},
+        {1.0f,1.0f,-0.1f},
+        {2.0f,2.0f},
         1,
         nullptr
 };
@@ -112,16 +112,17 @@ int main(){
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
 
-    auto DogImage = A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
+    auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
     Plexi::TextureCreateInfo doginfo = {};
-    doginfo.channelCount = DogImage.bytes;
-    doginfo.height = DogImage.height;
-    doginfo.width = DogImage.width;
-    doginfo.dataSize = DogImage.length;
+    doginfo.height = DogImage->height;
+    doginfo.width = DogImage->width;
+    doginfo.channelCount = DogImage->bytes;
+    doginfo.dataSize = DogImage->length;
     doginfo.textureData.usingGenericType = false;
-    doginfo.textureData.dataType.image = DogImage.imageData;
-    uint32_t dogtexture = Plexi::Texture::create2DTexture(doginfo,Plexi::getActiveBackend());
+    doginfo.textureData.dataType.image = DogImage->imageData;
+    uint32_t dogtexture = Plexi::Texture::create2DTexture(doginfo, Plexi::getActiveBackend());
     Obj7.textureIds = &dogtexture;
+    delete DogImage;
 
     A2D::Filesystem::Loaders::Font::Font newFont;
     newFont.createNewFont("./fonts/OpenSans-Light.ttf", 48);
