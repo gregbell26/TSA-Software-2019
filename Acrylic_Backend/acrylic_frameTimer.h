@@ -2,8 +2,8 @@
 // Created by jimmy on 1/18/2020.
 //
 
-#ifndef ACRYLIC2D_PLSXIFRAMETIMER_H
-#define ACRYLIC2D_PLSXIFRAMETIMER_H
+#ifndef ACRYLIC2D_PLEXIFRAMETIMER_H
+#define ACRYLIC2D_PLEXIFRAMETIMER_H
 
 #include <chrono>
 
@@ -33,4 +33,4 @@ namespace Timer{
     };
 }
 
-#endif //ACRYLIC2D_PLSXIFRAMETIMER_H
+#endif //ACRYLIC2D_PLEXIFRAMETIMER_H
