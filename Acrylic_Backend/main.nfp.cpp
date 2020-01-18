@@ -54,8 +54,7 @@ int main(){
 //    return 0;
 
     Timer::frameTimer timer;
-    timer.startTimer();
-    unsigned frames = 0;
+
 
     initLogger("A2D", log_severity_information, log_mode_all)
     Plexi::PlexiConfig plexiConfig = {};
@@ -113,6 +112,10 @@ int main(){
     txtObj3.fontName = OpenSans;
     newFont.cleanUp();
 
+
+    timer.startTimer();
+    unsigned frames = 0;
+    glfwSwapInterval(1);
     Plexi::submitScene({txtObj1, txtObj2, txtObj3});
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
