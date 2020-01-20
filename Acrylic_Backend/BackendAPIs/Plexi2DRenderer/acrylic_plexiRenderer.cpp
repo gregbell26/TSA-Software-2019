@@ -181,19 +181,20 @@ Plexi::PLEXI_GFX_BACKENDS Plexi::getActiveBackend() {
 }
 
 void Plexi::removeTexture(uint32_t textureId) {
-
+    GFXBackendMap[activeConfig.activeBackendName]->removeTexture(textureId);
 }
 
 void Plexi::removeTexture() {
-
+    GFXBackendMap[activeConfig.activeBackendName]->removeTexture();
 }
 
 void Plexi::removeFont(uint32_t fontId) {
+    GFXBackendMap[activeConfig.activeBackendName]->removeFont(fontId);
 
 }
 
 void Plexi::removeFont() {
-
+    GFXBackendMap[activeConfig.activeBackendName]->removeFont();
 }
 
 

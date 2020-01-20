@@ -15,6 +15,8 @@ struct Cache {//For some reason having these elements inside of the class leads 
     std::vector<StandardRenderTask> standardRenderTaskCache = {};
     std::vector<TextRenderTask> textRenderTasksCache = {};
 
+
+
 };
 
 auto *cache = new Cache;
@@ -263,6 +265,104 @@ void OpenGL::submitScene(const std::vector<StandardRenderTask>& standardRenderTa
 
 }
 
+void OpenGL::cacheText() {
+    GLuint textFrameBuffer = 0;
+
+    glGenFramebuffers(1, &textFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, textFrameBuffer);
+
+    glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+    glGenTextures(1, &renderedTextCache);
+    glBindTexture(GL_TEXTURE_2D, renderedTextCache);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1280, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTextCache, 0);
+
+
+    GLuint depthRenderBuffer = 0;
+//
+//    glGenRenderbuffers(1, &depthRenderBuffer);
+//    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
+//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1280, 720);
+//
+//    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+
+
+//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        std::cout << glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        logWarning("Failed to create frame buffer for text caching. Performance will be poor.")
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+        glDeleteFramebuffers(1, &textFrameBuffer);
+        glDeleteRenderbuffers(1, &depthRenderBuffer);
+        glDeleteTextures(1, &renderedTextCache);
+        renderedTextCache = 0;
+        return;
+    }
+
+    if(!cache->textRenderTasksCache.empty()){
+        for(const auto& txtRenderTask : cache->textRenderTasksCache){
+            glUseProgram(activePipelines[txtRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
+            setMat4(txtRenderTask.graphicsPipelineName, "viewProjection", glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -1.0f, 1.0f));
+            auto &fontFace = cache->fontFaceCache[txtRenderTask.fontName];
+
+            setFloat4(txtRenderTask.graphicsPipelineName, "color", txtRenderTask.RGBAColor);
+            glBindVertexArray(activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
+
+            std::string::const_iterator i;
+            float nextCharLoc = txtRenderTask.position.x;
+
+            for(i = txtRenderTask.text.begin(); i != txtRenderTask.text.end(); i++){
+                auto activeChar = fontFace[*i];
+                float xPos = (nextCharLoc + activeChar.bearing.x * txtRenderTask.scale)/1.5f;
+                float yPos =  txtRenderTask.position.y - (activeChar.size.y - activeChar.bearing.y) * txtRenderTask.scale;
+                float width = (activeChar.size.x/1.5f) * txtRenderTask.scale;
+                float height = activeChar.size.y * txtRenderTask.scale;
+
+                float newVertexBuffer[6][4] {
+                        {xPos, yPos+height,         0.0f, 0.0f},
+                        {xPos, yPos,                0.0f, 1.0f},
+                        {xPos+width, yPos,          1.0f, 1.0f},
+                        {xPos, yPos+height,         0.0f, 0.0f},
+                        {xPos+width, yPos,          1.0f, 1.0f},
+                        {xPos+width, yPos+height,   1.0f, 0.0f},
+                };
+
+                glBindTexture(GL_TEXTURE_2D, activeChar.glTextureId);
+                glBindBuffer(GL_ARRAY_BUFFER, activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_BUFFER]);
+                glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newVertexBuffer), newVertexBuffer);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+
+                nextCharLoc += (activeChar.glAdvance >> 6) * txtRenderTask.scale;
+            }
+        }
+
+        glUseProgram(0);
+        glBindVertexArray(0);
+
+    }
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &textFrameBuffer);
+    glDeleteRenderbuffers(1, &depthRenderBuffer);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    logInformation("Cached Text Successfully")
+}
+
 void OpenGL::submitScene(const std::vector<TextRenderTask> &textRenderTasks) {
     //Def wanna optimize this
     if(cache->textRenderTasksCache.size() != textRenderTasks.size()){
@@ -274,9 +374,11 @@ void OpenGL::submitScene(const std::vector<TextRenderTask> &textRenderTasks) {
     for(size_t i = 0; i < textRenderTasks.size(); i++) {
         cache->textRenderTasksCache[i] = textRenderTasks[i];
     }
+    cacheText();
 }
 
 void OpenGL::onUpdate() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     clear();
     if((cache->textureCache.empty() && cache->fontFaceCache.empty()) || activePipelines.empty()) {
         if(onUpdateErrorCounter >= 240){
@@ -337,43 +439,69 @@ void OpenGL::onUpdate() {
     }
 
     if(!cache->textRenderTasksCache.empty()){
-        for(const auto& txtRenderTask : cache->textRenderTasksCache){
-            glUseProgram(activePipelines[txtRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
-            setMat4(txtRenderTask.graphicsPipelineName, "viewProjection", glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -1.0f, 1.0f));
-            auto &fontFace = cache->fontFaceCache[txtRenderTask.fontName];
+        if(renderedTextCache != 0){
+            glUseProgram(activePipelines[cache->textRenderTasksCache[0].graphicsPipelineName][SHADER_PROGRAM]);
+            setMat4(cache->textRenderTasksCache[0].graphicsPipelineName, "viewProjection",
+                    glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -1.0f, 1.0f));
+            glBindVertexArray(activePipelines[cache->textRenderTasksCache[0].graphicsPipelineName][VERTEX_ARRAY]);
+            float newVertexBuffer[6][4]{
+                    {-50.0f, -50.0f, 0.0f, 0.0f},
+                    {50.0f, -50.0f, 1.0f, 0.0f},
+                    {50.0f,  50.0f, 1.0f, 1.0f},
+                    {-50.0f,  50.0f, 0.0f, 1.0f},
+                    {-50.0f, -50.0f, 0.0f, 0.0f},
+                    {50.0f,  50.0f, 1.0f, 1.0f},
+            };
 
-            setFloat4(txtRenderTask.graphicsPipelineName, "color", txtRenderTask.RGBAColor);
-            glBindVertexArray(activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
+            glBindTexture(GL_TEXTURE_2D, renderedTextCache);
+            glBindBuffer(GL_ARRAY_BUFFER, activePipelines[cache->textRenderTasksCache[0].graphicsPipelineName][VERTEX_BUFFER]);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newVertexBuffer), newVertexBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-            std::string::const_iterator i;
-            float nextCharLoc = txtRenderTask.position.x;
+            glDrawArrays(GL_TRIANGLES, 0, 6);
 
-            for(i = txtRenderTask.text.begin(); i != txtRenderTask.text.end(); i++){
-                auto activeChar = fontFace[*i];
-                float xPos = (nextCharLoc + activeChar.bearing.x * txtRenderTask.scale)/1.5f;
-                float yPos =  txtRenderTask.position.y - (activeChar.size.y - activeChar.bearing.y) * txtRenderTask.scale;
-                float width = (activeChar.size.x/1.5f) * txtRenderTask.scale;
-                float height = activeChar.size.y * txtRenderTask.scale;
+        }
+        else {
+            for (const auto &txtRenderTask : cache->textRenderTasksCache) {
+                glUseProgram(activePipelines[txtRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
+                setMat4(txtRenderTask.graphicsPipelineName, "viewProjection",
+                        glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -1.0f, 1.0f));
+                auto &fontFace = cache->fontFaceCache[txtRenderTask.fontName];
 
-                float newVertexBuffer[6][4] {
-                        {xPos, yPos+height,         0.0f, 0.0f},
-                        {xPos, yPos,                0.0f, 1.0f},
-                        {xPos+width, yPos,          1.0f, 1.0f},
-                        {xPos, yPos+height,         0.0f, 0.0f},
-                        {xPos+width, yPos,          1.0f, 1.0f},
-                        {xPos+width, yPos+height,   1.0f, 0.0f},
+                setFloat4(txtRenderTask.graphicsPipelineName, "color", txtRenderTask.RGBAColor);
+                glBindVertexArray(activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_ARRAY]);
+
+                std::string::const_iterator i;
+                float nextCharLoc = txtRenderTask.position.x;
+
+                for (i = txtRenderTask.text.begin(); i != txtRenderTask.text.end(); i++) {
+                    auto activeChar = fontFace[*i];
+                    float xPos = (nextCharLoc + activeChar.bearing.x * txtRenderTask.scale) / 1.5f;
+                    float yPos =
+                            txtRenderTask.position.y - (activeChar.size.y - activeChar.bearing.y) * txtRenderTask.scale;
+                    float width = (activeChar.size.x / 1.5f) * txtRenderTask.scale;
+                    float height = activeChar.size.y * txtRenderTask.scale;
+
+                    float newVertexBuffer[6][4]{
+                            {xPos,         yPos + height, 0.0f, 0.0f},
+                            {xPos,         yPos,          0.0f, 1.0f},
+                            {xPos + width, yPos,          1.0f, 1.0f},
+                            {xPos,         yPos + height, 0.0f, 0.0f},
+                            {xPos + width, yPos,          1.0f, 1.0f},
+                            {xPos + width, yPos + height, 1.0f, 0.0f},
 
 
-                };
+                    };
 
-                glBindTexture(GL_TEXTURE_2D, activeChar.glTextureId);
-                glBindBuffer(GL_ARRAY_BUFFER, activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_BUFFER]);
-                glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newVertexBuffer), newVertexBuffer);
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBindTexture(GL_TEXTURE_2D, activeChar.glTextureId);
+                    glBindBuffer(GL_ARRAY_BUFFER, activePipelines[txtRenderTask.graphicsPipelineName][VERTEX_BUFFER]);
+                    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newVertexBuffer), newVertexBuffer);
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-                glDrawArrays(GL_TRIANGLES, 0, 6);
+                    glDrawArrays(GL_TRIANGLES, 0, 6);
 
-                nextCharLoc += (activeChar.glAdvance >> 6) * txtRenderTask.scale;
+                    nextCharLoc += (activeChar.glAdvance >> 6) * txtRenderTask.scale;
+                }
             }
         }
 
@@ -494,6 +622,8 @@ void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
 
 void OpenGL::removeTexture() {
 
+    logInformation("Cleaning up all textures...")
+
     for(auto &text : cache->textureCache){
         delete text;
     }
@@ -502,6 +632,7 @@ void OpenGL::removeTexture() {
 }
 
 void OpenGL::removeTexture(uint32_t textureId) {
+    logInformation("Cleaning up texture id: " + std::to_string(textureId))
     try{
         delete cache->textureCache[textureId];
 
@@ -511,6 +642,7 @@ void OpenGL::removeTexture(uint32_t textureId) {
 }
 
 void OpenGL::removeFont() {
+    logInformation("Cleaning up all fonts...")
     for(auto &fontFace : cache->fontFaceCache) {
         std::vector<GLuint> chars(fontFace.size());
         size_t i  = 0;
@@ -524,6 +656,7 @@ void OpenGL::removeFont() {
 }
 
 void OpenGL::removeFont(uint32_t fontId) {
+    logInformation("Cleaning up font id: " + std::to_string(fontId))
     try{
         std::vector<GLuint> chars(cache->fontFaceCache.at(fontId).size());
         size_t i  = 0;

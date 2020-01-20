@@ -1,6 +1,6 @@
 #include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
-#include "./frameTimer.h"
+#include "acrylic_frameTimer.h"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
@@ -10,10 +10,10 @@
 #include "glm/gtx/string_cast.hpp"
 
 StandardRenderTask Obj7 = {
-        "plexi_default_primative",
-        {1.f,1.f,1.f,1.f},
-        {0.f,.0f,-.1f},
-        {5.0f,5.00f},
+        "plexi_default_primitive",
+        {1.0f,1.0f,1.0f,1.0f},
+        {1.0f,1.0f,-0.1f},
+        {2.0f,2.0f},
         1,
         nullptr
 };
@@ -48,18 +48,18 @@ TextRenderTask txtObj3 {
 
 
 
-//using namespace A2D::Filesystem::Loaders::Json;
-//using namespace A2D::Filesystem::Loaders;
+using namespace A2D::Filesystem::Loaders::Json;
+using namespace A2D::Filesystem::Loaders;
 
 int main(){
 //    auto j = interpretJson(readFile("test1.json"));
-//    auto j2 = interpretJson("");
+//    auto j2 = interpretJson(readFile("test2.json"));
 //    std::cout << j.smap.at("str") << std::endl;
 //    std::cout << j.imap.at("int") << std::endl;
 //    std::cout << j.fmap.at("flo") << std::endl;
 //    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
 //    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
-
+//    std::cout << j2.jamap.at("pools")[0].jmap.at("rolls").imap.at("max");
 //    return 0;
 
     Timer::frameTimer timer;
@@ -112,16 +112,17 @@ int main(){
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
 
-    auto DogImage = A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
+    auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image("./textures/dog.bmp");
     Plexi::TextureCreateInfo doginfo = {};
-    doginfo.channelCount = DogImage.bytes;
-    doginfo.height = DogImage.height;
-    doginfo.width = DogImage.width;
-    doginfo.dataSize = DogImage.length;
+    doginfo.height = DogImage->height;
+    doginfo.width = DogImage->width;
+    doginfo.channelCount = DogImage->bytes;
+    doginfo.dataSize = DogImage->length;
     doginfo.textureData.usingGenericType = false;
-    doginfo.textureData.dataType.image = DogImage.imageData;
-    uint32_t dogtexture = Plexi::Texture::create2DTexture(doginfo,Plexi::getActiveBackend());
+    doginfo.textureData.dataType.image = DogImage->imageData;
+    uint32_t dogtexture = Plexi::Texture::create2DTexture(doginfo, Plexi::getActiveBackend());
     Obj7.textureIds = &dogtexture;
+    delete DogImage;
 
     A2D::Filesystem::Loaders::Font::Font newFont;
     newFont.createNewFont("./fonts/OpenSans-Light.ttf", 48);
