@@ -1,10 +1,8 @@
 #include "acrylic_bitmap.h"
-#include "../../Plexi2DRenderer/plexi_usrStructs.hpp"
-#include "../../Plexi2DRenderer/PlexiBackend/plexi_texture.cpp"
 //
 // Created by coolh on 11/6/2019.
 //
-namespace A2D::Filesystem::ImageLoaders::Bitmaps {
+namespace A2D::Filesystem::ImageLoaders::Bitmaps  {
     const unsigned char bmpData[] = // All values are little-endian
             {
                     0x42, 0x4D,             // Signature 'BM'
@@ -55,7 +53,7 @@ namespace A2D::Filesystem::ImageLoaders::Bitmaps {
 
 
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
-A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName) {
+A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::filesystem::path FileName) {
     logInformation("58 Image Start Loading")
         std::ifstream is(FileName, std::ifstream::binary);
     if (is) {
@@ -127,7 +125,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::string& FileName
     }
     else
     {
-        logWarning("128 File \'" + FileName + "\' not found. Returning default image")
+        logWarning("128 File \'" + FileName.string() + "\' not found. Returning default image")
             logWarning("129 Default image not implemented returning null image instead.")
             logWarning("130 " + std::filesystem::current_path().string())
             Default();
@@ -138,14 +136,12 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(std::string DirectFile) {
     logInformation("58 Image Start Loading")
         // get length of file:
         //                int length = is.tellg();
-        length = DirectFile.length;
+        length = DirectFile.length();
 
-        char* buffer = new char[length];
+        char* buffer = const_cast<char*>(DirectFile.c_str());
         //        std::string m = "Reading " + length;//bc you can oly add strings once
         logInformation("69 Reading" + std::to_string(length) + " characters... ")
-            // read data as a block:
-            buffer = const_cast<char*>(DirectFile.c_str());
-
+            // read data as a block
         logInformation("83 Length: " + std::to_string(length))
 
             int* bff2 = new int[length];
@@ -179,14 +175,14 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(std::string DirectFile) {
         logInformation("112 Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " + std::to_string(width))
 
             imageData = new unsigned char[length]();
-
         for (int i = offset; i < length; i++) {
             imageData[i - offset] = bff2[i];
         }
+        logInformation("forloop done")
         // ...buffer contains the entire file...
 
         delete[] bff2;
-        delete[] buffer;
+    //  delete[] buffer;
         logInformation("123 Image Loaded");
         return;
         //logWarning("128 File \'" + FileName + "\' not found. Returning default image")
@@ -196,17 +192,18 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(std::string DirectFile) {
     
 }
 
-uint32_t A2D::Filesystem::ImageLoaders::Bitmaps::Image::Convert() 
-{
-    Plexi::TextureCreateInfo doginfo = {};
-    doginfo.height = height;
-    doginfo.width = width;
-    doginfo.channelCount = bytes;
-    doginfo.dataSize = length;
-    doginfo.textureData.usingGenericType = false;
-    doginfo.textureData.dataType.image = imageData;
-    uint32_t dogtexture = Plexi::Texture::create2DTexture(doginfo, Plexi::getActiveBackend());
-}
+//uint32_t A2D::Filesystem::ImageLoaders::Bitmaps::Image::Convert() 
+//{
+//    //Plexi::TextureCreateInfo doginfo = {};
+//    //doginfo.height = height;
+//    //doginfo.width = width;
+//    //doginfo.channelCount = bytes;
+//    //doginfo.dataSize = length;
+//    //doginfo.textureData.usingGenericType = false;
+//    //doginfo.textureData.dataType.image = imageData;
+//    //uint32_t dogtexture = Plexi::Texture::create2DTexture(doginfo, Plexi::getActiveBackend());
+//    return NULL;
+//}
 
 void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Default() 
 {

@@ -17,11 +17,11 @@ namespace A2D::Filesystem::ImageLoaders::Bitmaps {
 
         unsigned char * imageData;//Sorry, I renamed this so that it would be more clear and not confused with the main struct
 
-        explicit Image(const std::string& FileName);
+        explicit Image(const std::filesystem::path FileName);
 
         explicit Image(std::string DirectFile);
 
-        uint32_t Convert();
+        //uint32_t Convert();
 
         void Default();
         

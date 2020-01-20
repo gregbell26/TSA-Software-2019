@@ -111,8 +111,9 @@ int main(){
     textureCreateInfo.textureData.dataType.generic = &data;
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
-
-    auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image(A2D::Filesystem::Loaders::readFile("./textures/dog.bmp"));
+    A2D::Filesystem::Loaders::gameDataPath = "./textures/";
+    //auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image(A2D::Filesystem::Loaders::readFile("dog.bmp"));
+    auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image(std::filesystem::path("./textures/dog.bmp"));
     Plexi::TextureCreateInfo doginfo = {};
     doginfo.height = DogImage->height;
     doginfo.width = DogImage->width;
