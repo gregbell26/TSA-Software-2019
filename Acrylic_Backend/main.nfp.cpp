@@ -48,18 +48,18 @@ TextRenderTask txtObj3 {
 
 
 
-//using namespace A2D::Filesystem::Loaders::Json;
-//using namespace A2D::Filesystem::Loaders;
+using namespace A2D::Filesystem::Loaders::Json;
+using namespace A2D::Filesystem::Loaders;
 
 int main(){
 //    auto j = interpretJson(readFile("test1.json"));
-//    auto j2 = interpretJson("");
+//    auto j2 = interpretJson(readFile("test2.json"));
 //    std::cout << j.smap.at("str") << std::endl;
 //    std::cout << j.imap.at("int") << std::endl;
 //    std::cout << j.fmap.at("flo") << std::endl;
 //    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
 //    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
-
+//    std::cout << j2.jamap.at("pools")[0].jmap.at("rolls").imap.at("max");
 //    return 0;
 
     Timer::frameTimer timer;
