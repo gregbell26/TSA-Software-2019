@@ -2,7 +2,7 @@
 //
 // Created by coolh on 11/6/2019.
 //
-namespace A2D::Filesystem::ImageLoaders::Bitmaps  {
+namespace A2D::Filesystem::Loaders::Bitmaps  {
     const unsigned char bmpData[] = // All values are little-endian
             {
                     0x42, 0x4D,             // Signature 'BM'
@@ -53,7 +53,7 @@ namespace A2D::Filesystem::ImageLoaders::Bitmaps  {
 
 
 //---------------------------IMAGE_CONSTRUCTORS-----------------------------------------
-A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::filesystem::path FileName) {
+A2D::Filesystem::Loaders::Bitmaps::Image::Image(const std::filesystem::path FileName) {
     logInformation("58 Image Start Loading")
         std::ifstream is(FileName, std::ifstream::binary);
     if (is) {
@@ -132,7 +132,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(const std::filesystem::path
     }
 }
 
-A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(std::string DirectFile) {
+A2D::Filesystem::Loaders::Bitmaps::Image::Image(std::string DirectFile) {
     logInformation("58 Image Start Loading")
         // get length of file:
         //                int length = is.tellg();
@@ -192,7 +192,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(std::string DirectFile) {
     
 }
 
-//uint32_t A2D::Filesystem::ImageLoaders::Bitmaps::Image::Convert() 
+//uint32_t A2D::Filesystem::Loaders::Bitmaps::Image::Convert() 
 //{
 //    //Plexi::TextureCreateInfo doginfo = {};
 //    //doginfo.height = height;
@@ -205,7 +205,7 @@ A2D::Filesystem::ImageLoaders::Bitmaps::Image::Image(std::string DirectFile) {
 //    return NULL;
 //}
 
-void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Default() 
+void A2D::Filesystem::Loaders::Bitmaps::Image::Default()
 {
     height = 4;
     width = 4;
@@ -233,7 +233,7 @@ void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Default()
     imageData = data;
 }
 
-void A2D::Filesystem::ImageLoaders::Bitmaps::Image::PrintInfo()
+void A2D::Filesystem::Loaders::Bitmaps::Image::PrintInfo()
 {
     std::cout << (
             "Height: " + std::to_string(height) + "\n" +
@@ -243,7 +243,7 @@ void A2D::Filesystem::ImageLoaders::Bitmaps::Image::PrintInfo()
     );
 }
 
-void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Print()
+void A2D::Filesystem::Loaders::Bitmaps::Image::Print()
 {
     std::cout << "\n";
     for (int i = 0; i < length; i ++)
@@ -269,7 +269,7 @@ void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Print()
     }
 }
 
-void A2D::Filesystem::ImageLoaders::Bitmaps::Image::Write(const std::string &FileName)
+void A2D::Filesystem::Loaders::Bitmaps::Image::Write(const std::string &FileName)
 {
     std::fstream fs(FileName, std::ios_base::out | std::ios_base::binary);
 

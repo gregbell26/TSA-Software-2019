@@ -6,7 +6,7 @@
 #include <string>
 #include <ths/log.hpp>
 
-namespace A2D::Filesystem::ImageLoaders::Bitmaps {
+namespace A2D::Filesystem::Loaders::Bitmaps {
 
     struct Image
     {

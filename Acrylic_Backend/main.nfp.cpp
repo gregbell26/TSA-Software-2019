@@ -79,7 +79,7 @@ int main(){
     plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
     plexiConfig.clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
     plexiConfig.plexiGFXRequiredInformation.appName = "Acrylic Testinator 1000";
-    plexiConfig.plexiGFXRequiredInformation.cacheEnabled = true;
+    plexiConfig.plexiGFXRequiredInformation.cacheEnabled = false;
     plexiConfig.shaderCount = 3;
     plexiConfig.shaderCreateInfos.resize(plexiConfig.shaderCount);
     plexiConfig.shaderCreateInfos[0].shaderName = "plexi_default_primitive";
@@ -135,8 +135,8 @@ int main(){
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     setGameDataPath("./textures/");
-    //auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image(A2D::Filesystem::Loaders::readFile("dog.bmp"));
-    auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image(std::filesystem::path("./textures/dog.bmp"));
+    //auto* DogImage = new A2D::Filesystem::Loaders::Bitmaps::Image(A2D::Filesystem::Loaders::readFile("dog.bmp"));
+    auto* DogImage = new A2D::Filesystem::Loaders::Bitmaps::Image(std::filesystem::path("./textures/dog.bmp"));
     Plexi::TextureCreateInfo doginfo = {};
     doginfo.height = DogImage->height;
     doginfo.width = DogImage->width;
