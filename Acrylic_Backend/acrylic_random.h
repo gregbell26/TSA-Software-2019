@@ -31,8 +31,8 @@
 /* Author: Jan Winkler */
 
 
-#ifndef ACRYLIC2D_RANDOM_H
-#define ACRYLIC2D_RANDOM_H
+#ifndef ACRYLIC2D_ACRYLIC_RANDOM_H
+#define ACRYLIC2D_ACRYLIC_RANDOM_H
 #include <iostream>
 #include <cstdlib>
 #include <tuple>
