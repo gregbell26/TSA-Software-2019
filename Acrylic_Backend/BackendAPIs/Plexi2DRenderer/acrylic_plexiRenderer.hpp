@@ -37,6 +37,10 @@ namespace Plexi {
 
     void submitScene(const std::vector<TextRenderTask>& tasks);
 
+    void enableTextCaching(bool newStatus);
+
+    void cacheTextNow();
+
     void removeTexture (uint32_t textureId);
 
     void removeTexture();

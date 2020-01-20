@@ -197,4 +197,12 @@ void Plexi::removeFont() {
     GFXBackendMap[activeConfig.activeBackendName]->removeFont();
 }
 
+void Plexi::enableTextCaching(bool newStatus) {
+    GFXBackendMap[activeConfig.activeBackendName]->enableTextCache(newStatus);
+}
+
+void Plexi::cacheTextNow() {
+    GFXBackendMap[activeConfig.activeBackendName]->cacheTextNow();
+}
+
 
