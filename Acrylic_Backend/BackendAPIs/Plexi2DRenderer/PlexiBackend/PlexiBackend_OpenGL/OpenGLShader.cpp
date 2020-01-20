@@ -47,7 +47,7 @@ bool OpenGL::createShaders(const std::string& vertexSource, const std::string& f
     glCompileShader(fragmentShader);
 
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &compiledSuccessfully);
-    if (compiledSuccessfully == GL_FALSE)
+    if (!compiledSuccessfully)
     {
         GLint maxLength = 0;
         glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);

@@ -267,55 +267,42 @@ void OpenGL::submitScene(const std::vector<StandardRenderTask>& standardRenderTa
 
 void OpenGL::cacheText() {
     GLuint textFrameBuffer = 0;
+
     glGenFramebuffers(1, &textFrameBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER_EXT, textFrameBuffer);
-    GLenum fuckyou;
-    while ((fuckyou = glGetError()) != GL_NO_ERROR){
-        std::cout << fuckyou << std::endl;
-    }
+    glBindFramebuffer(GL_FRAMEBUFFER, textFrameBuffer);
+
+    glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
     glGenTextures(1, &renderedTextCache);
     glBindTexture(GL_TEXTURE_2D, renderedTextCache);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1280, 720, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1280, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTextCache, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTextCache, 0);
 
-    while ((fuckyou = glGetError()) != GL_NO_ERROR){
-        std::cout << fuckyou << std::endl;
-    }
 
     GLuint depthRenderBuffer = 0;
+//
+//    glGenRenderbuffers(1, &depthRenderBuffer);
+//    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
+//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1280, 720);
+//
+//    glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-    glGenRenderbuffers(1, &depthRenderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1280, 720);
-    while ((fuckyou = glGetError()) != GL_NO_ERROR){
-        std::cout << fuckyou << std::endl;
-    }
-    ;
-    glBindRenderbuffer(GL_RENDERBUFFER_EXT, 0);
 
-    while ((fuckyou = glGetError()) != GL_NO_ERROR){
-        std::cout << fuckyou << std::endl;
-    }
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 
-    while ((fuckyou = glGetError()) != GL_NO_ERROR){
-        std::cout << fuckyou << std::endl;
-    }
-    glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    if(glCheckFramebufferStatus(textFrameBuffer) != GL_FRAMEBUFFER_COMPLETE){
-        while ((fuckyou = glGetError()) != GL_NO_ERROR){
-            std::cout << fuckyou << std::endl;
-        }
-        logWarning("Failed to create frame buffer for text caching")
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        std::cout << glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        logWarning("Failed to create frame buffer for text caching. Performance will be poor.")
         glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
         glDeleteFramebuffers(1, &textFrameBuffer);
         glDeleteRenderbuffers(1, &depthRenderBuffer);
@@ -350,8 +337,6 @@ void OpenGL::cacheText() {
                         {xPos, yPos+height,         0.0f, 0.0f},
                         {xPos+width, yPos,          1.0f, 1.0f},
                         {xPos+width, yPos+height,   1.0f, 0.0f},
-
-
                 };
 
                 glBindTexture(GL_TEXTURE_2D, activeChar.glTextureId);
@@ -373,7 +358,7 @@ void OpenGL::cacheText() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &textFrameBuffer);
     glDeleteRenderbuffers(1, &depthRenderBuffer);
-    glDeleteTextures(1, &renderedTextCache);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     logInformation("Cached Text Successfully")
 }
@@ -455,6 +440,25 @@ void OpenGL::onUpdate() {
 
     if(!cache->textRenderTasksCache.empty()){
         if(renderedTextCache != 0){
+            glUseProgram(activePipelines[cache->textRenderTasksCache[0].graphicsPipelineName][SHADER_PROGRAM]);
+            setMat4(cache->textRenderTasksCache[0].graphicsPipelineName, "viewProjection",
+                    glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -1.0f, 1.0f));
+            glBindVertexArray(activePipelines[cache->textRenderTasksCache[0].graphicsPipelineName][VERTEX_ARRAY]);
+            float newVertexBuffer[6][4]{
+                    {-50.0f, -50.0f, 0.0f, 0.0f},
+                    {50.0f, -50.0f, 1.0f, 0.0f},
+                    {50.0f,  50.0f, 1.0f, 1.0f},
+                    {-50.0f,  50.0f, 0.0f, 1.0f},
+                    {-50.0f, -50.0f, 0.0f, 0.0f},
+                    {50.0f,  50.0f, 1.0f, 1.0f},
+            };
+
+            glBindTexture(GL_TEXTURE_2D, renderedTextCache);
+            glBindBuffer(GL_ARRAY_BUFFER, activePipelines[cache->textRenderTasksCache[0].graphicsPipelineName][VERTEX_BUFFER]);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(newVertexBuffer), newVertexBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+            glDrawArrays(GL_TRIANGLES, 0, 6);
 
         }
         else {
