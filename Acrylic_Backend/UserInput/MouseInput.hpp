@@ -12,7 +12,7 @@ namespace Inputs::Mouse{
     class MouseInput: public Input<R> { //Mouse button functions
     public:
         R (*action)(GLFWwindow*, int);
-        trigger key = {};
+        Trigger key = {};
         explicit MouseInput(std::vector<MouseInput<GLFWwindow *>> *list);
         MouseInput(int key, std::vector<MouseInput<GLFWwindow *>> *list);
         MouseInput(int key, int modifiers, std::vector<MouseInput<GLFWwindow *>> *list);

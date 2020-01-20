@@ -48,6 +48,7 @@ static void GLAPIENTRY openGLDebugMessageCallBack(GLenum source,
 
 bool OpenGL::setRequiredInformation(const PlexiGFX_RequiredInformation &requiredInformation) {
     appName = requiredInformation.appName.c_str();
+    cacheEnabled = requiredInformation.cacheEnabled;
     requiredInfoSet = true;
     return true;
 }
@@ -248,6 +249,10 @@ void OpenGL::createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shad
 }
 
 void OpenGL::setClearColor(const float &r, const float &g, const float &b, const float &a) {
+    activeClearColor.r = r;
+    activeClearColor.g = g;
+    activeClearColor.b = b;
+    activeClearColor.a = a;
     glClearColor(r,g,b,a);
 }
 
@@ -267,8 +272,11 @@ void OpenGL::submitScene(const std::vector<StandardRenderTask>& standardRenderTa
 
 void OpenGL::cacheText() {
     GLuint textFrameBuffer = 0;
+
     glGenFramebuffers(1, &textFrameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, textFrameBuffer);
+
+    glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
     glGenTextures(1, &renderedTextCache);
     glBindTexture(GL_TEXTURE_2D, renderedTextCache);
@@ -282,29 +290,19 @@ void OpenGL::cacheText() {
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTextCache, 0);
 
-    GLuint depthRenderBuffer = 0;
 
-    glGenRenderbuffers(1, &depthRenderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 720);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-
-    if(glCheckFramebufferStatus(textFrameBuffer) != GL_FRAMEBUFFER_COMPLETE){
-        logWarning("Failed to create frame buffer for text caching")
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
+        std::cout << glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        logWarning("Failed to create frame buffer for text caching. Performance will be poor.")
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
         glDeleteFramebuffers(1, &textFrameBuffer);
-        glDeleteRenderbuffers(1, &depthRenderBuffer);
         glDeleteTextures(1, &renderedTextCache);
         renderedTextCache = 0;
         return;
     }
 
+    glClearColor(0.0f,0.0f,0.0f,0.0f);
+    clear();
     if(!cache->textRenderTasksCache.empty()){
         for(const auto& txtRenderTask : cache->textRenderTasksCache){
             glUseProgram(activePipelines[txtRenderTask.graphicsPipelineName][SHADER_PROGRAM]);
@@ -331,8 +329,6 @@ void OpenGL::cacheText() {
                         {xPos, yPos+height,         0.0f, 0.0f},
                         {xPos+width, yPos,          1.0f, 1.0f},
                         {xPos+width, yPos+height,   1.0f, 0.0f},
-
-
                 };
 
                 glBindTexture(GL_TEXTURE_2D, activeChar.glTextureId);
@@ -351,12 +347,12 @@ void OpenGL::cacheText() {
 
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &textFrameBuffer);
-    glDeleteRenderbuffers(1, &depthRenderBuffer);
-    glDeleteTextures(1, &renderedTextCache);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glClearColor(activeClearColor.r, activeClearColor.g, activeClearColor.b, activeClearColor.a);
 
-    logInformation("Cached Text successfully")
+    logInformation("Cached Text Successfully")
 }
 
 void OpenGL::submitScene(const std::vector<TextRenderTask> &textRenderTasks) {
@@ -370,7 +366,8 @@ void OpenGL::submitScene(const std::vector<TextRenderTask> &textRenderTasks) {
     for(size_t i = 0; i < textRenderTasks.size(); i++) {
         cache->textRenderTasksCache[i] = textRenderTasks[i];
     }
-    cacheText();
+    if(cacheEnabled)
+        cacheText();
 }
 
 void OpenGL::onUpdate() {
@@ -435,7 +432,14 @@ void OpenGL::onUpdate() {
     }
 
     if(!cache->textRenderTasksCache.empty()){
-        if(renderedTextCache != 0){
+        if(renderedTextCache != 0 && cacheEnabled){
+            glUseProgram(activePipelines["cache"][SHADER_PROGRAM]);
+
+            glBindVertexArray(activePipelines["cache"][VERTEX_ARRAY]);
+
+            glBindTexture(GL_TEXTURE_2D, renderedTextCache);
+
+            glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
 
         }
         else {
@@ -506,6 +510,16 @@ Plexi2DTexture* OpenGL::getNewTexture() {
     return cache->textureCache[cache->textureCache.size() - 1];
 }
 
+void OpenGL::cacheTextNow() {
+    if(cacheEnabled)
+        cacheText();
+}
+
+
+void OpenGL::enableTextCache(bool newStatus) {
+    cacheEnabled = newStatus;
+}
+
 uint32_t OpenGL::addFontFace(FT_Face &fontFace, uint32_t charCount) {
     std::map<GLchar, OpenGL::Character> charMap;
     logInformation("Loading " + std::to_string(charCount) + " font characters into openGL")
@@ -556,7 +570,6 @@ uint32_t OpenGL::addFontFace(FT_Face &fontFace, uint32_t charCount) {
 
     return static_cast<uint32_t>(cache->fontFaceCache.size()-1);
 }
-
 
 void OpenGL::cleanUpGraphicsPipeline(const std::string& pipelineName) {
     if(pipelineName == "all"){
@@ -618,6 +631,7 @@ void OpenGL::removeTexture(uint32_t textureId) {
     }
 }
 
+
 void OpenGL::removeFont() {
     logInformation("Cleaning up all fonts...")
     for(auto &fontFace : cache->fontFaceCache) {
@@ -648,7 +662,6 @@ void OpenGL::removeFont(uint32_t fontId) {
         logWarning("Font id: " + std::to_string(fontId) + " does not exist!")
     }
 }
-
 
 void OpenGL::cleanup() {
     removeFont();

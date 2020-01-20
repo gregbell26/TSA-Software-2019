@@ -14,6 +14,9 @@ namespace Inputs {
     std::vector<Mouse::MouseInput<T>> mouseInputList;
     template <typename T>
     std::vector<Mouse::CursorInput<T>> cursorInputList;
+
+    //Key Callback
+    //Runs through all key activated inputs and runs them if they match the pressed key
     template <typename T>
     T runKey(GLFWwindow* window, int key, int scancode, int action, int mods){
         for (int i = 0; i< inputList<T>.size(); i++){
@@ -21,7 +24,7 @@ namespace Inputs {
                 Key::KeyInput<T> element = keyInputList<T>.at(i);
                 if (element.key.key == key){
                     if (element.key.modifiers == mods){
-                        return element.action(Plexi::getWindowRef(), action);
+                        return element.action(window, action);
                     }
                 }
             }
@@ -29,13 +32,15 @@ namespace Inputs {
                 Input<T> element = inputList<T>.at(i);
                 if (element.key.key == key){
                     if (element.key.modifiers == mods){
-                        return element.action(Plexi::getWindowRef());
+                        return element.action(window);
                     }
                 }
             }
         }
     }
 
+    //Mouse Button Callback
+    //Runs through all mouse activated inputs and runs them if they match the pressed button
     template <typename T>
     T runMouseButton(GLFWwindow* window, int button, int action, int mods){
         for (int i = 0; i<inputList<T>.size(); i++){
@@ -43,7 +48,7 @@ namespace Inputs {
                 Mouse::MouseInput<T> element = mouseInputList<T>.at(i);
                 if (element.key.key == button){
                     if (element.key.modifiers == mods){
-                        return element.action(Plexi::getWindowRef(), action);
+                        return element.action(window, action);
                     }
                 }
             }
@@ -51,27 +56,30 @@ namespace Inputs {
                 Input<T> element = inputList<T>.at(i);
                 if (element.key.key == button){
                     if (element.key.modifiers == mods){
-                        return element.action(Plexi::getWindowRef());
+                        return element.action(window);
                     }
                 }
             }
         }
     }
 
+    //Cursor Move
+    //Runs all cursor and scroll activated functions
     template <typename T>
     T runCursorMove(GLFWwindow* window, double xPos, double yPos){
         for (int i = 0; i<inputList<T>.size(); i++){
             if (cursorInputList<T>.at(i).getType() == cursorMove){
                 Mouse::CursorInput<T> element = cursorInputList<T>.at(i);
-                return element.action(Plexi::getWindowRef(), xPos, yPos);
+                return element.action(window, xPos, yPos);
             }
             if (inputList<T>.at(i).getType() == cursorMove){
                 Input<T> element = inputList<T>.at(i);
-                return element.action(Plexi::getWindowRef());
+                return element.action(window);
             }
         }
     }
 
+    //Sets callbacks
     void init(){
         glfwSetKeyCallback(Plexi::getWindowRef(), runKey);
         glfwSetMouseButtonCallback(Plexi::getWindowRef(), runMouseButton);

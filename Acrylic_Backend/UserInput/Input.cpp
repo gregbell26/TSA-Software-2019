@@ -46,7 +46,7 @@ namespace Inputs{
     }
 
     template<class R>
-    void Input<R>::setKey(const trigger &key) {
+    void Input<R>::setKey(const Trigger &key) {
         Input::key = key;
     }
     template<class R>
@@ -55,7 +55,7 @@ namespace Inputs{
     }
 
     template<class R>
-    const trigger &Input<R>::getKey() const {
+    const Trigger &Input<R>::getKey() const {
         return key;
     }
     template<class R>

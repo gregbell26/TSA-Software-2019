@@ -1,11 +1,11 @@
 #include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
-#include "acrylic_frameTimer.h"
+#include "Timers/acrylic_frameTimer.h"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
 #include <ths/log.hpp>
-#include "Random.h"
+#include "acrylic_random.h"
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
 
@@ -48,30 +48,32 @@ TextRenderTask txtObj3 {
 
 
 
-//using namespace A2D::Filesystem::Loaders::Json;
-//using namespace A2D::Filesystem::Loaders;
+using namespace A2D::Filesystem::Loaders::JSON;
+using namespace A2D::Filesystem::Loaders;
 
 int main(){
-//    auto j = interpretJson(readFile("test1.json"));
-//    auto j2 = interpretJson("");
-//    std::cout << j.smap.at("str") << std::endl;
-//    std::cout << j.imap.at("int") << std::endl;
-//    std::cout << j.fmap.at("flo") << std::endl;
-//    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
-//    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
+    initLogger("A2D", log_severity_information, log_mode_all)
 
+    auto j = interpretJson(readFile("test1.json"));
+    auto j2 = interpretJson(readFile("test2.json"));
+    std::cout << j.smap.at("str") << std::endl;
+    std::cout << j.imap.at("int") << std::endl;
+    std::cout << j.fmap.at("flo") << std::endl;
+    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
+    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
+    std::cout << j2.jamap.at("pools")[0].jmap.at("rolls").imap.at("max");
 //    return 0;
 
-    Timer::frameTimer timer;
+    A2D::Timers::FrameTimer timer;
 
 
-    initLogger("A2D", log_severity_information, log_mode_all)
     Plexi::PlexiConfig plexiConfig = {};
     plexiConfig.preferredGraphicsBackend = Plexi::PLEXI_GFX_BACKENDS::PLEXI_OPENGL;
     plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
     plexiConfig.clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
     plexiConfig.plexiGFXRequiredInformation.appName = "Acrylic Testinator 1000";
-    plexiConfig.shaderCount = 2;
+    plexiConfig.plexiGFXRequiredInformation.cacheEnabled = true;
+    plexiConfig.shaderCount = 3;
     plexiConfig.shaderCreateInfos.resize(plexiConfig.shaderCount);
     plexiConfig.shaderCreateInfos[0].shaderName = "plexi_default_primitive";
     plexiConfig.shaderCreateInfos[0].shaderLanguage = plexiConfig.defaultShaderLanguage;
@@ -81,9 +83,13 @@ int main(){
     plexiConfig.shaderCreateInfos[1].shaderLanguage = plexiConfig.defaultShaderLanguage;
     plexiConfig.shaderCreateInfos[1].glslVertexCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_vertex_default_text", plexiConfig.defaultShaderLanguage));
     plexiConfig.shaderCreateInfos[1].glslFragmentCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_fragment_default_text", plexiConfig.defaultShaderLanguage));
+    plexiConfig.shaderCreateInfos[2].shaderName = "cache";
+    plexiConfig.shaderCreateInfos[2].shaderLanguage = plexiConfig.defaultShaderLanguage;
+    plexiConfig.shaderCreateInfos[2].glslVertexCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_vertex_default_cached", plexiConfig.defaultShaderLanguage));
+    plexiConfig.shaderCreateInfos[2].glslFragmentCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_fragment_default_cached", plexiConfig.defaultShaderLanguage));
     plexiConfig.bufferCreateInfos.resize(plexiConfig.shaderCount);
     plexiConfig.bufferCreateInfos[0].shaderName = plexiConfig.shaderCreateInfos[0].shaderName;
-    plexiConfig.bufferCreateInfos[0].setLayout({
+    plexiConfig.bufferCreateInfos[0].setLayout( {
        {Plexi::Shaders::Float3, "in_positionCoords"},
        {Plexi::Shaders::Float2, "in_textureCoords"}
     });
@@ -100,6 +106,16 @@ int main(){
 
     plexiConfig.bufferCreateInfos[1].vertexArraySize = Plexi::Buffer::TEXT_VERTICES_SIZE;
 
+    plexiConfig.bufferCreateInfos[2].shaderName = plexiConfig.shaderCreateInfos[2].shaderName;
+    plexiConfig.bufferCreateInfos[2].setLayout( {
+            {Plexi::Shaders::Float3, "in_positionCoords"},
+            {Plexi::Shaders::Float2, "in_textureCoords"}
+    });
+
+    plexiConfig.bufferCreateInfos[2].vertexArray = Plexi::Buffer::FULL_SCREEN_VERTICES_WITH_TEXTURE;
+    plexiConfig.bufferCreateInfos[2].vertexArraySize = Plexi::Buffer::FULL_SCREEN_VERTICES_WITH_TEXTURE_SIZE;
+    plexiConfig.bufferCreateInfos[2].indexArray = Plexi::Buffer::SQUARE_INDICES;
+    plexiConfig.bufferCreateInfos[2].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
 
     Plexi::initPlexi(plexiConfig);
     Plexi::TextureCreateInfo textureCreateInfo = {};

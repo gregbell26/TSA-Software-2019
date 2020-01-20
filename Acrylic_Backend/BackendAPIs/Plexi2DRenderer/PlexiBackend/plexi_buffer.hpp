@@ -75,6 +75,15 @@ namespace Plexi::Buffer {
     };
     const size_t SQUARE_VERTICES_WITH_TEXTURE_SIZE = 20 * sizeof(float);
 
+    const float FULL_SCREEN_VERTICES_WITH_TEXTURE[20] {
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    const size_t FULL_SCREEN_VERTICES_WITH_TEXTURE_SIZE =  20 * sizeof(float);
+
     const float TRIANGLE_VERTICES_NO_TEXTURE[9] {//3X3
         -0.5f, -0.5f, 0.0f,
         0.25f, 0.25f, 0.0f,

@@ -19,6 +19,10 @@ struct PlexiGFX_RequiredInformation{
     size_t vulkan_EXT_SIZE = 0;
 
     std::string appName = "powered by Plexi 2D";
+
+    bool cacheEnabled = false;
+
+
 };
 
 struct PlexiGFX_OptionalInformation {
@@ -110,6 +114,10 @@ public:
     virtual bool initBackend() = 0;
 
     virtual void createGraphicsPipeline(const Plexi::Shaders::ShaderCreateInfo& shaderCreateInfo, const Plexi::Buffer::BufferCreateInfo& bufferCreateInfo) = 0;
+
+    virtual void enableTextCache(bool newStatus) = 0;
+
+    virtual void cacheTextNow() = 0;
 
     virtual void addTexture(Plexi2DTexture* texture) = 0;
 
