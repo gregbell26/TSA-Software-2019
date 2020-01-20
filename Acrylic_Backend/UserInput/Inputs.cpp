@@ -1,9 +1,4 @@
-//
-// Created by Corbin Estes on 1/18/20.
-//
-#include "Input.hpp"
-#include "KeyInput.hpp"
-#include "MouseInput.hpp"
+#include "Inputs.hpp"
 
 namespace Inputs {
     template <typename T>
