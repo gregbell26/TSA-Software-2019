@@ -161,7 +161,7 @@ int main(){
     unsigned frames = 0;
     glfwSwapInterval(1);
     Plexi::submitScene({txtObj1, txtObj2, txtObj3});
-    Plexi::submitScene({Obj7});
+//    Plexi::submitScene({Obj7});
     while(!glfwWindowShouldClose(Plexi::getWindowRef())){
         glfwPollEvents();
         Plexi::onUpdate();

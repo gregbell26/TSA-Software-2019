@@ -5,12 +5,29 @@ project(Acrylic2D)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCE_FILES debugger.cpp)
+set(SOURCE_FILES DocumentationDemo.cpp)
 set(HEADER_FILES)
 
 #Add all sub projects
-add_subdirectory(Entity_Layer)
+#include TriHard Studios Helper Libs
+include_directories(Acrylic_Backend/BackendAPIs/BackendAPIs/required/trihardstudios/include)
+
+#Include OpenGL
+include_directories(Acrylic_Backend/BackendAPIs/Plexi2DRenderer/GraphicsAPIs/required/glad/include)
+
+#Include GLM
+include_directories(Acrylic_Backend/BackendAPIs/Plexi2DRenderer/GraphicsAPIs/required/glm/include)
+
+#Include GLFW3
+include_directories(Acrylic_Backend/BackendAPIs/BackendAPIs/required/GLFW3/include)
+
+#Inlcude FreeType for font loading and rastiation
+include_directories(Acrylic_Backend/BackendAPIs/required/FreeType/include)
+
+#add_subdirectory(Entity_Layer)
 add_subdirectory(Acrylic_Backend)
+
+include_directories(Acrylic_Backend)
 
 #Sub Project Includes
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -36,4 +53,5 @@ endif()
 #Lib Includes
 
 add_executable(Acrylic2D ${SOURCE_FILES} ${HEADER_FILES})
+
 target_link_libraries(Acrylic2D AcrylicEngine)

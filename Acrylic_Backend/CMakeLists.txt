@@ -20,8 +20,8 @@ include_directories(./BackendAPIs/BackendAPIs/required/GLFW3/include)
 #Inlcude FreeType for font loading and rastiation
 include_directories(./../BackendAPIs/required/FreeType/include)
 
-#include Nlohmann JSON
-include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
+##include Nlohmann JSON
+#include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
 
 
 
