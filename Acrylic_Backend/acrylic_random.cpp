@@ -2,7 +2,7 @@
 // Created by coolh on 1/8/2020.
 //
 
-#include "Random.h"
+#include "acrylic_random.h"
 
     std::random_device generator;
     std::uniform_int_distribution <int> distribution(0,256);
@@ -57,7 +57,7 @@
         }
         return glm::vec3(fH, fS, fV);
     }
-    glm::vec3 A2D::Random::Random::HSVtoRGB( glm::vec3 hsv){
+    glm::vec3 A2D::Random::Random::HSVtoRGB(glm::vec3 hsv){
         float fH = hsv.x;
         float fS = hsv.y;
         float fV = hsv.z;
