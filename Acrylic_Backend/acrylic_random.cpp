@@ -4,58 +4,62 @@
 
 #include "acrylic_random.h"
 
-    std::random_device generator;
-    std::uniform_int_distribution <int> distribution(0,256);
-    std::uniform_int_distribution <int> distribute(0,99);
-    std::uniform_int_distribution <int> distrib(0,359);
+    std::random_device generator; // how generates the random number
+    std::uniform_int_distribution <int> distribution(0,256); // range for RGB
+    std::uniform_int_distribution <int> distribute(0,99); // range for SV
+    std::uniform_int_distribution <int> distrib(0,359); // range for H
 
     glm::vec3 A2D::Random::Random::ranRGB()
     {
         return glm::vec3(distribution(generator), distribution(generator), distribution(generator));
-    }
+    } // generates the RGB
 
     glm::vec3 A2D::Random::Random::ranHSV()
     {
         return glm::vec3(distrib(generator), distribute(generator), distribute(generator));
-    }
+    } // generates the HSV
 
     glm::vec3 A2D::Random::Random::RGBtoHSV(glm::vec3 rgb) {
-        float fH;
-        float fS;
-        float fV;
-        float fR = rgb.x;
-        float fG = rgb.y;
-        float fB = rgb.z;
-        float fCMax = std::fmax(std::fmax(fR, fG), fB);
-        float fCMin = std::fmin(std::fmin(fR, fG), fB);
-        float fDelta = fCMax - fCMin;
+        float fH; // hue
+        float fS; // saturation
+        float fV; // value
+        float fR = rgb.x; // red %
+        float fG = rgb.y; // green %
+        float fB = rgb.z; // blue %
+        float fCMax = std::fmax(std::fmax(fR, fG), fB); // max value
+        float fCMin = std::fmin(std::fmin(fR, fG), fB); // min value
+        float fDelta = fCMax - fCMin; // the difference in the max and min
 
-        if(fDelta > 0) {
-            if(fCMax == fR) {
-                fH = 60 * (fmod(((fG - fB) / fDelta), 6));
-            } else if(fCMax == fG) {
-                fH = 60 * (((fB - fR) / fDelta) + 2);
-            } else if(fCMax == fB) {
-                fH = 60 * (((fR - fG) / fDelta) + 4);
+        if(fDelta > 0) { // checks if fDelta is positive
+            if(fCMax == fR) {  //checks the max against red color value
+                fH = 60 * (fmod(((fG - fB) / fDelta), 6)); // calculates the hue value
+            }
+            else if(fCMax == fG) { //checks the max against green color value if not red
+                fH = 60 * (((fB - fR) / fDelta) + 2); // calculates the hue value
+            }
+            else if(fCMax == fB) {  //checks the max against blue color value if not red or green
+                fH = 60 * (((fR - fG) / fDelta) + 4);// calculates the hue value
             }
 
-            if(fCMax > 0) {
-                fS = fDelta / fCMax;
-            } else {
-                fS = 0;
+            if(fCMax > 0) { // checks that fCMax is positive
+                fS = fDelta / fCMax; // if it is S is the difference divided by the max
+            }
+            else {
+                fS = 0; // S becomes 0
             }
 
-            fV = fCMax;
-        } else {
-            fH = 0;
+            fV = fCMax; // fV is fCMax if fDelta is positive
+        }
+        else {
+            fH = 0; // if fDelta is 0 then fH and fS are 0
             fS = 0;
             fV = fCMax;
         }
 
         if(fH < 0) {
-            fH = 360 + fH;
+            fH = 360 + fH; // if fH is negative add 360 
         }
-        return glm::vec3(fH, fS, fV);
+        return glm::vec3(fH, fS, fV); // returns the conversion
     }
     glm::vec3 A2D::Random::Random::HSVtoRGB(glm::vec3 hsv){
         float fH = hsv.x;
