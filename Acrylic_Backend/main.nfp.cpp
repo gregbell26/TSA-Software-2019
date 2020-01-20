@@ -1,6 +1,6 @@
 #include "./BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_fileSystem.hpp"
-#include "acrylic_frameTimer.h"
+#include "Timers/acrylic_frameTimer.h"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_bitmap.h"
 #include "./BackendAPIs/AcrylicSaveEngine/FileSystemBackend/acrylic_font.hpp"
 #include <iostream>
@@ -48,24 +48,25 @@ TextRenderTask txtObj3 {
 
 
 
-using namespace A2D::Filesystem::Loaders::Json;
+using namespace A2D::Filesystem::Loaders::JSON;
 using namespace A2D::Filesystem::Loaders;
 
 int main(){
-//    auto j = interpretJson(readFile("test1.json"));
-//    auto j2 = interpretJson(readFile("test2.json"));
-//    std::cout << j.smap.at("str") << std::endl;
-//    std::cout << j.imap.at("int") << std::endl;
-//    std::cout << j.fmap.at("flo") << std::endl;
-//    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
-//    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
-//    std::cout << j2.jamap.at("pools")[0].jmap.at("rolls").imap.at("max");
+    initLogger("A2D", log_severity_information, log_mode_all)
+
+    auto j = interpretJson(readFile("test1.json"));
+    auto j2 = interpretJson(readFile("test2.json"));
+    std::cout << j.smap.at("str") << std::endl;
+    std::cout << j.imap.at("int") << std::endl;
+    std::cout << j.fmap.at("flo") << std::endl;
+    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
+    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
+    std::cout << j2.jamap.at("pools")[0].jmap.at("rolls").imap.at("max");
 //    return 0;
 
-    Timer::frameTimer timer;
+    A2D::Timers::FrameTimer timer;
 
 
-    initLogger("A2D", log_severity_information, log_mode_all)
     Plexi::PlexiConfig plexiConfig = {};
     plexiConfig.preferredGraphicsBackend = Plexi::PLEXI_GFX_BACKENDS::PLEXI_OPENGL;
     plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
