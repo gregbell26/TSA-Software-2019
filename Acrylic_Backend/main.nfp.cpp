@@ -71,7 +71,8 @@ int main(){
     plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
     plexiConfig.clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
     plexiConfig.plexiGFXRequiredInformation.appName = "Acrylic Testinator 1000";
-    plexiConfig.shaderCount = 2;
+    plexiConfig.plexiGFXRequiredInformation.cacheEnabled = true;
+    plexiConfig.shaderCount = 3;
     plexiConfig.shaderCreateInfos.resize(plexiConfig.shaderCount);
     plexiConfig.shaderCreateInfos[0].shaderName = "plexi_default_primitive";
     plexiConfig.shaderCreateInfos[0].shaderLanguage = plexiConfig.defaultShaderLanguage;
@@ -81,9 +82,13 @@ int main(){
     plexiConfig.shaderCreateInfos[1].shaderLanguage = plexiConfig.defaultShaderLanguage;
     plexiConfig.shaderCreateInfos[1].glslVertexCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_vertex_default_text", plexiConfig.defaultShaderLanguage));
     plexiConfig.shaderCreateInfos[1].glslFragmentCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_fragment_default_text", plexiConfig.defaultShaderLanguage));
+    plexiConfig.shaderCreateInfos[2].shaderName = "cache";
+    plexiConfig.shaderCreateInfos[2].shaderLanguage = plexiConfig.defaultShaderLanguage;
+    plexiConfig.shaderCreateInfos[2].glslVertexCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_vertex_default_cached", plexiConfig.defaultShaderLanguage));
+    plexiConfig.shaderCreateInfos[2].glslFragmentCode = Plexi::Shaders::loadGLSLShaderFromFile(Plexi::Shaders::locateShader("plexi_fragment_default_cached", plexiConfig.defaultShaderLanguage));
     plexiConfig.bufferCreateInfos.resize(plexiConfig.shaderCount);
     plexiConfig.bufferCreateInfos[0].shaderName = plexiConfig.shaderCreateInfos[0].shaderName;
-    plexiConfig.bufferCreateInfos[0].setLayout({
+    plexiConfig.bufferCreateInfos[0].setLayout( {
        {Plexi::Shaders::Float3, "in_positionCoords"},
        {Plexi::Shaders::Float2, "in_textureCoords"}
     });
@@ -100,6 +105,16 @@ int main(){
 
     plexiConfig.bufferCreateInfos[1].vertexArraySize = Plexi::Buffer::TEXT_VERTICES_SIZE;
 
+    plexiConfig.bufferCreateInfos[2].shaderName = plexiConfig.shaderCreateInfos[2].shaderName;
+    plexiConfig.bufferCreateInfos[2].setLayout( {
+            {Plexi::Shaders::Float3, "in_positionCoords"},
+            {Plexi::Shaders::Float2, "in_textureCoords"}
+    });
+
+    plexiConfig.bufferCreateInfos[2].vertexArray = Plexi::Buffer::FULL_SCREEN_VERTICES_WITH_TEXTURE;
+    plexiConfig.bufferCreateInfos[2].vertexArraySize = Plexi::Buffer::FULL_SCREEN_VERTICES_WITH_TEXTURE_SIZE;
+    plexiConfig.bufferCreateInfos[2].indexArray = Plexi::Buffer::SQUARE_INDICES;
+    plexiConfig.bufferCreateInfos[2].indexArraySize = Plexi::Buffer::SQUARE_INDICES_SIZE;
 
     Plexi::initPlexi(plexiConfig);
     Plexi::TextureCreateInfo textureCreateInfo = {};

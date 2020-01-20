@@ -42,6 +42,10 @@ public:
 
     void submitScene(const std::vector<TextRenderTask>& textRenderTasks) override;
 
+    void enableTextCache(bool newStatus) override;
+
+    void cacheTextNow() override;
+
     void addTexture(Plexi2DTexture* texture) override;
 
     uint32_t addFontFace(FT_Face& fontFace, uint32_t charCount) override;
@@ -111,6 +115,7 @@ public:
 private:
     const char* appName;
     bool requiredInfoSet = false;
+    bool cacheEnabled = false;
 
     GLFWwindow* glfwWindow;
 
@@ -119,6 +124,8 @@ private:
     std::map<std::string, pipelineComponentMap> activePipelines;
 
     GLuint renderedTextCache = 0;
+
+    glm::vec4 activeClearColor = {};
 
 };
 
