@@ -2,7 +2,13 @@
 // Created by Corbin Estes on 1/17/20.
 //
 
-#include "Input.cpp"
+#include "Input.hpp"
+#include "KeyInput.hpp"
+
+
+#include "MouseInput.hpp"
+
+//#include "Input.cpp"
 
 #include "MouseInput.hpp"
 namespace Inputs::Mouse{

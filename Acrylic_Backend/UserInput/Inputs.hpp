@@ -1,9 +1,9 @@
 #ifndef ACRYLIC2D_INPUTS_HPP
 #define ACRYLIC2D_INPUTS_HPP
 
-#include "Input.hpp"
-#include "KeyInput.hpp"
-#include "MouseInput.hpp"
+//#include "Input.hpp"
+//#include "KeyInput.hpp"
+//#include "MouseInput.hpp"
 
 namespace Inputs {
     template <typename T>
@@ -37,7 +37,7 @@ namespace Inputs {
     Input<GLFWwindow *> newInput(InputType type);
     Input<GLFWwindow *> newInput(int key, InputType type);
     Input<GLFWwindow*> newInput(int key, int modifiers, InputType type);
-    template <class R>
+    template <typename R>
     Input<R> newInput(int key, R (*action)(GLFWwindow *), InputType type);
     template <class R>
     Input<R> newInput(int key, int modifiers, R (*action)(GLFWwindow *), InputType type);

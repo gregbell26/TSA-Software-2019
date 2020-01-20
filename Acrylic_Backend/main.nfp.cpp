@@ -8,6 +8,8 @@
 #include "acrylic_random.h"
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
+#include "./UserInput/acrylic_input_core.hpp"
+
 
 StandardRenderTask Obj7 = {
         "plexi_default_primitive",
@@ -50,18 +52,23 @@ TextRenderTask txtObj3 {
 
 using namespace A2D::Filesystem::Loaders::JSON;
 using namespace A2D::Filesystem::Loaders;
+void doTheThing(GLFWwindow *win){
+    logInformation("clicked: w")
+}
 
 int main(){
     initLogger("A2D", log_severity_information, log_mode_all)
 
-    auto j = interpretJson(readFile("test1.json"));
-    auto j2 = interpretJson(readFile("test2.json"));
-    std::cout << j.smap.at("str") << std::endl;
-    std::cout << j.imap.at("int") << std::endl;
-    std::cout << j.fmap.at("flo") << std::endl;
-    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
-    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
-    std::cout << j2.jamap.at("pools")[0].jmap.at("rolls").imap.at("max");
+//    Inputs::Input<void> input = Inputs::newInput(GLFW_KEY_W, doTheThing, Inputs::InputType::none);
+
+//    auto j = interpretJson(readFile("test1.json"));
+//    auto j2 = interpretJson(readFile("test2.json"));
+//    std::cout << j.smap.at("str") << std::endl;
+//    std::cout << j.imap.at("int") << std::endl;
+//    std::cout << j.fmap.at("flo") << std::endl;
+//    std::cout << j.jmap.at("json1").smap.at("in1") << std::endl;
+//    std::cout << j.jmap.at("json1").jmap.at("json2").smap.at("in2") << std::endl;
+//    std::cout << j2.jamap.at("pools")[0].jmap.at("rolls").imap.at("max");
 //    return 0;
 
     A2D::Timers::FrameTimer timer;
@@ -127,7 +134,7 @@ int main(){
     textureCreateInfo.textureData.dataType.generic = &data;
     textureCreateInfo.textureData.usingGenericType = true;
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
-    A2D::Filesystem::Loaders::gameDataPath = "./textures/";
+    setGameDataPath("./textures/");
     //auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image(A2D::Filesystem::Loaders::readFile("dog.bmp"));
     auto* DogImage = new A2D::Filesystem::ImageLoaders::Bitmaps::Image(std::filesystem::path("./textures/dog.bmp"));
     Plexi::TextureCreateInfo doginfo = {};

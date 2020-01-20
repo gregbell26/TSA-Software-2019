@@ -1,15 +1,10 @@
+#include "Input.hpp"
+#include "KeyInput.hpp"
+#include "MouseInput.hpp"
+
 #include "Inputs.hpp"
 
 namespace Inputs {
-    template <typename T>
-    std::vector<Input<T>> inputList;
-    template <typename T>
-    std::vector<Key::KeyInput<T>> keyInputList;
-    template <typename T>
-    std::vector<Mouse::MouseInput<T>> mouseInputList;
-    template <typename T>
-    std::vector<Mouse::CursorInput<T>> cursorInputList;
-
     //Key Callback
     //Runs through all key activated inputs and runs them if they match the pressed key
     template <typename T>
@@ -94,7 +89,7 @@ namespace Inputs {
         std::vector<Input<GLFWwindow*>> *list = &inputList<GLFWwindow*>;
         return Input<GLFWwindow*>(key, modifiers, list, type);
     }
-    template <class R>
+    template <typename R>
     Input<R> newInput(int key, R (*action)(GLFWwindow *), InputType type){
         std::vector<Input<R>> *list = &inputList<R>;
         return Input<R>(key, action, list, type);

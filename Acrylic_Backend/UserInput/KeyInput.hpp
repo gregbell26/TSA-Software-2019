@@ -5,7 +5,8 @@
 #ifndef ACRYLIC2D_KEYINPUT_HPP
 #define ACRYLIC2D_KEYINPUT_HPP
 
-#include "Input.hpp"
+#include <GLFW/glfw3.h>
+//#include "Input.hpp"
 namespace Inputs::Key{
     GLFWwindow* getWindowRef(GLFWwindow*, int);
 

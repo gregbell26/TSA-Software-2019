@@ -2,9 +2,10 @@
 // Created by Corbin Estes on 1/17/20.
 //
 
-#include "Input.cpp"
-
+#include "Input.hpp"
+#include "MouseInput.hpp"
 #include "KeyInput.hpp"
+
 namespace Inputs::Key{
     GLFWwindow* getWindowRef(GLFWwindow* window, int act){
         return window;
