@@ -11,7 +11,7 @@
 #include "../BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
 
 namespace Inputs{
-    struct trigger {
+    struct Trigger {
         int key;
         int modifiers;
     };
@@ -28,7 +28,7 @@ namespace Inputs{
         InputType type;
     public:
         R (*action)(GLFWwindow*);
-        trigger key = {};
+        Trigger key = {};
         Input();
         Input(std::vector<Input<GLFWwindow *>> *, InputType type);
         Input(int key, std::vector<Input<GLFWwindow *>> *, InputType type);
@@ -36,10 +36,10 @@ namespace Inputs{
         Input(int key, R (*action)(GLFWwindow *), std::vector<Input<R>> *, InputType type);
         Input(int key, int modifiers, R (*action)(GLFWwindow *), std::vector<Input<R>> *, InputType type);
 
-        void setKey(const trigger &key);
+        void setKey(const Trigger &key);
         virtual void setAction(R (*action)(GLFWwindow *));
 
-        const trigger &getKey() const;
+        const Trigger &getKey() const;
 
         virtual std::function<R(GLFWwindow*)> getAction() const;
 

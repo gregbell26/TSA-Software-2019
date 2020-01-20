@@ -13,7 +13,7 @@ namespace Inputs::Key{
     class KeyInput: public Input<R> {
     public:
         R (*action)(GLFWwindow*, int act);
-        trigger key = {};
+        Trigger key = {};
         explicit KeyInput(std::vector<KeyInput<GLFWwindow *>> *);
         KeyInput(int key, std::vector<KeyInput<GLFWwindow *>> *);
         KeyInput(int key, int modifiers, std::vector<KeyInput<GLFWwindow *>> *);
