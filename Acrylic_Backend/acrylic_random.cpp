@@ -68,36 +68,42 @@
         float red;
         float green;
         float blue;
-        float colorIntensity = brightness * saturation; 
-        float fHPrime = fmod(hue / 60.0, 6); //
+        float colorIntensity = brightness * saturation;
+        float fHPrime = fmod(hue / 60.0, 6); // 
         float fX = colorIntensity * (1 - fabs(fmod(fHPrime, 2) - 1)); //
-        float fM = brightness - colorIntensity; //
+        float fM = brightness - colorIntensity; // added to red green and blue to complete conversion
 
         if(0 <= fHPrime && fHPrime < 1) {
             red = colorIntensity;
             green = fX;
             blue = 0;
-        } else if(1 <= fHPrime && fHPrime < 2) {
+        }
+        else if(1 <= fHPrime && fHPrime < 2) {
             red = fX;
             green = colorIntensity;
             blue = 0;
-        } else if(2 <= fHPrime && fHPrime < 3) {
+        }
+        else if(2 <= fHPrime && fHPrime < 3) {
             red = 0;
             green = colorIntensity;
             blue = fX;
-        } else if(3 <= fHPrime && fHPrime < 4) {
+        }
+        else if(3 <= fHPrime && fHPrime < 4) {
             red = 0;
             green = fX;
             blue = colorIntensity;
-        } else if(4 <= fHPrime && fHPrime < 5) {
+        }
+        else if(4 <= fHPrime && fHPrime < 5) {
             red = fX;
             green = 0;
             blue = colorIntensity;
-        } else if(5 <= fHPrime && fHPrime < 6) {
+        }
+        else if(5 <= fHPrime && fHPrime < 6) {
             red = colorIntensity;
             green = 0;
             blue = fX;
-        } else {
+        }
+        else {
             red = 0;
             green = 0;
             blue = 0;
