@@ -96,8 +96,8 @@ A2D::Filesystem::Loaders::Bitmaps::Image::Image(const std::filesystem::path File
             int offset;
         try {
             offset = bff2[10];
-            height = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
-            width = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
+            width = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
+            height = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
             bytes = bff2[28] / 8;
         }
         catch (std::out_of_range) {
