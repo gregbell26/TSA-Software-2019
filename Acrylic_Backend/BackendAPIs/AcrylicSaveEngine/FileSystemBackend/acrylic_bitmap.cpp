@@ -106,7 +106,7 @@ A2D::Filesystem::Loaders::Bitmaps::Image::Image(const std::filesystem::path File
                 return;
         }
 
-        length = height * width * bytes;
+        length = abs(height * width * bytes);
         //        m = "";
         //        m = m + ("Offset = " + offset) + (" Height = " + height) + (" Width = " + width);
         logInformation("112 Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " + std::to_string(width))
