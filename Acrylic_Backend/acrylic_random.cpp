@@ -20,46 +20,46 @@
     } // generates the HSV
 
     glm::vec3 A2D::Random::Random::RGBtoHSV(glm::vec3 rgb) {
-        float fH; // hue
-        float fS; // saturation
-        float fV; // value
-        float fR = rgb.x; // red %
-        float fG = rgb.y; // green %
-        float fB = rgb.z; // blue %
-        float fCMax = std::fmax(std::fmax(fR, fG), fB); // max value
-        float fCMin = std::fmin(std::fmin(fR, fG), fB); // min value
-        float fDelta = fCMax - fCMin; // the difference in the max and min
+        float Hue; // hue
+        float Saturation; // saturation
+        float Brightness; // value
+        float red = rgb.x; // red %
+        float green = rgb.y; // green %
+        float blue = rgb.z; // blue %
+        float maxValue = std::fmax(std::fmax(red, green), blue); // max value
+        float minValue = std::fmin(std::fmin(red, green), blue); // min value
+        float delta = maxValue - minValue; // the difference in the max and min
 
-        if(fDelta > 0) { // checks if fDelta is positive
-            if(fCMax == fR) {  //checks the max against red color value
-                fH = 60 * (fmod(((fG - fB) / fDelta), 6)); // calculates the hue value
+        if(delta > 0) { // checks if delta is positive
+            if(maxValue == red) {  //checks the max against red color value
+                Hue = 60 * (fmod(((green - blue) / delta), 6)); // calculates the hue value
             }
-            else if(fCMax == fG) { //checks the max against green color value if not red
-                fH = 60 * (((fB - fR) / fDelta) + 2); // calculates the hue value
+            else if(maxValue == green) { //checks the max against green color value if not red
+                Hue = 60 * (((blue - red) / delta) + 2); // calculates the hue value
             }
-            else if(fCMax == fB) {  //checks the max against blue color value if not red or green
-                fH = 60 * (((fR - fG) / fDelta) + 4);// calculates the hue value
+            else if(maxValue == blue) {  //checks the max against blue color value if not red or green
+                Hue = 60 * (((red - green) / delta) + 4);// calculates the hue value
             }
 
-            if(fCMax > 0) { // checks that fCMax is positive
-                fS = fDelta / fCMax; // if it is S is the difference divided by the max
+            if(maxValue > 0) { // checks that maxValue is positive
+                Saturation = delta / maxValue; // if it is S is the difference divided by the max
             }
             else {
-                fS = 0; // S becomes 0
+                Saturation = 0; // S becomes 0
             }
 
-            fV = fCMax; // fV is fCMax if fDelta is positive
+            Brightness = maxValue; // Brightness is maxValue if delta is positive
         }
         else {
-            fH = 0; // if fDelta is 0 then fH and fS are 0
-            fS = 0;
-            fV = fCMax;
+            Hue = 0; // if delta is 0 then Hue and Saturation are 0
+            Saturation = 0;
+            Brightness = maxValue;
         }
 
-        if(fH < 0) {
-            fH = 360 + fH; // if fH is negative add 360
+        if(Hue < 0) {
+            Hue = 360 + Hue; // if Hue is negative add 360
         }
-        return glm::vec3(fH, fS, fV); // returns the conversion
+        return glm::vec3(Hue, Saturation, Brightness); // returns the conversion
     }
     glm::vec3 A2D::Random::Random::HSVtoRGB(glm::vec3 hsv){
         float hue = hsv.x;
