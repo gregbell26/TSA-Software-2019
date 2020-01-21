@@ -94,7 +94,7 @@ A2D::Filesystem::Loaders::Bitmaps::Image::Image(const std::filesystem::path File
         }
         logInformation("95 Extracting header information")
             int offset;
-            bool wid = true, hit = true;
+            bool wid = true, hit = true; //true if not fliped
         try {
             offset = bff2[10];
             width = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
@@ -125,34 +125,48 @@ A2D::Filesystem::Loaders::Bitmaps::Image::Image(const std::filesystem::path File
         logInformation("112 Loaded BMP data\nOffset: " + std::to_string(offset) + "\nHeight: " + std::to_string(height) + "\nWidth: " + std::to_string(width))
 
             imageData = new unsigned char[length]();
-
+        //do the flippy if necessary 
         if (hit) {
-            //for (int i = offset; i < length; i++) {
-            //    imageData[i - offset] = bff2[i];
-            //}
-            int pos = 0;
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    for (int k = 0; k < bytes; k++) {
-                        pos = (i * width * bytes) + (j * bytes) + k;
-                        imageData[pos] = bff2[pos + offset];
+            if (wid) {
+                int pos = 0;
+                for (int i = 0; i < height; i++) {
+                    for (int j = 0; j < width; j++) {
+                        for (int k = 0; k < bytes; k++) {
+                            pos = (i * width * bytes) + (j * bytes) + k;
+                            imageData[pos] = bff2[pos + offset];
+                        }
+                    }
+                }
+            }
+            else {
+                int pos = 0;
+                for (int i = 0; i < height; i++) {
+                    for (int j = 0; j < width; j++) {
+                        for (int k = 0; k < bytes; k++) {
+                            imageData[(i * width * bytes) + ((width - j - 1) * bytes) + k] = bff2[(i * width * bytes) + (j * bytes) + k + offset];
+                        }
                     }
                 }
             }
         }
-        else
-        {
-            //for (int i = offset; i < length; i++) {
-            //    for (int j = 0; j < bytes; j++) {
-            //        imageData[i - offset] = bff2[(length)-i];
-            //    }
-            //}
-            int pos = 0;
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    for (int k = 0; k < bytes; k++) {
-                        //logInformation(std::to_string((height - i - 1)));
-                        imageData[((height - i - 1) * width * bytes) + (j * bytes) + k] = bff2[(i * width * bytes) + (j * bytes) + k + offset];
+        else {
+            if (wid) {
+                int pos = 0;
+                for (int i = 0; i < height; i++) {
+                    for (int j = 0; j < width; j++) {
+                        for (int k = 0; k < bytes; k++) {
+                            imageData[((height - i - 1) * width * bytes) + (j * bytes) + k] = bff2[(i * width * bytes) + (j * bytes) + k + offset];
+                        }
+                    }
+                }
+            }
+            else {
+                int pos = 0;
+                for (int i = 0; i < height; i++) {
+                    for (int j = 0; j < width; j++) {
+                        for (int k = 0; k < bytes; k++) {
+                            imageData[((height - i - 1) * width * bytes) + ((width - j - 1) * bytes) + k] = bff2[(i * width * bytes) + (j * bytes) + k + offset];
+                        }
                     }
                 }
             }
