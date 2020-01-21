@@ -94,11 +94,24 @@ A2D::Filesystem::Loaders::Bitmaps::Image::Image(const std::filesystem::path File
         }
         logInformation("95 Extracting header information")
             int offset;
+            bool wid = true, hit = true;
         try {
             offset = bff2[10];
             width = bff2[18] | (bff2[19] << 8) | (bff2[20] << 16) | (bff2[21] << 24);
             height = bff2[22] | (bff2[23] << 8) | (bff2[24] << 16) | (bff2[25] << 24);
             bytes = bff2[28] / 8;
+            if (width < 0)
+            {
+                width *= -1;
+                wid = false;
+                logInformation("Negative Width");
+            }
+            if (height < 0)
+            {
+                height *= -1;
+                hit = false;
+                logInformation("Negative Height");
+            }
         }
         catch (std::out_of_range) {
             //            logError("File smaller then expected header length")
@@ -113,8 +126,36 @@ A2D::Filesystem::Loaders::Bitmaps::Image::Image(const std::filesystem::path File
 
             imageData = new unsigned char[length]();
 
-        for (int i = offset; i < length; i++) {
-            imageData[i - offset] = bff2[i];
+        if (hit) {
+            //for (int i = offset; i < length; i++) {
+            //    imageData[i - offset] = bff2[i];
+            //}
+            int pos = 0;
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    for (int k = 0; k < bytes; k++) {
+                        pos = (i * width * bytes) + (j * bytes) + k;
+                        imageData[pos] = bff2[pos + offset];
+                    }
+                }
+            }
+        }
+        else
+        {
+            //for (int i = offset; i < length; i++) {
+            //    for (int j = 0; j < bytes; j++) {
+            //        imageData[i - offset] = bff2[(length)-i];
+            //    }
+            //}
+            int pos = 0;
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    for (int k = 0; k < bytes; k++) {
+                        //logInformation(std::to_string((height - i - 1)));
+                        imageData[((height - i - 1) * width * bytes) + (j * bytes) + k] = bff2[(i * width * bytes) + (j * bytes) + k + offset];
+                    }
+                }
+            }
         }
         // ...buffer contains the entire file...
 

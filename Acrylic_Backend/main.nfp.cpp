@@ -136,7 +136,7 @@ int main(){
     uint32_t plainWhiteTexture = Plexi::Texture::create2DTexture(textureCreateInfo, Plexi::getActiveBackend());
     setGameDataPath("./textures/");
     //auto* DogImage = new A2D::Filesystem::Loaders::Bitmaps::Image(A2D::Filesystem::Loaders::readFile("dog.bmp"));
-    auto* DogImage = new A2D::Filesystem::Loaders::Bitmaps::Image(std::filesystem::path("./textures/test.bmp"));
+    auto* DogImage = new A2D::Filesystem::Loaders::Bitmaps::Image(std::filesystem::path("./textures/MonarchTSALogo.bmp"));
     Plexi::TextureCreateInfo doginfo = {};
     doginfo.height = DogImage->height;
     doginfo.width = DogImage->width;
