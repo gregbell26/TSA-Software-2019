@@ -18,8 +18,8 @@ namespace Inputs::Key{
         explicit KeyInput(std::vector<KeyInput<GLFWwindow *>> *);
         KeyInput(int key, std::vector<KeyInput<GLFWwindow *>> *);
         KeyInput(int key, int modifiers, std::vector<KeyInput<GLFWwindow *>> *);
-        KeyInput(int key, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *);
-        KeyInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *);
+        KeyInput(int key, std::function<R(GLFWwindow *, int)> action, std::vector<KeyInput<R>> *);
+        KeyInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action, std::vector<KeyInput<R>> *);
 
         void setAction(R (*action)(GLFWwindow *, int));
 

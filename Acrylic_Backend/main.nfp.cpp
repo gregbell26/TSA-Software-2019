@@ -52,14 +52,14 @@ TextRenderTask txtObj3 {
 
 using namespace A2D::Filesystem::Loaders::JSON;
 using namespace A2D::Filesystem::Loaders;
-void doTheThing(GLFWwindow *win){
+std::function<void(GLFWwindow *)> doTheThing = [] (GLFWwindow *) {
     logInformation("clicked: w")
-}
+};
 
 int main(){
     initLogger("A2D", log_severity_information, log_mode_all)
 
-//    Inputs::Input<void> input = Inputs::newInput(GLFW_KEY_W, doTheThing, Inputs::InputType::none);
+    Inputs::Input<void> input = Inputs::newInput(GLFW_KEY_W, doTheThing, Inputs::InputType::none);
 
 //    auto j = interpretJson(readFile("test1.json"));
 //    auto j2 = interpretJson(readFile("test2.json"));

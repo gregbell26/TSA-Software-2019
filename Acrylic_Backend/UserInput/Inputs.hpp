@@ -38,32 +38,32 @@ namespace Inputs {
     Input<GLFWwindow *> newInput(int key, InputType type);
     Input<GLFWwindow*> newInput(int key, int modifiers, InputType type);
     template <typename R>
-    Input<R> newInput(int key, R (*action)(GLFWwindow *), InputType type);
+    Input<R> newInput(int key, std::function<R(GLFWwindow *)> action, InputType type);
     template <class R>
-    Input<R> newInput(int key, int modifiers, R (*action)(GLFWwindow *), InputType type);
+    Input<R> newInput(int key, int modifiers, std::function<R(GLFWwindow *)> action, InputType type);
 
     //KeyInput constructors
     Key::KeyInput<GLFWwindow*> newKeyInput();
     Key::KeyInput<GLFWwindow*> newKeyInput(int key);
     Key::KeyInput<GLFWwindow*> newKeyInput(int key, int modifiers);
     template <class R>
-    Key::KeyInput<R> newKeyInput(int key, R (*action)(GLFWwindow *, int));
+    Key::KeyInput<R> newKeyInput(int key, std::function<R(GLFWwindow *, int)> action);
     template <class R>
-    Key::KeyInput<R> newKeyInput(int key, int modifiers, R (*action)(GLFWwindow *, int));
+    Key::KeyInput<R> newKeyInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action);
 
     //MouseButtonInput constructors
     Mouse::MouseInput<GLFWwindow *> newMouseInput();
     Mouse::MouseInput<GLFWwindow*> newMouseInput(int key);
     Mouse::MouseInput<GLFWwindow*> newMouseInput(int key, int modifiers);
     template <class R>
-    Mouse::MouseInput<R> newMouseInput(int key, R (*action)(GLFWwindow *, int));
+    Mouse::MouseInput<R> newMouseInput(int key, std::function<R(GLFWwindow *, int)> action);
     template <class R>
-    Mouse::MouseInput<R> newMouseInput(int key, int modifiers, R (*action)(GLFWwindow *, int));
+    Mouse::MouseInput<R> newMouseInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action);
 
     //CursorMoveInput constructors
     Mouse::CursorInput<void> newCursorInput();
     template <class R>
-    Mouse::CursorInput<R> newCursorInput(R (*action)(GLFWwindow *, double, double));
+    Mouse::CursorInput<R> newCursorInput(std::function<R(GLFWwindow *, double, double)> action);
 }
 
 

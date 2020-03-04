@@ -26,13 +26,13 @@ namespace Inputs::Key{
         list->push_back(*this);
     }
     template <class R>
-    KeyInput<R>::KeyInput(int key, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *list){
+    KeyInput<R>::KeyInput(int key, std::function<R(GLFWwindow *, int)> action, std::vector<KeyInput<R>> *list){
         KeyInput::key = {key, 0};
         KeyInput::action = action;
         list->push_back(*this);
     }
     template <class R>
-    KeyInput<R>::KeyInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<KeyInput<R>> *list){
+    KeyInput<R>::KeyInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action, std::vector<KeyInput<R>> *list){
         KeyInput::key = {key, modifiers};
         KeyInput::action = action;
         list->push_back(*this);
