@@ -16,8 +16,8 @@ namespace Inputs::Mouse{
         explicit MouseInput(std::vector<MouseInput<GLFWwindow *>> *list);
         MouseInput(int key, std::vector<MouseInput<GLFWwindow *>> *list);
         MouseInput(int key, int modifiers, std::vector<MouseInput<GLFWwindow *>> *list);
-        MouseInput(int key, R (*action)(GLFWwindow *, int), std::vector<MouseInput<R>> *list);
-        MouseInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<MouseInput<R>> *list);
+        MouseInput(int key, std::function<R(GLFWwindow *, int)> action, std::vector<MouseInput<R>> *list);
+        MouseInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action, std::vector<MouseInput<R>> *list);
 
         void setAction(R (*action)(GLFWwindow *, int));
 
@@ -32,9 +32,9 @@ namespace Inputs::Mouse{
     public:
         R (*action)(GLFWwindow*, double xOff, double yOff);
         explicit CursorInput(std::vector<CursorInput<void>> *list);
-        CursorInput(R (*action)(GLFWwindow *, double, double), std::vector<CursorInput<R>> *list);
+        CursorInput(std::function<R (GLFWwindow *, double, double)> action, std::vector<CursorInput<R>> *list);
 
-        void setAction(R (*action)(GLFWwindow *, double, double));
+        void setAction(std::function<R (GLFWwindow *, double, double)> action);
 
 //        std::function<R(GLFWwindow*, double, double)> getAction() const;
 

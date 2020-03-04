@@ -52,6 +52,8 @@ namespace A2D::Random {
         static glm::vec3 RGBtoHSV(glm::vec3 rgb);
 
         static glm::vec3 HSVtoRGB(glm::vec3 hsv);
+
+        int WeightedRandom(int Weights[]);
     };
 
 //    glm::vec3 ranRGB();
