@@ -77,6 +77,8 @@ private:
 
     void cacheText();
 
+    static void glfwFrameBufferResizeCallBack(GLFWwindow* _window, int _width, int _height);
+
     //Pipeline Helper Functions
     bool createShaders(const std::string& vertexSource, const std::string& fragmentSource, const std::string& shaderProgramName, pipelineComponentMap& pipelineMap);
 
@@ -113,19 +115,23 @@ public:
     };
 
 private:
-    const char* appName;
-    bool requiredInfoSet = false;
-    bool cacheEnabled = false;
+    std::map<std::string, pipelineComponentMap> activePipelines;
+
+    glm::vec4 activeClearColor = {};
 
     GLFWwindow* glfwWindow;
 
     uint32_t onUpdateErrorCounter = 0;
 
-    std::map<std::string, pipelineComponentMap> activePipelines;
+    uint32_t height = 720;
+    uint32_t width = 1280;
 
     GLuint renderedTextCache = 0;
 
-    glm::vec4 activeClearColor = {};
+    const char* appName;
+    bool requiredInfoSet = false;
+    bool cacheEnabled = false;
+    bool renderEnabled = false;
 
 };
 

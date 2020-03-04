@@ -30,6 +30,16 @@ static void glfwErrorCallBack(int errorCode, const char* description){
     //todo handle errors
 }
 
+void OpenGL::glfwFrameBufferResizeCallBack(GLFWwindow* _window, int _width, int _height){
+    glViewport(0, 0, _width, _height);
+    glMatrixMode(GL_PROJECTION);
+    float aspect = (float)_width / (float)_height;
+    glOrtho(-aspect, aspect, -1, 1, -1, 1);
+
+    glMatrixMode(GL_MATRIX_MODE);
+    glLoadIdentity();
+}
+
 #if !defined(MACOS)
 static void GLAPIENTRY openGLDebugMessageCallBack(GLenum source,
                                                   GLenum type,
@@ -72,7 +82,7 @@ bool OpenGL::createWindow() {
 
     glfwSetErrorCallback(glfwErrorCallBack);
 
-    glfwWindow = glfwCreateWindow(1280, 720, appName, nullptr, nullptr);
+    glfwWindow = glfwCreateWindow(width, height, appName, nullptr, nullptr);
 
     if(!glfwWindow){
         logError("Failed to create GLFW window")
@@ -80,6 +90,8 @@ bool OpenGL::createWindow() {
         return false;
     }
     //Im sure that there is more that needs to be done
+
+    glfwSetFramebufferSizeCallback(glfwWindow, glfwFrameBufferResizeCallBack);
 
     logInformation("Created GLFW window successfully")
     return true;
@@ -105,6 +117,14 @@ bool OpenGL::initCore() {
         logInformation("\tOpenGL Version: " + std::string() + (const char*) glGetString(GL_VERSION))
     }
 
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    float aspect = (float)width / (float)height;
+    glOrtho(-aspect, aspect, -1, 1, -1, 1);
+
+    glMatrixMode(GL_MATRIX_MODE);
+    glLoadIdentity();
+
     //Todo version check
     return glStatus;
 }
@@ -122,6 +142,12 @@ bool OpenGL::initBackend() {
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
+
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+//    gluPerspective(45.0, 16.0/9.0*float(Width)/float(Height), 0.1, 100.0);
 
 
     return true;
