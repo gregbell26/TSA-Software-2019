@@ -31,14 +31,14 @@ namespace Inputs{
         Input::type = type;
     }
     template <class R>
-    Input<R>::Input(int key, R (*action)(GLFWwindow *), std::vector<Input<R>> *list, InputType type){
+    Input<R>::Input(int key, std::function<R(GLFWwindow *)> action, std::vector<Input<R>> *list, InputType type){
         Input::key = {key, 0};
         Input::action = action;
         list->push_back(*this);
         Input::type = type;
     }
     template <class R>
-    Input<R>::Input(int key, int modifiers, R (*action)(GLFWwindow *), std::vector<Input<R>> *list, InputType type){
+    Input<R>::Input(int key, int modifiers, std::function<R(GLFWwindow *)> action, std::vector<Input<R>> *list, InputType type){
         Input::key = {key, modifiers};
         Input::action = action;
         list->push_back(*this);

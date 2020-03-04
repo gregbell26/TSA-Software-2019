@@ -31,13 +31,13 @@ namespace Inputs::Mouse{
         list->push_back(*this);
     }
     template <class R>
-    MouseInput<R>::MouseInput(int key, R (*action)(GLFWwindow *, int), std::vector<MouseInput<R>> *list){
+    MouseInput<R>::MouseInput(int key, std::function<R(GLFWwindow *, int)> action, std::vector<MouseInput<R>> *list){
         MouseInput::key = {key, 0};
         MouseInput::action = action;
         list->push_back(*this);
     }
     template <class R>
-    MouseInput<R>::MouseInput(int key, int modifiers, R (*action)(GLFWwindow *, int), std::vector<MouseInput<R>> *list){
+    MouseInput<R>::MouseInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action, std::vector<MouseInput<R>> *list){
         MouseInput::key = {key, modifiers};
         MouseInput::action = action;
         list->push_back(*this);
@@ -73,7 +73,7 @@ namespace Inputs::Mouse{
         list->push_back(*this);
     }
     template <class R>
-    CursorInput<R>::CursorInput(R (*action)(GLFWwindow *, double, double), std::vector<CursorInput<R>> *list){
+    CursorInput<R>::CursorInput(std::function<R (GLFWwindow *, double, double)> action, std::vector<CursorInput<R>> *list){
         CursorInput::action = action;
         list->push_back(*this);
     }
@@ -84,7 +84,7 @@ namespace Inputs::Mouse{
 //    }
 
     template<class R>
-    void CursorInput<R>::setAction(R (*func)(GLFWwindow *, double, double)) {
+    void CursorInput<R>::setAction(std::function<R (GLFWwindow *, double, double)> func) {
         CursorInput::action = func;
     }
 

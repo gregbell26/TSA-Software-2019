@@ -5,9 +5,32 @@
 #include "acrylic_random.h"
 
     std::random_device generator; // how generates the random number
-    std::uniform_int_distribution <int> distribution(0,255); // range for RGB
-    std::uniform_int_distribution <int> distribute(0,100); // range for SV
+    std::uniform_int_distribution <int> distribution(0,255); // range for R,G,B
+    std::uniform_int_distribution <int> distribute(0,100); // range for S,V
     std::uniform_int_distribution <int> distrib(0,360); // range for H
+
+
+    int A2D::Random::Random::WeightedRandom(int Weights[])
+    {
+        int length = sizeof(Weights) / sizeof(Weights[0]);
+        int total = 0;
+        for(int i = 0; i < length; i++)
+        {
+            total += Weights[i];
+        }
+        std::uniform_int_distribution <int> w(0,total);
+        int value = w(generator);
+        total = 0;
+        for(int i = 0; i < length; i++)
+        {
+            total += Weights[i];
+            if(value < total)
+            {
+                return i;
+            }
+        }
+        return -1; //failure
+    }
 
     glm::vec3 A2D::Random::Random::ranRGB()
     {

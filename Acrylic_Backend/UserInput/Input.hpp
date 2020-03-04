@@ -33,8 +33,8 @@ namespace Inputs{
         Input(std::vector<Input<GLFWwindow *>> *, InputType type);
         Input(int key, std::vector<Input<GLFWwindow *>> *, InputType type);
         Input(int key, int modifiers, std::vector<Input<GLFWwindow*>> *, InputType type);
-        Input(int key, R (*action)(GLFWwindow *), std::vector<Input<R>> *, InputType type);
-        Input(int key, int modifiers, R (*action)(GLFWwindow *), std::vector<Input<R>> *, InputType type);
+        Input(int key, std::function<R(GLFWwindow *)> action, std::vector<Input<R>> *, InputType type);
+        Input(int key, int modifiers,std::function<R(GLFWwindow *)> action, std::vector<Input<R>> *, InputType type);
 
         void setKey(const Trigger &key);
         virtual void setAction(R (*action)(GLFWwindow *));
