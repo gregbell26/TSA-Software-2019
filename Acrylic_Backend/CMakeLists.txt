@@ -20,6 +20,9 @@ include_directories(./BackendAPIs/BackendAPIs/required/GLFW3/include)
 #Inlcude FreeType for font loading and rastiation
 include_directories(./../BackendAPIs/required/FreeType/include)
 
+#include OpenAL
+include_directories(./BackendAPIs/AcrylicAudio/AudioAPIs/OpenAL/include)
+
 ##include Nlohmann JSON
 #include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
 
@@ -29,6 +32,7 @@ include_directories(./../BackendAPIs/required/FreeType/include)
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 add_subdirectory(./BackendAPIs/AcrylicSaveEngine)
+add_subdirectory(./BackendAPIs/AcrylicAudio)
 add_subdirectory(./BackendAPIs/Plexi2DRenderer)
 
 set(CPU_SOURCE BackendAPIs/CPU/TaskScheduler.cpp)
