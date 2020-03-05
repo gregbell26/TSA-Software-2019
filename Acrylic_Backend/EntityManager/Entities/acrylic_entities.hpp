@@ -7,13 +7,13 @@ namespace A2D::EntityManager {
 
     class Entity{
         public:
-        
+
 
         protected:
         ///texture stuff
 
-        int xPosition;
-        int yPosition;
+        double xPosition;
+        double yPosition;
     };
 
     template<typename T, typename R>
@@ -31,10 +31,10 @@ namespace A2D::EntityManager {
 
 
     struct Hit_Box{
-        int xSize;
-        int ySize;
-        int xPos;
-        int yPos;
+        double xSize;
+        double ySize;
+        double xPos;
+        double yPos;
     };
 
     class InteractableEntity{
@@ -48,20 +48,41 @@ namespace A2D::EntityManager {
     };
 
     struct Movement_Data{
-        int xVelocity;
-        int yVelocity;
-        int xAcceleration;
-        int yAcceleration;
+        double xVelocity;
+        double yVelocity;
+        double xAcceleration;
+        double yAcceleration;
     };
 
     class PhysicsObject{
         public:
+
+        void applyPhysics(){
+            double xV = movementData.xAcceleration;
+            double yV = movementData.yAcceleration;
+            double xA = movementData.xAcceleration;
+            double yA = movementData.yAcceleration;
+            double x = xPosition;
+            double y = yPosition;
+
+            xV += xA;
+            yV += yA;
+            x += xV;
+            y += yV;
+
+            movementData.xAcceleration = xV;
+            movementData.yAcceleration = yV;
+            movementData.xAcceleration = xA;
+            movementData.yAcceleration = yA;
+            xPosition = x;
+            yPosition = y;
+
+        }
 
         protected:
         Movement_Data movementData;
     };
 
 }
-
 
 #endif //ACRYLIC_ENTITIES_HPP
