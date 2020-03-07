@@ -1,55 +1,32 @@
 //
-// Created by Corbin Estes on 1/17/20.
+// Created by Corbin Estes on 3/5/20.
 //
-
-#include "Input.hpp"
-#include "MouseInput.hpp"
 #include "KeyInput.hpp"
 
-namespace Inputs::Key{
-    GLFWwindow* getWindowRef(GLFWwindow* window, int act){
-        return window;
-    }
-    template<> KeyInput<GLFWwindow*>::KeyInput(std::vector<KeyInput<GLFWwindow *>> *list){
-        key = {0, 0};
-        action = getWindowRef;
-        list->push_back(*this);
-    }
-    template<> KeyInput<GLFWwindow*>::KeyInput(int key, std::vector<KeyInput<GLFWwindow *>> *list){
-        KeyInput::key = {key, 0};
-        action = getWindowRef;
-        list->push_back(*this);
-    }
-    template<> KeyInput<GLFWwindow*>::KeyInput(int key, int modifiers, std::vector<KeyInput<GLFWwindow *>> *list){
-        KeyInput::key = {key, modifiers};
-        action = getWindowRef;
-        list->push_back(*this);
-    }
-    template <class R>
-    KeyInput<R>::KeyInput(int key, std::function<R(GLFWwindow *, int)> action, std::vector<KeyInput<R>> *list){
-        KeyInput::key = {key, 0};
-        KeyInput::action = action;
-        list->push_back(*this);
-    }
-    template <class R>
-    KeyInput<R>::KeyInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action, std::vector<KeyInput<R>> *list){
-        KeyInput::key = {key, modifiers};
-        KeyInput::action = action;
-        list->push_back(*this);
-    }
+template <typename T>
+std::map<char, std::function<T>> keyList;
 
-//    template<class R>
-//    std::function<R(GLFWwindow *, int)> KeyInput<R>::getAction() const {
-//        return action;
-//    }
+void help(){
 
-    template<class R>
-    void KeyInput<R>::setAction(R (*func)(GLFWwindow *, int)) {
-        KeyInput::action = func;
-    }
-
-    template<class R>
-    InputType KeyInput<R>::getType(){
-        return InputType::keyPress;
-    }
 }
+
+template <typename T>
+Keyboard<T>::Keyboard() {
+    keyList<void()>.insert(std::pair<char, std::function<void()>>('h', help));
+}
+template <typename T>
+Keyboard<T>::Keyboard(std::map<char, std::function<T>> keyList){
+    keys = keyList;
+}
+
+template <typename T>
+void Keyboard<T>::check(){
+    int keyPress = getchar();
+    keys.at(keyPress);
+}
+
+template <typename T>
+void Keyboard<T>::addKeyBinding(char key, std::function<T> action){
+    keys.insert(std::pair(key, action));
+}
+

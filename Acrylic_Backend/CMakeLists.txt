@@ -39,7 +39,7 @@ set(USER_INPUT_SOURCE UserInput/Input.cpp UserInput/Inputs.cpp UserInput/KeyInpu
 
 
 set(SOURCE_FILES ${CPU_SOURCE} ${USER_INPUT_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp acrylic_random.cpp Timers/acrylic_frameTimer.cpp)
-set(HEADER_FILES ${CPU_HEADER} ${USER_INPUT_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp acrylic_random.h Timers/acrylic_frameTimer.h)
+set(HEADER_FILES ${CPU_HEADER} ${USER_INPUT_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp acrylic_random.h Timers/acrylic_frameTimer.h UserInput/WindowBackend.cpp UserInput/WindowBackend.hpp UserInput/Keys.hpp UserInput/KeyInput.cpp UserInput/KeyInput.hpp UserInput/MouseInput.cpp UserInput/MouseInput.hpp)
 
 
 set(TEST_CODE main.nfp.cpp)

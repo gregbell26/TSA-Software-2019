@@ -8,7 +8,6 @@
 #include "acrylic_random.h"
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
-#include "./UserInput/acrylic_input_core.hpp"
 
 
 StandardRenderTask Obj7 = {
@@ -52,14 +51,10 @@ TextRenderTask txtObj3 {
 
 using namespace A2D::Filesystem::Loaders::JSON;
 using namespace A2D::Filesystem::Loaders;
-std::function<void(GLFWwindow *)> doTheThing = [] (GLFWwindow *) {
-    logInformation("clicked: w")
-};
+
 
 int main(){
     initLogger("A2D", log_severity_information, log_mode_all)
-
-    Inputs::Input<void> input = Inputs::newInput(GLFW_KEY_W, doTheThing, Inputs::InputType::none);
 
 //    auto j = interpretJson(readFile("test1.json"));
 //    auto j2 = interpretJson(readFile("test2.json"));

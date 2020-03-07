@@ -1,46 +1,27 @@
 //
-// Created by Corbin Estes on 1/17/20.
+// Created by Corbin Estes on 3/7/20.
 //
 
 #ifndef ACRYLIC2D_MOUSEINPUT_HPP
 #define ACRYLIC2D_MOUSEINPUT_HPP
 
-//#include "Input.hpp"
-namespace Inputs::Mouse{
-    GLFWwindow* getWindowRef(GLFWwindow*, int);
-    template <class R>
-    class MouseInput: public Input<R> { //Mouse button functions
-    public:
-        R (*action)(GLFWwindow*, int);
-        Trigger key = {};
-        explicit MouseInput(std::vector<MouseInput<GLFWwindow *>> *list);
-        MouseInput(int key, std::vector<MouseInput<GLFWwindow *>> *list);
-        MouseInput(int key, int modifiers, std::vector<MouseInput<GLFWwindow *>> *list);
-        MouseInput(int key, std::function<R(GLFWwindow *, int)> action, std::vector<MouseInput<R>> *list);
-        MouseInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action, std::vector<MouseInput<R>> *list);
+#include <functional>
+#include <map>
+#include "../BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
+#include "Keys.hpp"
 
-        void setAction(R (*action)(GLFWwindow *, int));
+template <typename T>
+class Mouse {
+    std::map<int, std::function<T>> buttons;
+public:
 
-//        std::function<R(GLFWwindow*, int)> getAction() const;
+    Mouse<T> ();
+    explicit Mouse<T> (std::map<int, std::function<T>>);
 
-        InputType getType();
-    };
+    void check();
+    void addButtonBinding(int, std::function<T>);
+};
 
-    void logPosition(GLFWwindow* window, double xOff, double yOff);
-    template <class R>
-    class CursorInput: public Input<R> { //Scroll and Cursor move functions
-    public:
-        R (*action)(GLFWwindow*, double xOff, double yOff);
-        explicit CursorInput(std::vector<CursorInput<void>> *list);
-        CursorInput(std::function<R (GLFWwindow *, double, double)> action, std::vector<CursorInput<R>> *list);
-
-        void setAction(std::function<R (GLFWwindow *, double, double)> action);
-
-//        std::function<R(GLFWwindow*, double, double)> getAction() const;
-
-        InputType getType();
-    };
-}
 
 
 #endif //ACRYLIC2D_MOUSEINPUT_HPP

@@ -1,34 +1,24 @@
 //
-// Created by Corbin Estes on 1/17/20.
+// Created by Corbin Estes on 3/5/20.
 //
 
-#ifndef ACRYLIC2D_KEYINPUT_HPP
-#define ACRYLIC2D_KEYINPUT_HPP
+#ifndef ACRYLIC2D_KEYINPUT_H
+#define ACRYLIC2D_KEYINPUT_H
+#include <functional>
+#include <map>
+#include "../BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
+#include "Keys.hpp"
 
-#include <GLFW/glfw3.h>
-//#include "Input.hpp"
-namespace Inputs::Key{
-    GLFWwindow* getWindowRef(GLFWwindow*, int);
+template <typename T>
+class Keyboard {
+    std::map<char, std::function<T>> keys;
+public:
 
-    template <class R>
-    class KeyInput: public Input<R> {
-    public:
-        R (*action)(GLFWwindow*, int act);
-        Trigger key = {};
-        explicit KeyInput(std::vector<KeyInput<GLFWwindow *>> *);
-        KeyInput(int key, std::vector<KeyInput<GLFWwindow *>> *);
-        KeyInput(int key, int modifiers, std::vector<KeyInput<GLFWwindow *>> *);
-        KeyInput(int key, std::function<R(GLFWwindow *, int)> action, std::vector<KeyInput<R>> *);
-        KeyInput(int key, int modifiers, std::function<R(GLFWwindow *, int)> action, std::vector<KeyInput<R>> *);
+    Keyboard<T> ();
+    explicit Keyboard<T> (std::map<char, std::function<T>>);
 
-        void setAction(R (*action)(GLFWwindow *, int));
+    void check();
+    void addKeyBinding(char, std::function<T>);
+};
 
-//        std::function<R(GLFWwindow*, int)> getAction() const;
-
-        InputType getType();
-    };
-
-}
-
-
-#endif //ACRYLIC2D_KEYINPUT_HPP
+#endif //ACRYLIC2D_KEYINPUT_H
