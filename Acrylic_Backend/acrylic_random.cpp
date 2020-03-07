@@ -18,15 +18,15 @@
         {
             total += Weights[i];
         }
-        std::uniform_int_distribution <int> w(0,total);
-        int value = w(generator);
+        std::uniform_int_distribution <int> w(0,total); // generates a number for weighted
+        int value = w(generator); // sets it to value
         total = 0;
         for(int i = 0; i < length; i++)
         {
             total += Weights[i];
             if(value < total)
             {
-                return i;
+                return i; // prints the random number
             }
         }
         return -1; //failure

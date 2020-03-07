@@ -3,7 +3,11 @@
 
 #include <filesystem>
 
+#include <ths/log.hpp>
+
 int main() {
+    initLogger("A2D", log_severity_error, log_mode_console)
+
     Plexi::PlexiConfig plexiConfig = {};
     plexiConfig.preferredGraphicsBackend = Plexi::PLEXI_GFX_BACKENDS::PLEXI_OPENGL;
     plexiConfig.defaultShaderLanguage = Plexi::Shaders::ShaderLanguage::GLSL;
@@ -59,7 +63,7 @@ int main() {
     auto* monarchTSALogoImage = new A2D::Filesystem::Loaders::Bitmaps::Image(std::filesystem::path("./textures/MonarchTSALogo.bmp"));
 
     Plexi::TextureCreateInfo monarchTSALogoInfo  = {};
-    monarchTSALogoInfo.height = monarchTSALogoImage->height;
+    monarchTSALogoInfo.height = abs(monarchTSALogoImage->height);
     monarchTSALogoInfo.width = abs(monarchTSALogoImage->width);
     monarchTSALogoInfo.channelCount = monarchTSALogoImage->bytes;
     monarchTSALogoInfo.dataSize = monarchTSALogoImage->length;
@@ -106,5 +110,6 @@ int main() {
 
 
     Plexi::cleanupPlexi();
+    endLogger()
 
 }

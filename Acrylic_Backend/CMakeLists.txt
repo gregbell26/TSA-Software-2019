@@ -20,6 +20,9 @@ include_directories(./BackendAPIs/BackendAPIs/required/GLFW3/include)
 #Inlcude FreeType for font loading and rastiation
 include_directories(./../BackendAPIs/required/FreeType/include)
 
+#include OpenAL
+include_directories(./BackendAPIs/AcrylicAudio/AudioAPIs/OpenAL/include)
+
 ##include Nlohmann JSON
 #include_directories(./BackendAPIs/BackendAPIs/required/nlohmannJSON/include)
 
@@ -29,6 +32,7 @@ include_directories(./../BackendAPIs/required/FreeType/include)
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 add_subdirectory(./BackendAPIs/AcrylicSaveEngine)
+add_subdirectory(./BackendAPIs/AcrylicAudio)
 add_subdirectory(./BackendAPIs/Plexi2DRenderer)
 
 set(CPU_SOURCE BackendAPIs/CPU/TaskScheduler.cpp)
@@ -37,9 +41,13 @@ set(CPU_HEADER BackendAPIs/CPU/TaskScheduler.hpp)
 set(USER_INPUT_HEADER UserInput/Input.hpp UserInput/Inputs.hpp UserInput/KeyInput.hpp UserInput/MouseInput.hpp)
 set(USER_INPUT_SOURCE UserInput/Input.cpp UserInput/Inputs.cpp UserInput/KeyInput.cpp UserInput/MouseInput.cpp)
 
+set(ENTITY_HEADER EntityManager/Entities/acrylic_entities.hpp)
+set(ENTITY_SOURCE)
 
-set(SOURCE_FILES ${CPU_SOURCE} ${USER_INPUT_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp acrylic_random.cpp Timers/acrylic_frameTimer.cpp)
-set(HEADER_FILES ${CPU_HEADER} ${USER_INPUT_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp acrylic_random.h Timers/acrylic_frameTimer.h UserInput/WindowBackend.cpp UserInput/WindowBackend.hpp UserInput/Keys.hpp UserInput/KeyInput.cpp UserInput/KeyInput.hpp UserInput/MouseInput.cpp UserInput/MouseInput.hpp)
+
+
+set(SOURCE_FILES ${CPU_SOURCE} ${USER_INPUT_SOURCE} ${ENTITY_SOURCE} acrylic_engine.cpp acrylic_interactionEngine.cpp acrylic_physicsEngine.cpp acrylic_random.cpp Timers/acrylic_frameTimer.cpp)
+set(HEADER_FILES ${CPU_HEADER} ${USER_INPUT_HEADER} ${ENTITY_HEADER} acrylic_engine.hpp acrylic_interactionEngine.hpp acrylic_physicsEngine.hpp acrylic_random.h Timers/acrylic_frameTimer.h)
 
 
 set(TEST_CODE main.nfp.cpp)
