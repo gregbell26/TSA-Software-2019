@@ -7,13 +7,12 @@
 
 #include "Keys.hpp"
 
-template <typename T>
 class WindowBackend {
 public:
-    virtual T getCursorPos() = 0;
-    template <typename R>
-    virtual R* getWindowPointer() = 0;
-    virtual keys convert(int) = 0;
+    virtual KeyMod onKeyPress() = 0;
+    virtual MouseButtons onMouseButton() = 0;
+    virtual A2D_coordPair onMouseMove() = 0;
+    virtual KeyCode convertKeyToA2DCode(int, int, KeyMod) = 0;
 };
 
 #endif //ACRYLIC2D_WINDOWBACKEND_H

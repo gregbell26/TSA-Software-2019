@@ -4,21 +4,19 @@
 
 #ifndef ACRYLIC2D_KEYINPUT_H
 #define ACRYLIC2D_KEYINPUT_H
-#include <functional>
-#include <map>
-#include "../BackendAPIs/Plexi2DRenderer/acrylic_plexiRenderer_core.hpp"
+
 #include "Keys.hpp"
 
 template <typename T>
 class Keyboard {
-    std::map<char, std::function<T>> keys;
+    std::map<KeyMod, std::function<T>> keys;
 public:
 
     Keyboard<T> ();
-    explicit Keyboard<T> (std::map<char, std::function<T>>);
+    explicit Keyboard<T> (std::map<KeyMod, std::function<T>>);
 
-    void check();
-    void addKeyBinding(char, std::function<T>);
+    void check(KeyMod key);
+    void addKeyBinding(KeyMod, std::function<T>);
 };
 
 #endif //ACRYLIC2D_KEYINPUT_H

@@ -4,7 +4,7 @@
 #include "KeyInput.hpp"
 
 template <typename T>
-std::map<char, std::function<T>> keyList;
+std::map<KeyMod, std::function<T>> keyList;
 
 void help(){
 
@@ -12,21 +12,21 @@ void help(){
 
 template <typename T>
 Keyboard<T>::Keyboard() {
-    keyList<void()>.insert(std::pair<char, std::function<void()>>('h', help));
+    keyList<void()>.insert(std::pair<KeyMod, std::function<void()>>(KeyMod(A2D_h, A2D_MOD_NONE), help));
 }
 template <typename T>
-Keyboard<T>::Keyboard(std::map<char, std::function<T>> keyList){
+Keyboard<T>::Keyboard(std::map<KeyMod, std::function<T>> keyList){
     keys = keyList;
+
 }
 
 template <typename T>
-void Keyboard<T>::check(){
-    int keyPress = getchar();
-    keys.at(keyPress);
+void Keyboard<T>::check(KeyMod key){
+    keys.at(key);
 }
 
 template <typename T>
-void Keyboard<T>::addKeyBinding(char key, std::function<T> action){
+void Keyboard<T>::addKeyBinding(KeyMod key, std::function<T> action){
     keys.insert(std::pair(key, action));
 }
 
