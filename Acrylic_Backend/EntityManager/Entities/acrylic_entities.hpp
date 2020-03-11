@@ -12,6 +12,7 @@ namespace A2D::EntityManager {
         protected:
         ///texture stuff
 
+        unsigned long entityID;
         double xPosition;
         double yPosition;
     };
