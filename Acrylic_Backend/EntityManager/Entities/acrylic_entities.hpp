@@ -12,12 +12,13 @@ namespace A2D::EntityManager {
         protected:
         ///texture stuff
 
+        unsigned long entityID;
         double xPosition;
         double yPosition;
     };
 
     template<typename T, typename R>
-    class UpdatableEntity {
+    class UpdatableEntity: public Entity {
     public:
         UpdatableEntity() = default;
         T onUpdate() { m_onUpdate(); }
@@ -37,9 +38,11 @@ namespace A2D::EntityManager {
         double yPos;
     };
 
-    class InteractableEntity{
+    template<typename T, typename R>
+    class InteractableEntity: public UpdatableEntity<T,R>{
         public:
-
+        unsigned long* getCollidingEntities();
+        bool isColliding(unsigned long);
 
         protected:
         Hit_Box hitBox;
@@ -54,30 +57,11 @@ namespace A2D::EntityManager {
         double yAcceleration;
     };
 
-    class PhysicsObject{
+    template<typename T, typename R>
+    class PhysicsObject: public InteractableEntity<T,R>{
         public:
 
-        void applyPhysics(){
-            double xV = movementData.xAcceleration;
-            double yV = movementData.yAcceleration;
-            double xA = movementData.xAcceleration;
-            double yA = movementData.yAcceleration;
-            double x = xPosition;
-            double y = yPosition;
-
-            xV += xA;
-            yV += yA;
-            x += xV;
-            y += yV;
-
-            movementData.xAcceleration = xV;
-            movementData.yAcceleration = yV;
-            movementData.xAcceleration = xA;
-            movementData.yAcceleration = yA;
-            xPosition = x;
-            yPosition = y;
-
-        }
+        void applyPhysics();
 
         protected:
         Movement_Data movementData;
