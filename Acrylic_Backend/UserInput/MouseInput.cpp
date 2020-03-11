@@ -39,4 +39,7 @@ void Mouse<T>::setCursorFunction(std::function<T(A2D_coordPair)> action){
     cursorFunction = action;
 }
 
-
+template <typename T>
+void Mouse<T>::removeKeyBinding(MouseButtons button) {
+    buttons.erase(button);
+}

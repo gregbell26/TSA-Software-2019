@@ -113,16 +113,30 @@ enum ModCode {
     A2D_MOD_NUM_LOCK = 32,
 };
 
+enum keyEvents{
+    pressed,
+    held,
+    released,
+};
+
 struct KeyMod{
     KeyCode key;
     int mods;
+    keyEvents event;
     explicit KeyMod(KeyCode _key){
         key = _key;
         mods = 0;
+        event = pressed;
     }
     KeyMod(KeyCode _key, int modSum){
         key = _key;
         mods = modSum;
+        event = pressed;
+    }
+    KeyMod(KeyCode _key, int modSum, keyEvents _event){
+        key = _key;
+        mods = modSum;
+        event = _event;
     }
 };
 

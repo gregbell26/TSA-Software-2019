@@ -17,6 +17,7 @@ public:
 
     void check(KeyMod key);
     void addKeyBinding(KeyMod, std::function<T>);
+    void removeKeyBinding(KeyMod);
 };
 
 #endif //ACRYLIC2D_KEYINPUT_H

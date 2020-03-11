@@ -19,6 +19,8 @@ public:
     void check(int);
     void addButtonBinding(MouseButtons, std::function<T>);
 
+    void removeKeyBinding(MouseButtons);
+
     T cursorMove(A2D_coordPair);
     void setCursorFunction(std::function<T(A2D_coordPair)>);
 };

@@ -17,7 +17,6 @@ Keyboard<T>::Keyboard() {
 template <typename T>
 Keyboard<T>::Keyboard(std::map<KeyMod, std::function<T>> keyList){
     keys = keyList;
-
 }
 
 template <typename T>
@@ -28,5 +27,10 @@ void Keyboard<T>::check(KeyMod key){
 template <typename T>
 void Keyboard<T>::addKeyBinding(KeyMod key, std::function<T> action){
     keys.insert(std::pair(key, action));
+}
+
+template <typename T>
+void Keyboard<T>::removeKeyBinding(KeyMod key) {
+    keys.erase(key);
 }
 
