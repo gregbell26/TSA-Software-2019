@@ -13,17 +13,17 @@
 template <typename B, typename C>
 class Mouse {
     std::map<MouseButtons, std::function<B>> buttons;
-    std::function<C (A2D_coordPair)> cursorFunction;
+    std::function<C> cursorFunction;
 public:
-    Mouse<B> ();
-    explicit Mouse<B> (std::map<MouseButtons, std::function<B>>);
+    Mouse<B, C> ();
+    explicit Mouse<B, C> (std::map<MouseButtons, std::function<B>>);
 
     void check(int);
     void addButtonBinding(MouseButtons, std::function<B>);
 
     void removeButtonBinding(MouseButtons);
 
-    C cursorMove(A2D_coordPair);
+    void cursorMove(A2D_coordPair);
     void setCursorFunction(std::function<C>);
 };
 

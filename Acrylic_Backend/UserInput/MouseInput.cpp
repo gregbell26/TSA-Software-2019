@@ -30,7 +30,7 @@ void Mouse<B, C>::addButtonBinding(MouseButtons button, std::function<B> action)
 }
 
 template <typename B, typename C>
-C Mouse<B, C>::cursorMove(A2D_coordPair coord){
+void Mouse<B, C>::cursorMove(A2D_coordPair coord){
     return cursorFunction(coord);
 }
 

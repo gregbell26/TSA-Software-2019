@@ -7,27 +7,21 @@
 
 #include "WindowBackend.hpp"
 
-struct KeyTriple {
-    int key;
-    int mod;
-    int action;
-
-    KeyTriple(int _key, int _mod, int _action){
-        key = _key;
-        mod = _mod;
-        action = _action;
-    }
-};
-
 class GLFWBackend: public WindowBackend<void (GLFWwindow*, int, int, int, int),
         void(GLFWwindow*, int, int, int), void(GLFWwindow*, double, double)> {
-    std::map<KeyTriple, KeyMod> modMap = {};
+    std::map<KeyTriple, KeyTriple> modMap = {};
+    static Keyboard<void (GLFWwindow*, int, int, int, int)> keyboard;
+    static Mouse<void (GLFWwindow*, int, int, int), void(GLFWwindow*, double, double)> mouse;
 public:
     void setOnKey(std::function<void (GLFWwindow*, int, int, int, int)>) override;
     void setOnMouseButton(std::function<void (GLFWwindow*, int, int, int)>) override;
     void setOnMouseMove(std::function<void (GLFWwindow*, double, double)>) override;
-    void addToKeyMap(int, int, int, KeyMod) override;
-    KeyMod convertKeyToA2DCode(int, int, int) override;
+    void addToKeyMap(int, int, int, KeyTriple) override;
+    static void keyFunc(GLFWwindow*, int, int, int, int);
+    static void mouseButtonFunc(GLFWwindow*, int, int, int);
+    static void mouseMoveFunc(GLFWwindow*, double, double);
+    KeyTriple convertKeyToA2DCode(int, int, int) override;
+    void init();
 };
 
 

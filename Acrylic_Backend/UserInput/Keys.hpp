@@ -119,30 +119,38 @@ enum keyEvents{
     released,
 };
 
-struct KeyMod{
-    KeyCode key;
-    int mods;
-    keyEvents event;
-    explicit KeyMod(KeyCode _key){
+struct KeyTriple {
+    int key;
+    int mod;
+    int action;
+
+    KeyTriple(int _key, int _mod, int _action){
         key = _key;
-        mods = 0;
-        event = pressed;
+        mod = _mod;
+        action = _action;
     }
-    KeyMod(KeyCode _key, int modSum){
-        key = _key;
-        mods = modSum;
-        event = pressed;
-    }
-    KeyMod(KeyCode _key, int modSum, keyEvents _event){
-        key = _key;
-        mods = modSum;
-        event = _event;
+};
+
+struct ButtonTriple {
+    int button;
+    int mod;
+    int action;
+
+    ButtonTriple(int _button, int _mod, int _action){
+        button = _button;
+        mod = _mod;
+        action = _action;
     }
 };
 
 struct A2D_coordPair{
     double x;
     double y;
+
+    A2D_coordPair(double _x, double _y){
+        x = _x;
+        y = _y;
+    }
 };
 
 #endif //ACRYLIC2D_KEYS_H

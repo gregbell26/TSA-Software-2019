@@ -9,15 +9,15 @@
 
 template <typename T>
 class Keyboard {
-    std::map<KeyMod, std::function<T>> keys;
+    std::map<KeyTriple, std::function<T>> keys;
 public:
 
     Keyboard<T> ();
-    explicit Keyboard<T> (std::map<KeyMod, std::function<T>>);
+    explicit Keyboard<T> (std::map<KeyTriple, std::function<T>>);
 
-    void check(KeyMod key);
-    void addKeyBinding(KeyMod, std::function<T>);
-    void removeKeyBinding(KeyMod);
+    void check(KeyTriple key);
+    void addKeyBinding(KeyTriple, std::function<T>);
+    void removeKeyBinding(KeyTriple);
 };
 
 #endif //ACRYLIC2D_KEYINPUT_H
