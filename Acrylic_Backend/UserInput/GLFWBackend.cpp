@@ -5,15 +5,15 @@
 #include "GLFWBackend.h"
 
 
-void GLFWBackend::setOnKey(std::function<void (GLFWwindow*, int, int, int, int)> keyCallback) {
+void GLFWBackend::setOnKey(void(*keyCallback)(GLFWwindow*, int, int, int, int)) {
     glfwSetKeyCallback(Plexi::getWindowRef(), keyCallback);
 }
 
-void GLFWBackend::setOnMouseButton(std::function<void (GLFWwindow *, int, int, int)> mouseCallback){
+void GLFWBackend::setOnMouseButton(void(*mouseCallback)(GLFWwindow *, int, int, int)){
     glfwSetMouseButtonCallback(Plexi::getWindowRef(), mouseCallback);
 }
 
-void GLFWBackend::setOnMouseMove(std::function<void (GLFWwindow *, double, double)> cursorCallback)  {
+void GLFWBackend::setOnMouseMove(void(*cursorCallback)(GLFWwindow *, double, double))  {
     glfwSetCursorPosCallback(Plexi::getWindowRef(), cursorCallback);
 }
 
