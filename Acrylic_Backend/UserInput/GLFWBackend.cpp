@@ -4,18 +4,25 @@
 
 #include "GLFWBackend.h"
 
-KeyMod GLFWBackend::onKeyPress() {
 
+void GLFWBackend::setOnKey(std::function<void (GLFWwindow*, int, int, int, int)> keyCallback) {
+    glfwSetKeyCallback(Plexi::getWindowRef(), keyCallback);
 }
 
-A2D_coordPair GLFWBackend::onMouseMove() {
-
+void GLFWBackend::setOnMouseButton(std::function<void (GLFWwindow *, int, int, int)> mouseCallback){
+    glfwSetMouseButtonCallback(Plexi::getWindowRef(), mouseCallback);
 }
 
-MouseButtons GLFWBackend::onMouseButton() {
-
+void GLFWBackend::setOnMouseMove(std::function<void (GLFWwindow *, double, double)> cursorCallback)  {
+    glfwSetCursorPosCallback(Plexi::getWindowRef(), cursorCallback);
 }
 
-KeyCode GLFWBackend::convertKeyToA2DCode(int, int, KeyMod) {
+void GLFWBackend::addToKeyMap(int key, int mod, int act, KeyMod A2D) {
+    KeyTriple triple = KeyTriple(key, mod, act);
+    modMap.insert(std::pair(triple, A2D));
+}
 
+KeyMod GLFWBackend::convertKeyToA2DCode(int key, int mod, int act) {
+    KeyTriple triple = KeyTriple(key, mod, act);
+    return modMap.at(triple);
 }

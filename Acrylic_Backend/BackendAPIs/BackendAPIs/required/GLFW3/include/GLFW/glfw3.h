@@ -4540,7 +4540,7 @@ GLFWAPI void glfwSetCursor(GLFWwindow* window, GLFWcursor* cursor);
  *
  *  @ingroup input
  */
-GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* window, GLFWkeyfun callback);
+GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* window, std::function<void(GLFWwindow *, int, int, int, int)> callback);
 
 /*! @brief Sets the Unicode character callback.
  *
@@ -4662,7 +4662,8 @@ GLFWAPI GLFWcharmodsfun glfwSetCharModsCallback(GLFWwindow* window, GLFWcharmods
  *
  *  @ingroup input
  */
-GLFWAPI GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* window, GLFWmousebuttonfun callback);
+GLFWAPI GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* window, std::function<void(GLFWwindow *, int, int,
+                                                                                             int)> callback);
 
 /*! @brief Sets the cursor position callback.
  *
@@ -4694,7 +4695,8 @@ GLFWAPI GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* window, GLFWmo
  *
  *  @ingroup input
  */
-GLFWAPI GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow* window, GLFWcursorposfun callback);
+GLFWAPI GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow* window, std::function<void(GLFWwindow *, double,
+                                                                                         double)> callback);
 
 /*! @brief Sets the cursor enter/leave callback.
  *

@@ -10,36 +10,36 @@ void help() {
 
 }
 
-template <typename T>
-Mouse<T>::Mouse() {
+template <typename B, typename C>
+Mouse<B, C>::Mouse() {
     keyList<void()>.insert(std::pair<MouseButtons , std::function<void()>>(A2D_MOUSE_BUTTON_LEFT, help));
 }
-template <typename T>
-Mouse<T>::Mouse(std::map<MouseButtons, std::function<T>> keyList){
-    buttons = keyList;
+template <typename B, typename C>
+Mouse<B, C>::Mouse(std::map<MouseButtons, std::function<B>> buttonList){
+    buttons = buttonList;
 }
 
-template <typename T>
-void Mouse<T>::check(int buttonPress){
+template <typename B, typename C>
+void Mouse<B, C>::check(int buttonPress){
     buttons.at(buttonPress);
 }
 
-template <typename T>
-void Mouse<T>::addButtonBinding(MouseButtons button, std::function<T> action){
+template <typename B, typename C>
+void Mouse<B, C>::addButtonBinding(MouseButtons button, std::function<B> action){
     buttons.insert(std::pair(button, action));
 }
 
-template <typename T>
-T Mouse<T>::cursorMove(A2D_coordPair coord){
+template <typename B, typename C>
+C Mouse<B, C>::cursorMove(A2D_coordPair coord){
     return cursorFunction(coord);
 }
 
-template <typename T>
-void Mouse<T>::setCursorFunction(std::function<T(A2D_coordPair)> action){
+template <typename B, typename C>
+void Mouse<B, C>::setCursorFunction(std::function<C> action){
     cursorFunction = action;
 }
 
-template <typename T>
-void Mouse<T>::removeKeyBinding(MouseButtons button) {
+template <typename B, typename C>
+void Mouse<B, C>::removeButtonBinding(MouseButtons button) {
     buttons.erase(button);
 }

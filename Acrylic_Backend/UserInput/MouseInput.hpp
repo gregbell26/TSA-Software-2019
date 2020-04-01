@@ -8,21 +8,23 @@
 
 #include "Keys.hpp"
 
-template <typename T>
+//B refers to signature of the mouse button functions
+//C refers to the return type of the cursor move functions (A2D_coordPair is always the parameter)
+template <typename B, typename C>
 class Mouse {
-    std::map<MouseButtons, std::function<T>> buttons;
-    std::function<T(A2D_coordPair)> cursorFunction;
+    std::map<MouseButtons, std::function<B>> buttons;
+    std::function<C (A2D_coordPair)> cursorFunction;
 public:
-    Mouse<T> ();
-    explicit Mouse<T> (std::map<MouseButtons, std::function<T>>);
+    Mouse<B> ();
+    explicit Mouse<B> (std::map<MouseButtons, std::function<B>>);
 
     void check(int);
-    void addButtonBinding(MouseButtons, std::function<T>);
+    void addButtonBinding(MouseButtons, std::function<B>);
 
-    void removeKeyBinding(MouseButtons);
+    void removeButtonBinding(MouseButtons);
 
-    T cursorMove(A2D_coordPair);
-    void setCursorFunction(std::function<T(A2D_coordPair)>);
+    C cursorMove(A2D_coordPair);
+    void setCursorFunction(std::function<C>);
 };
 
 #endif //ACRYLIC2D_MOUSEINPUT_HPP
