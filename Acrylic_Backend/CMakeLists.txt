@@ -38,8 +38,8 @@ add_subdirectory(./BackendAPIs/Plexi2DRenderer)
 set(CPU_SOURCE BackendAPIs/CPU/TaskScheduler.cpp)
 set(CPU_HEADER BackendAPIs/CPU/TaskScheduler.hpp)
 
-set(USER_INPUT_HEADER UserInput/Keys.hpp UserInput/WindowBackend.hpp UserInput/MouseInput.hpp UserInput/KeyInput.hpp)
-set(USER_INPUT_SOURCE UserInput/KeyInput.cpp UserInput/MouseInput.cpp)
+set(USER_INPUT_HEADER UserInput/Keys.hpp UserInput/WindowBackend.hpp UserInput/MouseInput.hpp UserInput/KeyInput.hpp UserInput/GLFWBackend.h)
+set(USER_INPUT_SOURCE UserInput/KeyInput.cpp UserInput/MouseInput.cpp UserInput/GLFWBackend.cpp)
 
 set(ENTITY_HEADER EntityManager/Entities/acrylic_entities.hpp)
 set(ENTITY_SOURCE)

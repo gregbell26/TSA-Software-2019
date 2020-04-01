@@ -9,6 +9,7 @@
 #include "KeyInput.hpp"
 #include "MouseInput.hpp"
 
+
 template <typename K, typename M, typename C>
 class WindowBackend {
 public:
