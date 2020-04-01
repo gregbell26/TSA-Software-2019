@@ -7,25 +7,27 @@
 
 #include "WindowBackend.hpp"
 
+struct KeyTriple {
+    int key;
+    int mod;
+    int action;
 
+    KeyTriple(int _key, int _mod, int _action){
+        key = _key;
+        mod = _mod;
+        action = _action;
+    }
+};
 
-class GLFWBackend: public WindowBackend {
-    enum class keys {};
-    enum class mods {
-        Shift = GLFW_MOD_SHIFT,
-        Control = GLFW_MOD_CONTROL,
-        Alt = GLFW_MOD_ALT,
-        Super = GLFW_MOD_SUPER,
-        CapLock = GLFW_MOD_CAPS_LOCK,
-        NumLock = GLFW_MOD_NUM_LOCK,
-    };
+class GLFWBackend: public WindowBackend<void (GLFWwindow*, int, int, int, int),
+        void(GLFWwindow*, int, int, int), void(GLFWwindow*, double, double)> {
+    std::map<KeyTriple, KeyMod> modMap = {};
 public:
-    KeyMod onKeyPress() override;
-    A2D_coordPair onMouseMove() override;
-    MouseButtons onMouseButton() override;
-    KeyCode convertKeyToA2DCode(int, int, KeyMod) override;
-
-
+    void setOnKey(std::function<void (GLFWwindow*, int, int, int, int)>) override;
+    void setOnMouseButton(std::function<void (GLFWwindow*, int, int, int)>) override;
+    void setOnMouseMove(std::function<void (GLFWwindow*, double, double)>) override;
+    void addToKeyMap(int, int, int, KeyMod) override;
+    KeyMod convertKeyToA2DCode(int, int, int) override;
 };
 
 
