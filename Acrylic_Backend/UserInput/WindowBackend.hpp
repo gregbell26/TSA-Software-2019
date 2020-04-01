@@ -7,6 +7,7 @@
 
 #include "Keys.hpp"
 
+
 template <typename K, typename M, typename C>
 class WindowBackend {
 public:
